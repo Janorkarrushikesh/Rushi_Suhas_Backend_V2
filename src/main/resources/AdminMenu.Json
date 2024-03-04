@@ -1,0 +1,180 @@
+[
+  {
+    "title":"Cash Management",
+    "path":"/Cash Management",
+    "status":"true",
+    "adminSubMenu":[
+      {
+        "title":"Cash Register",
+        "path":"/Cash Register",
+        "status":"true"
+      },
+      {
+        "title":"Cash Management",
+        "path":"/Cash Management",
+        "status":"true"
+
+      }
+    ]
+  }
+,
+  {
+    "title":"Inventory Management",
+    "path":"/Inventory Management",
+    "status":"true",
+    "adminSubMenu":[
+      {
+        "title":"Add Inventory ",
+        "path":"/Add Inventory ",
+        "status":"true"
+      },
+      {
+        "title":"Inventory List ",
+        "path":"/Inventory List ",
+        "status":"true"
+
+      }
+    ]
+  }
+,
+  {
+    "title":"Vendor Management",
+    "path":"/Vendor Management",
+    "status":"true",
+    "storeId":"1",
+    "adminSubMenu":[
+      {
+        "title":"Add Vendor",
+        "path":"/Add Vendor",
+        "status":"true"
+      },
+      {
+        "title":"Vendor Payment",
+        "path":"/Vendor Payment",
+        "status":"true"
+
+      },
+      {
+        "title":"Vendor Inventory",
+        "path":"/Vendor Inventory",
+        "status":"true"
+
+      }
+    ]
+  }
+,
+  {
+    "title":"Food Management",
+    "path":"/Food Management",
+    "status":"true",
+    "storeId":"1",
+    "adminSubMenu":[
+      {
+        "title":"Add Menu",
+        "path":"/Add Menu",
+        "status":"true"
+      },
+      {
+        "title":"Food List",
+        "path":"/Food List",
+        "status":"true"
+
+      },
+      {
+        "title":"Add-On List",
+        "path":"/Add-On List",
+        "status":"true"
+
+      },
+      {
+        "title":"Add Recipe",
+        "path":"/Add Recipe",
+        "status":"true"
+
+      },
+      {
+        "title":"Recipe List",
+        "path":"/Recipe List",
+        "status":"true"
+
+      }
+    ]
+  }
+,
+  {
+    "title":"User Management",
+    "path":"/User Management",
+    "status":"true",
+    "storeId":"1",
+    "adminSubMenu":[
+      {
+        "title":"Add User",
+        "path":"/Add User",
+        "status":"true"
+      },
+      {
+        "title":"Users List",
+        "path":"/Users List",
+        "status":"true"
+
+      }
+    ]
+  }
+,
+  {
+    "title":"Role Access Management",
+    "path":"/Role Access Management",
+    "status":"true",
+    "storeId":"1",
+    "adminSubMenu":[
+      {
+        "title":"User Role Access",
+        "path":"/User Role Access",
+        "status":"true"
+      },
+      {
+        "title":"Role List",
+        "path":"/Role List",
+        "status":"true"
+
+      },
+      {
+        "title":"Update Role Access ",
+        "path":"/Update Role Access ",
+        "status":"true"
+
+      }
+    ]
+  }
+,
+  {
+    "title":"User Profile Settings",
+    "path":"/User Profile Settings",
+    "status":"true",
+    "storeId":"1",
+    "adminSubMenu":[
+      {
+        "title":"Store Settings",
+        "path":"/Store Settings",
+        "status":"true"
+      },
+      {
+        "title":"Payment Settings",
+        "path":"/Payment Settings",
+        "status":"true"
+
+      },
+      {
+        "title":"Tax Settings",
+        "path":"/Tax Settings",
+        "status":"true"
+
+      },
+      {
+        "title":"POS Settings",
+        "path":"/POS Settings"
+
+      }
+    ]
+  }
+]

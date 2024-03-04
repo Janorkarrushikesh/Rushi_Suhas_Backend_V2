@@ -1,0 +1,25 @@
+  // const handleStoreUpdate = async (e) => {
+  //   e.preventDefault();
+
+  //   if (Object.values(errors).every((error) => error === "")) {
+  //     const queryString = Object.keys(formData)
+  //       .map(
+  //         (key) => encodeURIComponent(key) + "=" + encodeURIComponent(formData[key])
+  //       )
+  //       .join("&");
+
+  //     // Append the query string to the URL
+  //     const url =
+  //       "https://apis.ubsbill.com/apptest/v2/api/auth/store/56?" + queryString;
+
+  //     try {
+  //       const response = await axios.patch(url);
+  //       if (response.data.status === true) {
+  //         showSuccessSnackbar("Form Submit Successfull !");
+  //         console.log(response);
+  //       }
+  //     } catch (error) {
+  //       showErrorSnackbar(error.response.data.message);
+  //     }
+  //   }
+  // };
