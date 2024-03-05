@@ -42,7 +42,7 @@ public class StorePayment {
 
     @Column(name = "ifsc_code")
     private String ifscCode;
-    @Column(name = "store_id")
+    @Column(name = "storeId")
     private Long storeId;
 
     @Column(name = "created_by")

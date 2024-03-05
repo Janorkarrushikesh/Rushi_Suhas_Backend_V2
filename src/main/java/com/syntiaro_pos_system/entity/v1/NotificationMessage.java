@@ -66,7 +66,6 @@ public class NotificationMessage {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a");
         String formattedDate = dateFormat.format(date);
         this.dateTime = formattedDate;
-
     }
 
     public String getEndDateTime() {

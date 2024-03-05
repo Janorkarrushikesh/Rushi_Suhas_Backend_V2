@@ -54,8 +54,7 @@ public class BillServiceImplV2 implements Billservice {
             return ResponseEntity.ok().body(new ApiResponse(savedBill, true, 200));
         } catch (Exception e) {
             logger.debug(e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(null, false, "...", 500));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "...", 500));
         }
 
     }
@@ -72,8 +71,7 @@ public class BillServiceImplV2 implements Billservice {
 
         } catch (Exception e) {
             logger.debug(e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(null, false, "...", 500));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "...", 500));
         }
     }
 
@@ -88,8 +86,7 @@ public class BillServiceImplV2 implements Billservice {
 
         } catch (Exception e) {
             logger.debug(e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(null, false, "...", 500));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "...", 500));
         }
 
     }
@@ -99,19 +96,17 @@ public class BillServiceImplV2 implements Billservice {
     public ResponseEntity<ApiResponse> updateBillBySerialNo(Integer serialNo, Bill bill) {
 
         try {
-            Bill billList = billRepositry.findById(serialNo)
-                    .orElseThrow(() -> new EntityNotFoundExceptionById("Invalid Id was provided"));
+            Bill billList = billRepositry.findById(serialNo).orElseThrow(() -> new EntityNotFoundExceptionById("Invalid Id was provided"));
             billList.setBillDate(bill.getBillDate());
             billList.setBillStatus(bill.getBillStatus());
             billList.setContact(bill.getContact());
             billList.setDiscount(bill.getDiscount());
             billList.setPaymentMode(bill.getPaymentMode());
             billList.setOrder(bill.getOrder());
+            billList.setTotal(bill.getTotal());
             return ResponseEntity.ok().body(new ApiResponse(billRepositry.save(billList), true, 200));
-
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(null, false, "...", 500));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "...", 500));
         }
 
     }
@@ -129,11 +124,9 @@ public class BillServiceImplV2 implements Billservice {
                     return ResponseEntity.ok().body(new ApiResponse(existingBill, true, 200));
                 }
             }
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new ApiResponse(null, false, "Store Id Not Found ", 404));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(null, false, "Store Id Not Found ", 404));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(null, false, "...", 500));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "...", 500));
         }
 
 
@@ -241,8 +234,7 @@ public class BillServiceImplV2 implements Billservice {
             LocalDate today = LocalDate.now();
             Balance existingBalance = balanceRepositry.findByStoreIdAndDate(bill.getBill().getStoreId(), today);
             if (existingBalance != null && existingBalance.getFinalClosingBalance() != null) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new ApiResponse(null, false, "After Final closing you don't have access", 400));
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(null, false, "After Final closing you don't have access", 400));
             }
 
             Date date = new Date();
@@ -262,8 +254,7 @@ public class BillServiceImplV2 implements Billservice {
             return ResponseEntity.ok().body(new ApiResponse(savedBill, true, 200));
         } catch (Exception e) {
 
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(null, false, "...", 500));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "...", 500));
 
         }
 
@@ -278,8 +269,7 @@ public class BillServiceImplV2 implements Billservice {
             List<Bill> OrderData = billRepositry.findBillsByStoreAndStatusAndDatekot(storeId, DaysAgo, orderStatus);
             return ResponseEntity.ok().body(new ApiResponse(OrderData, true, 200));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(null, false, "", 500));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "", 500));
         }
     }
 
@@ -297,8 +287,7 @@ public class BillServiceImplV2 implements Billservice {
             return ResponseEntity.ok().body(new ApiResponse(transaction, true, 200));
 
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(null, false, "...", 500));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "...", 500));
         }
     }
 
@@ -308,11 +297,26 @@ public class BillServiceImplV2 implements Billservice {
             Map<String, Map<LocalDate, Float>> cashReport = getDailyBalanceReport(storeId);
             return ResponseEntity.ok().body(new ApiResponse(cashReport, true, 200));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(null, false, "..", 500));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "..", 500));
         }
     }
 
+    @Override
+    public ResponseEntity<ApiResponse> updateOrderStatus(Integer serialNo, String orderStatus) {
+        try {
+            Optional<Orders> existingOrder = orderRepository.findById(serialNo);
+            if (existingOrder.isPresent()) {
+                Orders order = existingOrder.get();
+                order.setOrderStatus(orderStatus);
+                return ResponseEntity.ok().body(new ApiResponse(orderRepository.save(order), true, "Updated Successfully", 200));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(null, false, "Id Not Found ", 404));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "..", 500));
+
+        }
+    }
 
     public Map<String, Map<LocalDate, Float>> getDailyBalanceReport(@PathVariable(name = "store_id") Integer storeId) {
         Map<String, Map<LocalDate, Float>> dailyBalanceReports = new HashMap<>();
@@ -320,25 +324,20 @@ public class BillServiceImplV2 implements Billservice {
             List<Bill> allBills = billRepositry.findByStoreId(storeId);
             for (String paymentMode : Arrays.asList("cash", "card", "upi")) {
                 Map<LocalDate, Float> dailyBalances = new HashMap<>();
-                allBills.stream()
-                        .filter(bill -> paymentMode.equalsIgnoreCase(bill.getPaymentMode()))
-                        .forEach(bill -> {
-                            LocalDate billDate = bill.getBillDate();
-                            Float totalAmount = bill.getTotal();
-                            dailyBalances.merge(billDate, totalAmount, Float::sum);
-                        });
-                Map<LocalDate, Float> sortedDailyBalances = dailyBalances.entrySet().stream()
-                        .sorted(Map.Entry.<LocalDate, Float>comparingByKey().reversed())
-                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+                allBills.stream().filter(bill -> paymentMode.equalsIgnoreCase(bill.getPaymentMode())).forEach(bill -> {
+                    LocalDate billDate = bill.getBillDate();
+                    Float totalAmount = bill.getTotal();
+                    dailyBalances.merge(billDate, totalAmount, Float::sum);
+                });
+                Map<LocalDate, Float> sortedDailyBalances = dailyBalances.entrySet().stream().sorted(Map.Entry.<LocalDate, Float>comparingByKey().reversed()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
                 dailyBalanceReports.put(paymentMode, sortedDailyBalances);
             }
             dailyBalanceReports = dailyBalanceReports.entrySet().stream()
                     .sorted((entry1, entry2) -> {
-                        LocalDate maxDate1 = entry1.getValue().keySet().stream().max(LocalDate::compareTo).orElse(LocalDate.MIN);
-                        LocalDate maxDate2 = entry2.getValue().keySet().stream().max(LocalDate::compareTo).orElse(LocalDate.MIN);
-                        return maxDate2.compareTo(maxDate1);
-                    })
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+                LocalDate maxDate1 = entry1.getValue().keySet().stream().max(LocalDate::compareTo).orElse(LocalDate.MIN);
+                LocalDate maxDate2 = entry2.getValue().keySet().stream().max(LocalDate::compareTo).orElse(LocalDate.MIN);
+                return maxDate2.compareTo(maxDate1);
+            }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
             return dailyBalanceReports;
         } catch (Exception e) {
             e.printStackTrace();
@@ -380,12 +379,30 @@ public class BillServiceImplV2 implements Billservice {
             transaction.put("card", totalCardAmount);
             transaction.put("upi", totalUpiAmount);
             return transaction;
-
         } catch (Exception e) {
             return null;
-
         }
     }
-
-
+    @Override
+    public ResponseEntity<ApiResponse> printBill(Integer serialNo) {
+       try{
+           Optional<Bill> existingBill = billRepositry.findById(serialNo);
+           if (existingBill.isPresent()){
+               Bill bill = existingBill.get();
+               bill.setBillStatus("completed");
+               Bill saveBill = billRepositry.save(bill);
+               if (bill.getPaymentMode().equalsIgnoreCase("cash")) {
+                   completeOrderAndPlaceBill(saveBill, bill.getBillDate());
+               }
+               return ResponseEntity.ok()
+                       .body(new ApiResponse(saveBill,true,200));
+           }
+           else {
+               return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                       .body(new ApiResponse(null,false,"Id Not Found ",404));
+           }
+       }catch(Exception e){
+           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "..", 500));
+       }
+    }
 }
