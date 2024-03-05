@@ -1,9 +1,9 @@
 package com.syntiaro_pos_system.serviceimpl.v1;
 
 import com.syntiaro_pos_system.entity.v1.*;
-import com.syntiaro_pos_system.repository.v1.ReceipeRepository;
 import com.syntiaro_pos_system.repository.v1.InventoryRepo;
 import com.syntiaro_pos_system.repository.v1.OrderRepo;
+import com.syntiaro_pos_system.repository.v1.ReceipeRepository;
 import com.syntiaro_pos_system.service.v1.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,10 +45,11 @@ public class OrderServiceImpl implements OrderService {
         Orders entity = orderRepo.getOne(parseInt);
         orderRepo.delete(entity);
     }
+
     //THIS METHOD IS USE FOR GET ORDER BY ID
     @Override
     public Optional<Orders> getorderbyid(Integer orderid) {
-        return orderRepo.findById(orderid) ;
+        return orderRepo.findById(orderid);
     }
 
     public int getorders(Orders orders) {
@@ -63,7 +64,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
-   //THIS METHOD IS USE FOR GET ORDER LIST BY STOREID
+    //THIS METHOD IS USE FOR GET ORDER LIST BY STOREID
     @Override
     public List<Orders> getOrdersByStoreId(String storeId) {
         return orderRepo.findBystoreId(storeId);

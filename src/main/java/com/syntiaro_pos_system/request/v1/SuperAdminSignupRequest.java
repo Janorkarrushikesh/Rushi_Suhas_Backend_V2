@@ -17,142 +17,141 @@ import java.util.Set;
 @NoArgsConstructor
 public class SuperAdminSignupRequest {
 
-  @NotBlank
-  @Size(min = 3, max = 20)
-  private String username;
+    @NotBlank
+    @Size(min = 3, max = 20)
+    private String username;
 
-  @NotBlank
-  @Size(min = 6, max = 40)
-  private String password;
-  private String CurrentPassword;
-  private String comfirmpassword;
-  private String NewPassword;
-
-
-  private String saddress;
+    @NotBlank
+    @Size(min = 6, max = 40)
+    private String password;
+    private String CurrentPassword;
+    private String comfirmpassword;
+    private String NewPassword;
 
 
-  @Size(max = 50)
-  @Email
-  @NotBlank
-  private String email;
-
-  private String contact;
+    private String saddress;
 
 
+    @Size(max = 50)
+    @Email
+    @NotBlank
+    private String email;
 
-  private Date date = new Date();
-
-
-  private String country;
-
-  private String state;
-
-
-  private Set<String> roles;
+    private String contact;
 
 
-  public Set<String> getRole() {
-    return this.roles;
-  }
+    private Date date = new Date();
 
-  public void setRole(Set<String> role) {
-    this.roles = role;
-  }
 
-  public String getUsername() {
-    return username;
-  }
+    private String country;
 
-  public void setUsername(String username) {
-    this.username = username;
-  }
+    private String state;
 
-  public String getPassword() {
-    return password;
-  }
 
-  public void setPassword(String password) {
-    this.password = password;
-  }
+    private Set<String> roles;
 
-  public String getCurrentPassword() {
-    return CurrentPassword;
-  }
 
-  public void setCurrentPassword(String currentPassword) {
-    CurrentPassword = currentPassword;
-  }
+    public Set<String> getRole() {
+        return this.roles;
+    }
 
-  public String getComfirmpassword() {
-    return comfirmpassword;
-  }
+    public void setRole(Set<String> role) {
+        this.roles = role;
+    }
 
-  public void setComfirmpassword(String comfirmpassword) {
-    this.comfirmpassword = comfirmpassword;
-  }
+    public String getUsername() {
+        return username;
+    }
 
-  public String getNewPassword() {
-    return NewPassword;
-  }
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-  public void setNewPassword(String newPassword) {
-    NewPassword = newPassword;
-  }
+    public String getPassword() {
+        return password;
+    }
 
-  public String getSaddress() {
-    return saddress;
-  }
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-  public void setSaddress(String saddress) {
-    this.saddress = saddress;
-  }
+    public String getCurrentPassword() {
+        return CurrentPassword;
+    }
 
-  public String getEmail() {
-    return email;
-  }
+    public void setCurrentPassword(String currentPassword) {
+        CurrentPassword = currentPassword;
+    }
 
-  public void setEmail(String email) {
-    this.email = email;
-  }
+    public String getComfirmpassword() {
+        return comfirmpassword;
+    }
 
-  public String getContact() {
-    return contact;
-  }
+    public void setComfirmpassword(String comfirmpassword) {
+        this.comfirmpassword = comfirmpassword;
+    }
 
-  public void setContact(String contact) {
-    this.contact = contact;
-  }
+    public String getNewPassword() {
+        return NewPassword;
+    }
 
-  public Date getDate() {
-    return date;
-  }
+    public void setNewPassword(String newPassword) {
+        NewPassword = newPassword;
+    }
 
-  public void setDate(Date date) {
-    this.date = date;
-  }
+    public String getSaddress() {
+        return saddress;
+    }
 
-  public String getCountry() {
-    return country;
-  }
+    public void setSaddress(String saddress) {
+        this.saddress = saddress;
+    }
 
-  public void setCountry(String country) {
-    this.country = country;
-  }
+    public String getEmail() {
+        return email;
+    }
 
-  public String getState() {
-    return state;
-  }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-  public void setState(String state) {
-    this.state = state;
-  }
+    public String getContact() {
+        return contact;
+    }
 
-  public Set<String> getRoles() {
-    return roles;
-  }
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
 
-  public void setRoles(Set<String> roles) {
-    this.roles = roles;
-  }
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public Set<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
+    }
 }

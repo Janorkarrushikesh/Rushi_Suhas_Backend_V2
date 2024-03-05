@@ -9,5 +9,7 @@ public interface CustomerService {
 
     ResponseEntity<ApiResponse> getById(Integer serialNo);
 
-    ResponseEntity<ApiResponse> getByStoreId(Integer storeId , Integer page , Integer size,String startDate,String endDate);
+
+    ResponseEntity<ApiResponse> getByStoreId(Integer storeId, Integer page, Integer size, String startDate, String endDate);
+
 }

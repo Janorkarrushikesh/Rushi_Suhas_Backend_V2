@@ -1,15 +1,14 @@
 package com.syntiaro_pos_system.service.v2;
 
-import com.syntiaro_pos_system.entity.v2.ApiResponse;
 import com.syntiaro_pos_system.entity.v1.Tax;
-import org.springframework.http.HttpStatus;
+import com.syntiaro_pos_system.entity.v2.ApiResponse;
 import org.springframework.http.ResponseEntity;
 
 public interface TaxService {
-    public ResponseEntity<ApiResponse> saveTax(Tax tax);
+    ResponseEntity<ApiResponse> saveTax(Tax tax);
 
 
-    public ResponseEntity<ApiResponse>getTaxById(Long serialNo);
+    ResponseEntity<ApiResponse> getTaxById(Long serialNo);
 
     ResponseEntity<ApiResponse> getTaxByStoreId(String storeid);
 

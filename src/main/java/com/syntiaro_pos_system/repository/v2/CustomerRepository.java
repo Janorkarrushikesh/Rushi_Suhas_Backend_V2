@@ -11,21 +11,23 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CustomerRepository extends JpaRepository<CustomerDetails,Integer> {
+public interface CustomerRepository extends JpaRepository<CustomerDetails, Integer> {
 
 
     @Query("SELECT MAX(customer.customerId) FROM CustomerDetails customer WHERE customer.storeId = :storeId")
     Integer findMaxCustomerIdByStoreId(@Param("storeId") Integer storeId);
 
+
     @Query("SELECT c FROM CustomerDetails c WHERE c.storeId = :storeId")
-    Page<CustomerDetails> findByStore_id(Integer storeId ,Pageable pageable);
+    Page<CustomerDetails> findByStore_id(Integer storeId, Pageable pageable);
 
 
     @Query("SELECT v FROM CustomerDetails v WHERE v.storeId = :storeId AND v.dateOfBirth BETWEEN :startDate AND :endDate")
     List<CustomerDetails> findByStoreIdAndDateRange(
-             Integer storeId,
+            Integer storeId,
             String startDate,
-          String endDate
+            String endDate
+
     );
 
     boolean existsByCustomerNameAndStoreId(String customerName, Integer storeid);
@@ -35,4 +37,5 @@ public interface CustomerRepository extends JpaRepository<CustomerDetails,Intege
     Boolean existsByContactAndStoreId(String contact, Integer storeid);
 
     List<CustomerDetails> findByStoreId(Integer storeId);
+
 }

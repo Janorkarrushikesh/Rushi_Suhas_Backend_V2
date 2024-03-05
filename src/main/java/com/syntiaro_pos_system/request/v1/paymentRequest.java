@@ -15,5 +15,7 @@ public class paymentRequest {
     private Vendor vendor;
     private Payment payment;
 
-    public Payment getPayment() {return  payment;}
+    public Payment getPayment() {
+        return payment;
+    }
 }

@@ -16,6 +16,7 @@ public class UserControllerImplV2 implements UserController {
 
     @Autowired
     UserService userService;
+
     @Override
     public ResponseEntity<ApiResponse> authenticateUser(LoginRequest loginRequest) {
         return userService.authenticateUser(loginRequest);
@@ -25,6 +26,7 @@ public class UserControllerImplV2 implements UserController {
     public ResponseEntity<ApiResponse> registerUser(SignupRequest signUpRequest) {
         return userService.registerUser(signUpRequest);
     }
+
     @Override
     public ResponseEntity<ApiResponse> forgotPassword(SignupRequest signupRequest) {
         return userService.forgotPassword(signupRequest);
@@ -39,12 +41,14 @@ public class UserControllerImplV2 implements UserController {
     public ResponseEntity<ApiResponse> userByStoreId(Integer storeId) {
         return userService.userByStoreId(storeId);
     }
+
     @Override
     public ResponseEntity<ApiResponse> logoutUser(String sessionToken) {
         return userService.logoutUser(sessionToken);
     }
+
     @Override
-    public ResponseEntity<ApiResponse> updateUser(Long id , SignupRequest signUpRequest) {
-        return userService.updateUser(id,signUpRequest);
+    public ResponseEntity<ApiResponse> updateUser(Long id, SignupRequest signUpRequest) {
+        return userService.updateUser(id, signUpRequest);
     }
 }

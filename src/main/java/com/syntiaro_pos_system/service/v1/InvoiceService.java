@@ -8,23 +8,23 @@ import java.util.List;
 public interface InvoiceService {
 
 
-	VendorInventory updateInvoice(VendorInventory vendorInventory);
+    VendorInventory updateInvoice(VendorInventory vendorInventory);
 
 
-	List<VendorInventory> getInvoice();
+    List<VendorInventory> getInvoice();
 
 
-	String addInvoice(VendorInventory vendorInventory);
+    String addInvoice(VendorInventory vendorInventory);
 
 
-	// THIS METHOD IS USE FOR UPDATE INVOICE
-	VendorInventory updateInvoice(Integer invoice_id, VendorInventory updateinvoice);
+    // THIS METHOD IS USE FOR UPDATE INVOICE
+    VendorInventory updateInvoice(Integer invoice_id, VendorInventory updateinvoice);
 
 
-	// THIS METHOD IS USE FOR FETCH INVOICE BY STOREID
-	List<VendorInventory> fetchInvoicesByStoreId(Integer storeId);
+    // THIS METHOD IS USE FOR FETCH INVOICE BY STOREID
+    List<VendorInventory> fetchInvoicesByStoreId(Integer storeId);
 
 
-	//THIS METHOD IS USE FOR DELETE INVOICE
-	void deleteInvoiceById(Integer invoiceId);
+    //THIS METHOD IS USE FOR DELETE INVOICE
+    void deleteInvoiceById(Integer invoiceId);
 }

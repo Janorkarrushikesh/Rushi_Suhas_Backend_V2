@@ -1,14 +1,13 @@
 package com.syntiaro_pos_system.entity.v1;
 
-import com.syntiaro_pos_system.entity.v1.SubMenu;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.*;
 import java.util.List;
-import javax.persistence.Table;
 
 @Entity
 @Table(name = "Menus")
@@ -23,7 +22,8 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "menu_id")
     private int menuId;
- private boolean status;
+    private boolean status;
+
     @Column(name = "Title")
     private String title;
 
@@ -42,16 +42,16 @@ public class Menu {
         return menuId;
     }
 
+    public void setMenuId(int menuId) {
+        this.menuId = menuId;
+    }
+
     public boolean isStatus() {
         return status;
     }
 
     public void setStatus(boolean status) {
         this.status = status;
-    }
-
-    public void setMenuId(int menuId) {
-        this.menuId = menuId;
     }
 
     public String getTitle() {

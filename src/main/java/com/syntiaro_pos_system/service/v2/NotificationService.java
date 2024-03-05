@@ -11,5 +11,6 @@ public interface NotificationService {
     ResponseEntity<ApiResponse> saveNotification(NotificationMessage notificationMessage);
 
     ResponseEntity<ApiResponse> allNotification();
+
     ResponseEntity<ApiResponse> updatebyId(Long id, NotificationMessage notificationMessage);
 }

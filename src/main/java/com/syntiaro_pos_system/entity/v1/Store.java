@@ -25,6 +25,7 @@ import java.util.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+
 public class Store {
 
     @Id//STORE ID
@@ -67,8 +68,8 @@ public class Store {
     @Column(name = "State")
     private String state;
 
-    @Column(name ="pinCode")
-    private String pinCode ;
+    @Column(name = "pinCode")
+    private String pinCode;
 
     @Column(name = "Address")
     private String address;
@@ -116,9 +117,29 @@ public class Store {
 
     @OneToMany(targetEntity = StorePayment.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "Storeid", referencedColumnName = "Storeid")
+
     private List<StorePayment> storePayments;
 
     public Store(String username, String storeAddress, String email, String storeName, String contact, String gstno, Date date, String currency, String country, String countryCode, String state, String createdby, String updatedby, String comfirmpassword, String subscriptionType, String upi, String address, String pinCode, String encode) {
+    }
+
+    public Store(String usernames, String saddress, String email, String store_name, String contact, String gstNo, Date date, String currency, String country, String country_code, String state, String createdby, String updatedby, String comfirmpassword, String subscriptionType, String password) {
+        this.username = username;
+        this.storeAddress = saddress;
+        this.email = email;
+        this.storeName = store_name;
+        this.contact = contact;
+        this.gstNo = gstNo;
+        this.date = date;
+        this.currency = currency;
+        this.country = country;
+        this.countryCode = country_code;
+        this.state = state;
+        this.createdBy = createdby;
+        this.updatedBy = updatedby;
+        this.comfirmPassword = comfirmpassword;
+        this.subscriptionType = subscriptionType;
+        this.password = password;
     }
 
     @PostPersist
@@ -149,31 +170,8 @@ public class Store {
         }
     }
 
-
-    public Store(String usernames, String saddress, String email, String store_name, String contact, String gstNo, Date date, String currency, String country, String country_code, String state, String createdby, String updatedby, String comfirmpassword, String subscriptionType, String password) {
-        this.username = username;
-        this.storeAddress = saddress;
-        this.email = email;
-        this.storeName = store_name;
-        this.contact = contact;
-        this.gstNo = gstNo;
-        this.date = date;
-        this.currency = currency;
-        this.country = country;
-        this.countryCode = country_code;
-        this.state = state;
-        this.createdBy = createdby;
-        this.updatedBy = updatedby;
-        this.comfirmPassword = comfirmpassword;
-        this.subscriptionType = subscriptionType;
-        this.password = password;
-    }
-
     public Long Storeid() {
         return Storeid;
-    }
-
-    public void setAddress(String address) {
     }
 
     public LocalDateTime getSubscriptionExpiration() {
@@ -385,5 +383,30 @@ public class Store {
 
     public void setCountryCode(String countryCode) {
         this.countryCode = countryCode;
+    }
+
+
+    public String getPinCode() {
+        return pinCode;
+    }
+
+    public void setPinCode(String pinCode) {
+        this.pinCode = pinCode;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getUpi() {
+        return upi;
+    }
+
+    public void setUpi(String upi) {
+        this.upi = upi;
     }
 }

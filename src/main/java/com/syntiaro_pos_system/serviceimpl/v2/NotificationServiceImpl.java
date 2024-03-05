@@ -55,7 +55,6 @@ public class NotificationServiceImpl implements NotificationService {
         }
     }
 
-
     @Override
     public ResponseEntity<ApiResponse> updatebyId(Long id, NotificationMessage notificationMessage) {
         try {

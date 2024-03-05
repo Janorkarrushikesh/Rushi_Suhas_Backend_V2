@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface BalanceRepositry extends JpaRepository<Balance,Long> {
+public interface BalanceRepositry extends JpaRepository<Balance, Long> {
     Balance findByStoreIdAndDate(Integer storeId, LocalDate now);
 
     List<Balance> findByStoreId(Integer storeId);

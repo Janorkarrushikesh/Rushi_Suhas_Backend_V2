@@ -26,7 +26,8 @@ public class SubMenu {
 
     @Column(name = "Path")
     private String Path;
-private boolean status;
+
+    private boolean status;
 
     @Column(name = "icon")
     private String icon;

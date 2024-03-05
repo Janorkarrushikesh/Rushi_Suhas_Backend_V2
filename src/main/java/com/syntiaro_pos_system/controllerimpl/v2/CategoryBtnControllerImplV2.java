@@ -32,7 +32,7 @@ public class CategoryBtnControllerImplV2 implements CategoryBtnController {
 
     @Override
     public ResponseEntity<ApiResponse> updatecategoryById(Long id, CategoryButton categoryButton) {
-        return categoryBtnService.updatecategoryById(id,categoryButton);
+        return categoryBtnService.updatecategoryById(id, categoryButton);
     }
 
     @Override

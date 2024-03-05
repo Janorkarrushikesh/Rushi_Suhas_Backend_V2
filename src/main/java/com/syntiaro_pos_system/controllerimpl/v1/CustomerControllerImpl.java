@@ -1,13 +1,13 @@
 package com.syntiaro_pos_system.controllerimpl.v1;
 
-import com.syntiaro_pos_system.controller.v1.CustomerController;
-import com.syntiaro_pos_system.entity.v1.CustomerDetails;
-import com.syntiaro_pos_system.repository.v1.CustomerRepo;
-import com.syntiaro_pos_system.response.MessageResponse;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.syntiaro_pos_system.controller.v1.CustomerController;
+import com.syntiaro_pos_system.entity.v1.CustomerDetails;
+import com.syntiaro_pos_system.repository.v1.CustomerRepo;
+import com.syntiaro_pos_system.response.MessageResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -15,7 +15,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -29,6 +32,7 @@ public class CustomerControllerImpl implements CustomerController {
 
     @Autowired
     CustomerRepo customerRepo;
+
     @Override
     public ResponseEntity<?> addCustomer(@RequestBody CustomerDetails customerDetails) {
 
@@ -65,7 +69,7 @@ public class CustomerControllerImpl implements CustomerController {
         try {
             List<CustomerDetails> customerDetails = customerRepo.findByStore_id(storeId);
             if (customerDetails.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
             return new ResponseEntity<>(customerDetails, HttpStatus.OK);
         } catch (Exception e) {
@@ -84,24 +88,24 @@ public class CustomerControllerImpl implements CustomerController {
 
         if (store_id != null) {
             // Fetch payments for a specific store ID
-            customerlist = customerRepo.findByStoreIdAndDateRange(store_id , startDate , endDate);
+            customerlist = customerRepo.findByStoreIdAndDateRange(store_id, startDate, endDate);
 
         } else if (startDate != null && endDate != null) {
             try {
                 // Parse date strings into java.util.Date
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                startDates = dateFormat.parse(String.valueOf(startDate));
-                endDates = dateFormat.parse(String.valueOf(endDate));
+                startDates = dateFormat.parse(startDate);
+                endDates = dateFormat.parse(endDate);
             } catch (ParseException ex) {
                 // Handle the parsing error here, e.g., return an error response
                 return ResponseEntity.badRequest().body("Invalid date format");
             }
 
             // Filter the stores based on the date range
-            customerlist = customerRepo.findByStoreIdAndDateRange(store_id , startDate , endDate);
+            customerlist = customerRepo.findByStoreIdAndDateRange(store_id, startDate, endDate);
         } else {
             // If no date range is specified, retrieve all stores
-            customerlist = customerRepo.findByStoreIdAndDateRange(store_id , startDate , endDate);
+            customerlist = customerRepo.findByStoreIdAndDateRange(store_id, startDate, endDate);
         }
 
         if (customerlist.isEmpty()) {
@@ -114,7 +118,7 @@ public class CustomerControllerImpl implements CustomerController {
 
         document.open();
 
-        Paragraph title = new Paragraph("VENDOR_INVENTORY_DETAILS" , new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD));
+        Paragraph title = new Paragraph("VENDOR_INVENTORY_DETAILS", new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD));
         title.setAlignment(Element.ALIGN_CENTER);
         document.add(title);// Add spacing between title and table
 
@@ -122,7 +126,6 @@ public class CustomerControllerImpl implements CustomerController {
         Paragraph spacing = new Paragraph(" "); // Empty paragraph
         spacing.setSpacingAfter(10f); // Adjust the spacing as needed
         document.add(spacing);
-
 
 
         PdfPTable table = new PdfPTable(5); // Number of columns
@@ -138,7 +141,6 @@ public class CustomerControllerImpl implements CustomerController {
         table.addCell(cell);
         cell = new PdfPCell(new Phrase("Contact No", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
         table.addCell(cell);
-        ;
 
         int serialNumber = 1;
         for (CustomerDetails invoice : customerlist) {
@@ -147,7 +149,7 @@ public class CustomerControllerImpl implements CustomerController {
             table.addCell(invoice.getEmail());
             table.addCell(invoice.getDateOfBirth());
             table.addCell(invoice.getContact());
-                   }
+        }
 
         document.add(table);
 
@@ -177,7 +179,7 @@ public class CustomerControllerImpl implements CustomerController {
             // Fetch payments for a specific store ID
             customerlist = customerRepo.findByStore_id(store_id);
 
-        }  else {
+        } else {
             // If no date range is specified, retrieve all stores
             customerlist = customerRepo.findByStore_id(store_id);
         }
@@ -192,7 +194,7 @@ public class CustomerControllerImpl implements CustomerController {
 
         document.open();
 
-        Paragraph title = new Paragraph("VENDOR_INVENTORY_DETAILS" , new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD));
+        Paragraph title = new Paragraph("VENDOR_INVENTORY_DETAILS", new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD));
         title.setAlignment(Element.ALIGN_CENTER);
         document.add(title);// Add spacing between title and table
 
@@ -200,7 +202,6 @@ public class CustomerControllerImpl implements CustomerController {
         Paragraph spacing = new Paragraph(" "); // Empty paragraph
         spacing.setSpacingAfter(10f); // Adjust the spacing as needed
         document.add(spacing);
-
 
 
         PdfPTable table = new PdfPTable(5); // Number of columns
@@ -216,7 +217,6 @@ public class CustomerControllerImpl implements CustomerController {
         table.addCell(cell);
         cell = new PdfPCell(new Phrase("Contact No", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
         table.addCell(cell);
-        ;
 
         int serialNumber = 1;
         for (CustomerDetails invoice : customerlist) {
@@ -242,10 +242,6 @@ public class CustomerControllerImpl implements CustomerController {
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(new InputStreamResource(byteArrayInputStream));
     }
-
-
-
-
 
 
 }

@@ -1,6 +1,10 @@
 package com.syntiaro_pos_system.controllerimpl.v1;
 
 
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.syntiaro_pos_system.controller.v1.BalanceController;
 import com.syntiaro_pos_system.entity.v1.Balance;
 import com.syntiaro_pos_system.entity.v1.TransactionRecord;
@@ -9,10 +13,6 @@ import com.syntiaro_pos_system.repository.v1.TransactionRecordRepository;
 import com.syntiaro_pos_system.request.v1.BalanceRequest;
 import com.syntiaro_pos_system.response.BalanceWithPaymentSummaryResponse;
 import com.syntiaro_pos_system.serviceimpl.v1.BalanceService;
-import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -20,8 +20,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -33,7 +35,7 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-public class BalanceControllerImpl implements BalanceController{
+public class BalanceControllerImpl implements BalanceController {
 
     @Autowired
     BalanceService balanceService;
@@ -56,7 +58,7 @@ public class BalanceControllerImpl implements BalanceController{
         Balance newBalance = new Balance();
 
         if (existingBalance == null) {
-            Double addMoreAmount = Double.valueOf(balanceRequest.getAddMoreAmounts());
+            Double addMoreAmount = balanceRequest.getAddMoreAmounts();
             if (addMoreAmount == null) {
                 return ResponseEntity.badRequest().body("Invalid addMoreAmount value");
             }
@@ -73,7 +75,7 @@ public class BalanceControllerImpl implements BalanceController{
 
         } else if (existingBalance.getAddMoreAmount() != null) {
 
-            if(existingBalance.getFinalClosingBalance() != null){
+            if (existingBalance.getFinalClosingBalance() != null) {
                 return ResponseEntity.badRequest().body(" After Final closing you dont have access");
             }
 
@@ -84,7 +86,7 @@ public class BalanceControllerImpl implements BalanceController{
             newBalance.setId(existingBalance.getId());
             newBalance.setStoreId(balanceRequest.getStoreId());
             newBalance.setAddMoreAmount(addMoreAmount + existingBalance.getAddMoreAmount());
-            newBalance.setRemainingBalance(addMoreAmount  + existingBalance.getRemainingBalance());
+            newBalance.setRemainingBalance(addMoreAmount + existingBalance.getRemainingBalance());
             newBalance.setTodays_Opening_Balance(existingBalance.getTodays_Opening_Balance());
             newBalance.setUpdatedDate(String.valueOf(LocalDateTime.now()));
             newBalance.setCreatedDate(existingBalance.getCreatedDate());
@@ -103,11 +105,9 @@ public class BalanceControllerImpl implements BalanceController{
             transactionRecordRepository.save(endOfDayTransaction);
             return ResponseEntity.ok("Balance is added for this store ID for today.");
 
-        }
+        } else {
 
-        else {
-
-            if(existingBalance.getFinalClosingBalance() != null){
+            if (existingBalance.getFinalClosingBalance() != null) {
                 return ResponseEntity.badRequest().body(" After Final closing you dont have access");
             }
 
@@ -117,8 +117,8 @@ public class BalanceControllerImpl implements BalanceController{
             }
             newBalance.setId(existingBalance.getId());
             newBalance.setStoreId(balanceRequest.getStoreId());
-            newBalance.setAddMoreAmount(addMoreAmount );
-            newBalance.setRemainingBalance(addMoreAmount  + existingBalance.getRemainingBalance());
+            newBalance.setAddMoreAmount(addMoreAmount);
+            newBalance.setRemainingBalance(addMoreAmount + existingBalance.getRemainingBalance());
             newBalance.setTodays_Opening_Balance(existingBalance.getTodays_Opening_Balance());
             newBalance.setUpdatedDate(String.valueOf(LocalDateTime.now()));
             newBalance.setCreatedDate(existingBalance.getCreatedDate());
@@ -141,29 +141,32 @@ public class BalanceControllerImpl implements BalanceController{
     }
 
 
-
     @Override
     public ResponseEntity<String> addToClosingBalance(@RequestBody Float additionalAmount) {
         balanceService.addToClosingBalance(additionalAmount);
         return ResponseEntity.ok("Amount added to closing balance successfully!!!");
     }
+
     @Override
     public ResponseEntity<String> subtractFromClosingBalance(@RequestBody Float closingBalance) {
         balanceService.subtractFromClosingBalance(closingBalance);
         return ResponseEntity.ok("Amount subtracted from closing balance successfully!!!");
     }
+
     @Override
     public ResponseEntity<Float> getTotalClosingBalance() {
         LocalDate presentDay = LocalDate.now();
         Float closingBalance = balanceService.getClosingBalanceForDay(presentDay);
         return ResponseEntity.ok(closingBalance);
     }
+
     @Override
     public ResponseEntity<List<BalanceWithPaymentSummaryResponse>> getAllBalancesWithPaymentSummaries() {
         List<BalanceWithPaymentSummaryResponse> balancesWithSummaries = balanceService
                 .getAllBalancesWithPaymentSummaries();
         return ResponseEntity.ok(balancesWithSummaries);
     }
+
     @Override
     public ResponseEntity<Double> getCurrentDateClosingBalanceByStoreId(@PathVariable Integer store_id) {
         LocalDate currentDate = LocalDate.now();
@@ -174,6 +177,7 @@ public class BalanceControllerImpl implements BalanceController{
         }
         return ResponseEntity.ok(closingBalance);
     }
+
     @Override
     public ResponseEntity<List<Balance>> getBalanceByStoreId(@PathVariable Integer storeId) {
         List<Balance> balances = balanceService.getBalanceByStoreId(storeId);
@@ -248,7 +252,7 @@ public class BalanceControllerImpl implements BalanceController{
         LocalDate presentDay = LocalDate.now();
         Balance remainingBalance = balanceRepository.findByStoreIdAndDates(storeId, presentDay);
         balanceService.updateRemainingBalancesForAllStores();
-        return remainingBalance.getRemainingBalance() ;
+        return remainingBalance.getRemainingBalance();
     }
 
 
@@ -267,8 +271,8 @@ public class BalanceControllerImpl implements BalanceController{
             try {
                 // Parse date strings into java.util.Date
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                startDates = dateFormat.parse(String.valueOf(startDate));
-                endDates = dateFormat.parse(String.valueOf(endDate));
+                startDates = dateFormat.parse(startDate);
+                endDates = dateFormat.parse(endDate);
             } catch (ParseException ex) {
                 // Handle the parsing error here, e.g., return an error response
                 return ResponseEntity.badRequest().body("Invalid date format");
@@ -353,8 +357,6 @@ public class BalanceControllerImpl implements BalanceController{
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(new InputStreamResource(byteArrayInputStream));
     }
-
-
 
 
 }

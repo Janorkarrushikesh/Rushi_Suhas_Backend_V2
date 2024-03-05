@@ -23,232 +23,232 @@ import java.util.List;
 @NoArgsConstructor
 public class Payment implements Serializable {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer SerialNo;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer SerialNo;
 
 
-	@Column(name = "Payment_id", length = 45)
-	private Integer paymentId;
+    @Column(name = "Payment_id", length = 45)
+    private Integer paymentId;
 
-	@Column(name = "store_id", length = 255)
-	private Integer storeId;
+    @Column(name = "store_id", length = 255)
+    private Integer storeId;
 
-	@Column(name = "Vendor_name")
-	private String vendorName;
+    @Column(name = "Vendor_name")
+    private String vendorName;
 
-	@Column(name = "payment_date")
-	private String paymentDate;
+    @Column(name = "payment_date")
+    private String paymentDate;
 
-	@Column(name = "gst")
-	private String gst;
-
-
-	@Column(name = "payment_mode")
-	private String paymentMode;
-
-	@Column(name = "due_date")
-	private LocalDate dueDate;
-
-	@Column(name="bank_name")
-	private String bankName;
-
-	@Column(name="branch")
-	private String branch;
-
-	@Column(name="account_no", length = 255)
-	private String accountNo;
-
-	@Column(name="ifsc_code")
-	private String ifscCode;
-
-	@Column(name="upi_id")
-	private String upiId;
-
-	@Column(name = "total")
-	private String total;
-
-	@Column(name = "creatby")
-	private String createdBy;
-
-	@Column(name = "updateby")
-	private String updatedBy;
-
-	@Column(name = "create_date")
-	private String createDate;
-
-	@Column(name = "update_date")
-	private String updateDate;
-
-	@Column(name = "payment_status")
-	private String paymentStatus;
+    @Column(name = "gst")
+    private String gst;
 
 
-	@OneToMany(targetEntity = Vendor.class, cascade = CascadeType.ALL )
-	@JoinColumn(name = "payment_id_fk", referencedColumnName = "SerialNo")
-	private List<Vendor>vendor;
+    @Column(name = "payment_mode")
+    private String paymentMode;
 
-	public Integer getPaymentId() {
-		return paymentId;
-	}
+    @Column(name = "due_date")
+    private LocalDate dueDate;
 
-	public void setPaymentId(Integer paymentId) {
-		this.paymentId = paymentId;
-	}
+    @Column(name = "bank_name")
+    private String bankName;
 
-	public Integer getStoreId() {
-		return storeId;
-	}
+    @Column(name = "branch")
+    private String branch;
 
-	public void setStoreId(Integer storeId) {
-		this.storeId = storeId;
-	}
+    @Column(name = "account_no", length = 255)
+    private String accountNo;
 
-	public String getVendorName() {
-		return vendorName;
-	}
+    @Column(name = "ifsc_code")
+    private String ifscCode;
 
-	public void setVendorName(String vendorName) {
-		this.vendorName = vendorName;
-	}
+    @Column(name = "upi_id")
+    private String upiId;
 
-	public String getPaymentDate() {
-		return paymentDate;
-	}
+    @Column(name = "total")
+    private String total;
 
-	public void setPaymentDate(String paymentDate) {
-		this.paymentDate = paymentDate;
-	}
+    @Column(name = "creatby")
+    private String createdBy;
 
-	public String getGst() {
-		return gst;
-	}
+    @Column(name = "updateby")
+    private String updatedBy;
 
-	public void setGst(String gst) {
-		this.gst = gst;
-	}
+    @Column(name = "create_date")
+    private String createDate;
 
-	public String getPaymentMode() {
-		return paymentMode;
-	}
+    @Column(name = "update_date")
+    private String updateDate;
 
-	public void setPaymentMode(String paymentMode) {
-		this.paymentMode = paymentMode;
-	}
+    @Column(name = "payment_status")
+    private String paymentStatus;
 
-	public LocalDate getDueDate() {
-		return dueDate;
-	}
 
-	public void setDueDate(LocalDate dueDate) {
-		this.dueDate = dueDate;
-	}
+    @OneToMany(targetEntity = Vendor.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "payment_id_fk", referencedColumnName = "SerialNo")
+    private List<Vendor> vendor;
 
-	public String getBankName() {
-		return bankName;
-	}
+    public Integer getPaymentId() {
+        return paymentId;
+    }
 
-	public void setBankName(String bankName) {
-		this.bankName = bankName;
-	}
+    public void setPaymentId(Integer paymentId) {
+        this.paymentId = paymentId;
+    }
 
-	public String getBranch() {
-		return branch;
-	}
+    public Integer getStoreId() {
+        return storeId;
+    }
 
-	public void setBranch(String branch) {
-		this.branch = branch;
-	}
+    public void setStoreId(Integer storeId) {
+        this.storeId = storeId;
+    }
 
-	public String getAccountNo() {
-		return accountNo;
-	}
+    public String getVendorName() {
+        return vendorName;
+    }
 
-	public void setAccountNo(String accountNo) {
-		this.accountNo = accountNo;
-	}
+    public void setVendorName(String vendorName) {
+        this.vendorName = vendorName;
+    }
 
-	public String getPaymentStatus() {
-		return paymentStatus;
-	}
+    public String getPaymentDate() {
+        return paymentDate;
+    }
 
-	public void setPaymentStatus(String paymentStatus) {
-		this.paymentStatus = paymentStatus;
-	}
+    public void setPaymentDate(String paymentDate) {
+        this.paymentDate = paymentDate;
+    }
 
-	public String getIfscCode() {
-		return ifscCode;
-	}
+    public String getGst() {
+        return gst;
+    }
 
-	public void setIfscCode(String ifscCode) {
-		this.ifscCode = ifscCode;
-	}
+    public void setGst(String gst) {
+        this.gst = gst;
+    }
 
-	public String getUpiId() {
-		return upiId;
-	}
+    public String getPaymentMode() {
+        return paymentMode;
+    }
 
-	public void setUpiId(String upiId) {
-		this.upiId = upiId;
-	}
+    public void setPaymentMode(String paymentMode) {
+        this.paymentMode = paymentMode;
+    }
 
-	public String getTotal() {
-		return total;
-	}
+    public LocalDate getDueDate() {
+        return dueDate;
+    }
 
-	public void setTotal(String total) {
-		this.total = total;
-	}
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
+    }
 
-	public String getCreatedBy() {
-		return createdBy;
-	}
+    public String getBankName() {
+        return bankName;
+    }
 
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
+    public void setBankName(String bankName) {
+        this.bankName = bankName;
+    }
 
-	public String getUpdatedBy() {
-		return updatedBy;
-	}
+    public String getBranch() {
+        return branch;
+    }
 
-	public void setUpdatedBy(String updatedBy) {
-		this.updatedBy = updatedBy;
-	}
+    public void setBranch(String branch) {
+        this.branch = branch;
+    }
 
-	public String getCreateDate() {
-		return createDate;
-	}
+    public String getAccountNo() {
+        return accountNo;
+    }
 
-	public void setCreateDate(String createDate) {
-		this.createDate = createDate;
-	}
+    public void setAccountNo(String accountNo) {
+        this.accountNo = accountNo;
+    }
 
-	public String getUpdateDate() {
-		return updateDate;
-	}
+    public String getPaymentStatus() {
+        return paymentStatus;
+    }
 
-	public void setUpdateDate(String updateDate) {
-		this.updateDate = updateDate;
-	}
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
 
-	public List<Vendor> getVendor() {
-		return vendor;
-	}
+    public String getIfscCode() {
+        return ifscCode;
+    }
 
-	public void setVendor(List<Vendor> vendor) {
-		this.vendor = vendor;
-	}
+    public void setIfscCode(String ifscCode) {
+        this.ifscCode = ifscCode;
+    }
 
-	@PostPersist
-	public void generateStoreCode() {
-		Date date = new Date();
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a");
-		String formattedDate = dateFormat.format(date);
-		this.paymentDate = formattedDate;
-		this.updateDate = formattedDate;
-		this.createDate =formattedDate;
-	}
+    public String getUpiId() {
+        return upiId;
+    }
+
+    public void setUpiId(String upiId) {
+        this.upiId = upiId;
+    }
+
+    public String getTotal() {
+        return total;
+    }
+
+    public void setTotal(String total) {
+        this.total = total;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public String getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
+    }
+
+    public String getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(String updateDate) {
+        this.updateDate = updateDate;
+    }
+
+    public List<Vendor> getVendor() {
+        return vendor;
+    }
+
+    public void setVendor(List<Vendor> vendor) {
+        this.vendor = vendor;
+    }
+
+    @PostPersist
+    public void generateStoreCode() {
+        Date date = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a");
+        String formattedDate = dateFormat.format(date);
+        this.paymentDate = formattedDate;
+        this.updateDate = formattedDate;
+        this.createDate = formattedDate;
+    }
 
 
 }

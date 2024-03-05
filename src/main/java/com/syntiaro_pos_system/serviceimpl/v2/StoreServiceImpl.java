@@ -41,7 +41,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -52,14 +51,16 @@ import java.util.stream.Collectors;
 public class StoreServiceImpl implements StoreServiceV2 {
 
 
+    private static final int MAX_SESSIONS_PER_USER = 2;
+    private static final Logger loggers = LogManager.getLogger(StoreServiceImpl.class);
+    private final Map<String, String> emailToOtpMap = new HashMap<>();
+    private final Map<String, Set<String>> storeSessions = new ConcurrentHashMap<>();
     @Autowired
     StoreRepositry storeRepository;
     @Autowired
     UserRepositoryV2 userRepository;
-
     @Autowired
     TechRepositoryV2 techRepository;
-
     @Autowired
     SuperAdminRepositoryV2 superAdminRepository;
     @Autowired
@@ -68,26 +69,18 @@ public class StoreServiceImpl implements StoreServiceV2 {
     AdminMenuRepository adminMenuRepository;
     @Autowired
     BalanceRepositry balanceRepository;
-
-
     @Autowired
     AuthenticationManager authenticationManager;
-
     @Autowired
     StoreJwtUtils storeJwtUtils;
-
     @Autowired
     AdminMenuService adminMenuService;
-
     @Autowired
     BalanceServiceImpl balanceService;
-
     @Autowired
     FoodServiceImpl foodserviceimpl;
-
     @Autowired
     DashBoardServiceImpl dashBoardServiceimpl;
-
     @Autowired
     JavaMailSender javaMailSender;
     @Autowired
@@ -96,15 +89,6 @@ public class StoreServiceImpl implements StoreServiceV2 {
     EmailSenderService emailSenderService;
     @Autowired
     EmailUsernameValidation validation;
-
-
-    private final Map<String, String> emailToOtpMap = new HashMap<>();
-
-    private static final int MAX_SESSIONS_PER_USER = 2;
-    private final Map<String, Set<String>> storeSessions = new ConcurrentHashMap<>();
-
-    private static final Logger loggers = LogManager.getLogger(StoreServiceImpl.class);
-
 
     @Override
     public ResponseEntity<ApiResponse> storeLogin(StoreLoginRequest storeLoginRequest) {
@@ -122,7 +106,9 @@ public class StoreServiceImpl implements StoreServiceV2 {
                 String jwt = storeJwtUtils.generateJwtToken(authentication);
                 addUserSession(username, jwt);
                 StoreDetailsImpl storeDetails = (StoreDetailsImpl) authentication.getPrincipal();
+
                 List<String> roles = storeDetails.getAuthorities().stream().map(item -> item.getAuthority()).collect(Collectors.toList());
+
 
                 // Assuming you have a logo URL field in the userDetails
                 Optional<Store> storeOptional = storeRepository.findByUsername(storeLoginRequest.getUsername());
@@ -196,6 +182,7 @@ public class StoreServiceImpl implements StoreServiceV2 {
 
     @Override
     public ResponseEntity<ApiResponse> storeConfig(Long storeid) {
+
         String storeId = String.valueOf(storeid);
         Map<String, Object> data = new LinkedHashMap<>();
         data.put("storeData", getStoreDetails(storeid));
@@ -257,7 +244,6 @@ public class StoreServiceImpl implements StoreServiceV2 {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "...", 500));
         }
 
-
     }
 
     @Override
@@ -302,7 +288,6 @@ public class StoreServiceImpl implements StoreServiceV2 {
             Optional<Store> existingStore = storeRepository.findById(storeId);
             if (existingStore.isPresent() && existingStore.get().getLogo() != null) {
                 byte[] logo = existingStore.get().getLogo();
-
                 return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(logo);
             } else {
                 return ResponseEntity.notFound().build();
@@ -336,7 +321,6 @@ public class StoreServiceImpl implements StoreServiceV2 {
                 Set<StoreRole> storeRoles = new HashSet<>();
                 StoreRole adminStoreRole = storeRoleRepository.findByName(ERole.ROLE_ADMIN).orElseThrow(() -> new RuntimeException("Error: StoreRole is not found."));
                 storeRoles.add(adminStoreRole);
-
                 List<Store> storeList = storeRepository.findAllByDesc();
 
                 // This Method Use For set Default dashBoard to that Store id.
@@ -367,9 +351,7 @@ public class StoreServiceImpl implements StoreServiceV2 {
 
                 return ResponseEntity.ok().body(new ApiResponse(store, true, "Store registered successfully!", 200));
             } else {
-
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(null, false, "Password Does Not Match !!!!!!", 400));
-
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -381,7 +363,7 @@ public class StoreServiceImpl implements StoreServiceV2 {
     @Override
     public ResponseEntity<ApiResponse> updateStore(Long storeId, String username, String storeAddress, String email, String contact, String storeName, String gstno, String currency, String country, String state, Date date, String password, String comfirmpassword, String pinCode, String address, String upi, MultipartFile logo) {
         try {
-            Optional<Store> existingStore = storeRepository.findById(Long.valueOf(storeId));
+            Optional<Store> existingStore = storeRepository.findById(storeId);
             Store store = existingStore.get();
             if (!existingStore.isPresent()) {
                 return ResponseEntity.notFound().build();
@@ -417,6 +399,7 @@ public class StoreServiceImpl implements StoreServiceV2 {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "...", 500));
         }
     }
+
     @Override
     public ResponseEntity<ApiResponse> renewSubscriptionByStoreId(String username, String email, Integer year) {
         try {
@@ -467,7 +450,9 @@ public class StoreServiceImpl implements StoreServiceV2 {
 
                     Set<String> strRoles = storeSignupRequest.getRole();
                     Set<StoreRole> storeRoles = new HashSet<>();
+
                     StoreRole adminStoreRole = storeRoleRepository.findByName(ERole.ROLE_ADMIN).orElseThrow(() -> new RuntimeException("Error: StoreRole is not found."));
+
                     storeRoles.add(adminStoreRole);
                     registerStore.setStoreRoles(storeRoles);
 
@@ -501,9 +486,11 @@ public class StoreServiceImpl implements StoreServiceV2 {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "...", 500));
         }
     }
+
     private void removeUserSession(String username, String sessionToken) {
         storeSessions.getOrDefault(username, Collections.emptySet()).remove(sessionToken);
     }
+
     private String getUsernameFromSessionToken(String sessionToken) {
         for (Map.Entry<String, Set<String>> entry : storeSessions.entrySet()) {
             if (entry.getValue().contains(sessionToken)) {
@@ -529,7 +516,5 @@ public class StoreServiceImpl implements StoreServiceV2 {
                     .body(new ApiResponse(null, false, "...", 500));
         }
     }
-
-
 
 }

@@ -21,13 +21,12 @@ public class ReceipeServiceImpl implements ReceipeService {
     @Override
     public ResponseEntity<ApiResponse> savereceipe(Receipe receipe) {
         try {
-                Long lastId = receipeRepository.findMaxIdByStoreId(receipe.getStoreId());
-                receipe.setId( (lastId!=null?lastId+1:1));
+            Long lastId = receipeRepository.findMaxIdByStoreId(receipe.getStoreId());
+            receipe.setId((lastId != null ? lastId + 1 : 1));
             return ResponseEntity.ok().body(new ApiResponse(receipeRepository.save(receipe), true, 200));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "....", 500));
         }
-
     }
 
 
@@ -40,14 +39,14 @@ public class ReceipeServiceImpl implements ReceipeService {
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(null, true, "Id Not Found", 404));
             }
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null,false,"....",500));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "....", 500));
         }
 
     }
+
     @Override
     public ResponseEntity<ApiResponse> getByStoreId(String storeId) {
-
         try {
             List<Receipe> existingReceipe = receipeRepository.findByStoreid(storeId);
             if (existingReceipe.isEmpty()) {
@@ -89,6 +88,7 @@ public class ReceipeServiceImpl implements ReceipeService {
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "....", 500));
+
         }
     }
 
@@ -105,5 +105,4 @@ public class ReceipeServiceImpl implements ReceipeService {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "....", 500));
         }
     }
-
 }

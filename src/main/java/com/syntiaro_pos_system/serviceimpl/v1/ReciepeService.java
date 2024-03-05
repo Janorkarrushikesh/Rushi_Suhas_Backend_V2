@@ -1,9 +1,9 @@
 package com.syntiaro_pos_system.serviceimpl.v1;
 
-import com.syntiaro_pos_system.entity.v1.Receipe;
 import com.syntiaro_pos_system.entity.v1.Ingredient;
-import com.syntiaro_pos_system.repository.v1.ReceipeRepository;
+import com.syntiaro_pos_system.entity.v1.Receipe;
 import com.syntiaro_pos_system.repository.v1.InventoryRepo;
+import com.syntiaro_pos_system.repository.v1.ReceipeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,10 +13,9 @@ import java.util.Optional;
 @Service
 public class ReciepeService {
 
-    private ReceipeRepository receipeRepository;
-
     @Autowired
     InventoryRepo inventoryRepository;
+    private final ReceipeRepository receipeRepository;
 
     @Autowired
     public ReciepeService(ReceipeRepository receipeRepository) {
@@ -104,18 +103,12 @@ public class ReciepeService {
 
     private void reduceIngredientQuantity(Ingredient ingredient) {
         Float currentQuantity = ingredient.getQuantity();
-        Float reductionAmount = (float) calculateReductionAmount(ingredient);
+        Float reductionAmount = calculateReductionAmount(ingredient);
 
         if (currentQuantity >= reductionAmount) {
             ingredient.setQuantity(currentQuantity - reductionAmount);
         } else {
             throw new InsufficientIngredientException("Insufficient quantity of " + ingredient.getName());
-        }
-    }
-
-    public class InsufficientIngredientException extends RuntimeException {
-        public InsufficientIngredientException(String message) {
-            super(message);
         }
     }
 
@@ -125,6 +118,12 @@ public class ReciepeService {
         Float reductionAmount = (float) (currentQuantity * reductionPercentage);
 
         return reductionAmount;
+    }
+
+    public class InsufficientIngredientException extends RuntimeException {
+        public InsufficientIngredientException(String message) {
+            super(message);
+        }
     }
 
 }

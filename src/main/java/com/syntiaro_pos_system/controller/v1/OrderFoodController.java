@@ -13,33 +13,34 @@ import java.util.List;
 @CrossOrigin(origins = "*", maxAge = 3600)
 public interface OrderFoodController {
     @GetMapping(path = "/getfood")
-    public List<OrderFood> getFood(String food) ;
+    List<OrderFood> getFood(String food);
 
     // THIS METHOD IS USE FOR POST FOOD
     @PostMapping(path = "/postfood")
-    public String addFood(@RequestBody OrderFood orderFood) ;
+    String addFood(@RequestBody OrderFood orderFood);
 
     @PostMapping(path = "/foodimg")
-    public ResponseEntity<OrderFood> createFood(
+    ResponseEntity<OrderFood> createFood(
             @RequestParam("fname") String fname,
             @RequestParam("category") String category,
             @RequestParam("subcategory") String subcategory,
             @RequestParam("store_id") String store_id,
             @RequestParam("price") Integer price,
-            @RequestParam("quantity") Integer quantity) ;
+            @RequestParam("quantity") Integer quantity);
 
     // THIS METHOD IS USE FOR UPDATE FOOD
     @PutMapping(path = "/updatefood")
-    public OrderFood updateFood(@RequestBody OrderFood orderFood, @RequestParam("image") MultipartFile image) ;
+    OrderFood updateFood(@RequestBody OrderFood orderFood, @RequestParam("image") MultipartFile image);
+
     // THIS METHOD IS USE FOR DELETE FOOD
     @DeleteMapping(path = "/food/{foodid}")
-    public ResponseEntity<HttpStatus> deleteFood(@PathVariable String foodid) ;
+    ResponseEntity<HttpStatus> deleteFood(@PathVariable String foodid);
 
     // THIS METHOD IS USE FOR FETCH ORDERFOOD BY STOREID
     @GetMapping("/orderfood/{storeId}")
-    public List<OrderFood> getOrderFoodByStoreId(@PathVariable String storeId) ;
+    List<OrderFood> getOrderFoodByStoreId(@PathVariable String storeId);
 
     // ----------------------RUSHIKESH ADDED THIS NEW CODE --------------
     @GetMapping("/food-quantity/{storeId}")
-    public OrderFood getTotalQuantityByFoodName(@PathVariable String storeId) ;
+    OrderFood getTotalQuantityByFoodName(@PathVariable String storeId);
 }

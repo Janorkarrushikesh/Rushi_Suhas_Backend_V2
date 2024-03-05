@@ -9,10 +9,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface FloorTableRepo extends JpaRepository<FloorTable,Long> {
+public interface FloorTableRepo extends JpaRepository<FloorTable, Long> {
 
-    @Query("SELECT MAX(b.id)  FROM FloorTable b WHERE b.storeid = :storeid" )
-    Integer findLastFloorNumberForStore(@Param("storeid") String storeid );
+    @Query("SELECT MAX(b.id)  FROM FloorTable b WHERE b.storeid = :storeid")
+    Integer findLastFloorNumberForStore(@Param("storeid") String storeid);
 
     boolean existsBystoreidAndFloorname(long storeid, String floorname);
 
@@ -21,8 +21,7 @@ public interface FloorTableRepo extends JpaRepository<FloorTable,Long> {
     Integer findLastNumberForStore(@Param("storeid") String storeid);
 
     @Query("SELECT f FROM FloorTable f WHERE f.storeid = :storeid")
-   List<FloorTable> findbyStoreid(@Param("storeid") Long storeid);
-
+    List<FloorTable> findbyStoreid(@Param("storeid") Long storeid);
 
 
 }

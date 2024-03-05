@@ -15,20 +15,21 @@ public interface UserSidebarController {
     List<UserSidebar> getUser();
 
     @GetMapping("/getUserBYID/{id}")
-    public ResponseEntity<?> fetchDetailsById(@PathVariable Integer id);
+    ResponseEntity<?> fetchDetailsById(@PathVariable Integer id);
+
     @PostMapping(path = "/save")
-    public ResponseEntity<String> saveUser(@RequestBody UserSidebar userSidebar);
+    ResponseEntity<String> saveUser(@RequestBody UserSidebar userSidebar);
 
     @PutMapping(path = "/UserSidebar")
-    public UserSidebar updateUser(@RequestBody UserSidebar userSidebar);
+    UserSidebar updateUser(@RequestBody UserSidebar userSidebar);
 
     @GetMapping(path = "/users/{username}")
-    public ResponseEntity<UserSidebar> getUserByUsername(@PathVariable String username);
+    ResponseEntity<UserSidebar> getUserByUsername(@PathVariable String username);
 
     @DeleteMapping(path = "/delete/{user_id}")
-    public ResponseEntity<HttpStatus> deleteUser(@PathVariable String user_id);
+    ResponseEntity<HttpStatus> deleteUser(@PathVariable String user_id);
 
     @GetMapping("/store/{storeId}/users")
-    public ResponseEntity<List<UserSidebar>> getUsersByStoreId(@PathVariable String storeId) ;
+    ResponseEntity<List<UserSidebar>> getUsersByStoreId(@PathVariable String storeId);
 
 }

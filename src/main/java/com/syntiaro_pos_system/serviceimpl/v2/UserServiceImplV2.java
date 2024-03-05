@@ -37,6 +37,7 @@ public class UserServiceImplV2 implements UserService {
 
     private static final int MAX_SESSIONS_PER_USER = 500;
     private final Map<String, Set<String>> userSessions = new ConcurrentHashMap<>();
+    private final Map<String, String> emailToOtpMap = new HashMap<>();
     @Autowired
     UserRepositoryV2 userRepository;
     @Autowired
@@ -60,8 +61,6 @@ public class UserServiceImplV2 implements UserService {
     @Autowired
     EmailUsernameValidation validation;
 
-    private final Map<String, String> emailToOtpMap = new HashMap<>();
-
     @Override
     public ResponseEntity<ApiResponse> authenticateUser(LoginRequest loginRequest) {
         try {
@@ -71,7 +70,6 @@ public class UserServiceImplV2 implements UserService {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse(null, false, "Too many active sessions for this user.", 401));
             }
             Authentication authentication = authenticationManagers.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String jwt = jwtUtils.generateJwtToken(authentication);
 
@@ -79,6 +77,7 @@ public class UserServiceImplV2 implements UserService {
             addUserSession(username, jwt);
 
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
             List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority()).collect(Collectors.toList());
 
             return ResponseEntity.ok().body(new ApiResponse(new JwtUserResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getRegistno(), // added this code
@@ -93,7 +92,6 @@ public class UserServiceImplV2 implements UserService {
 
     @Override
     public ResponseEntity<ApiResponse> registerUser(SignupRequest signUpRequest) {
-
         try {
             if (validation.isDuplicateUsername(signUpRequest.getUsername()) || validation.isDuplicateEmail(signUpRequest.getEmail())) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(null, false, "Error: Username or email is already taken!", 400));
@@ -140,16 +138,19 @@ public class UserServiceImplV2 implements UserService {
 
             // Check if the provided email exists in the emailToOtpMap and the OTP matches
             if (!emailToOtpMap.containsKey(email) || !emailToOtpMap.get(email).equals(otp)) {
+
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(null, false, "Invalid OTP or Email", 400));
             }
             // Check if the new password and confirmation match
             if (!Objects.equals(newPassword, confirmPassword)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(null, false, "New password and confirmation do not match", 400));
+
             }
 
             // Check if the newPassword is not null and not empty
             if (StringUtils.isEmpty(newPassword)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(null, false, "New password cannot be empty", 400));
+
             }
             // Update the password in the database
             Optional<User> optionalUser = userRepository.findByEmail(email);
@@ -167,7 +168,6 @@ public class UserServiceImplV2 implements UserService {
 
             // Remove the email entry from the emailToOtpMap after successful password
             emailToOtpMap.remove(email);
-
             return ResponseEntity.ok().body(new ApiResponse(null, true, "Password updated successfully", 200));
 
         } catch (Exception e) {
@@ -203,6 +203,7 @@ public class UserServiceImplV2 implements UserService {
             Optional<User> optionalUser = userRepository.findByEmail(email);
             if (optionalUser.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(null, false, "Store account not found for the given email", 404));
+
             }
             // Generate OTP
             String otp = OTPUtil.generateOTP(6);
@@ -263,7 +264,6 @@ public class UserServiceImplV2 implements UserService {
         }
     }
 
-
     @Override
     public ResponseEntity<ApiResponse> logoutUser(String sessionToken) {
         try {
@@ -275,6 +275,7 @@ public class UserServiceImplV2 implements UserService {
             return ResponseEntity.ok().body(new ApiResponse(null, true, "Logged out successfully.", 200));
 
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "...", 500));
         }
     }

@@ -30,7 +30,6 @@ public class AdminMenuServiceImpl implements AdminMenuService {
     public ResponseEntity<ApiResponse> SaveAdminemenu(List<AdminMenu> adminMenu) {
         try {
             List<AdminMenu> adminMenus = adminMenuRepository.saveAll(adminMenu);
-
             return ResponseEntity.ok().body(new ApiResponse(adminMenus, true, "AdminMenu saved successfully", 200));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "...", 500));

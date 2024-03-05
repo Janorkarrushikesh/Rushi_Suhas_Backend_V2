@@ -89,6 +89,7 @@ public class FoodServiceImpl implements FoodService {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "...", 500));
         }
     }
+
     private Object getByDate(String storeId, String startDate, String endDate) {
         List<Food> existingFood = foodRepository.findBetweenDate(storeId, startDate, endDate);
         List<Map<String, Object>> foodList = new ArrayList<>();
@@ -129,6 +130,7 @@ public class FoodServiceImpl implements FoodService {
         }
 
         return filterFoodList;
+
     }
 
     @Override
@@ -162,6 +164,7 @@ public class FoodServiceImpl implements FoodService {
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "...", 500));
+
         }
     }
 
@@ -180,7 +183,6 @@ public class FoodServiceImpl implements FoodService {
         }
 
     }
-
 
     @Override
     public ResponseEntity<ApiResponse> UploadExcelFile(String storeId, MultipartFile file) throws IOException {
@@ -272,5 +274,10 @@ public class FoodServiceImpl implements FoodService {
         } catch (Exception e) {
             return null;
         }
+
     }
+
+
 }
+
+

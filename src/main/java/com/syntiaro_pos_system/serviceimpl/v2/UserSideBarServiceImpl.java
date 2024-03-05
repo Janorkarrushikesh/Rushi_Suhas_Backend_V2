@@ -12,11 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-
-
 
 
 @Service
@@ -27,40 +24,34 @@ public class UserSideBarServiceImpl implements UserSideBarService {
 
     @Override
     public ResponseEntity<ApiResponse> saveUserSideBar(UserSidebar userSidebar) {
-        try{
-            boolean username =   userSideBarRepositry.existsByUsername(userSidebar.getUsername());
-            if(username == false) {
+        try {
+            boolean username = userSideBarRepositry.existsByUsername(userSidebar.getUsername());
+            if (!username) {
                 UserSidebar userSidebars = userSideBarRepositry.save(userSidebar);
                 return ResponseEntity.ok().body(new ApiResponse(userSidebars, true, 200));
-            }else {
-                return ResponseEntity.status(HttpStatus.CONFLICT)
-                        .body(new ApiResponse(null,false,"Already User register !!",409));
+            } else {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiResponse(null, false, "Already User register !!", 409));
             }
-        }
-        catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(null,false,"...",500));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "...", 500));
         }
     }
 
 
-
-
     @Override
     public ResponseEntity<ApiResponse> getUserSidebarByStoreId(String storeId) {
+
         try {
             List<UserSidebar> userSidebarList = userSideBarRepositry.findByStoreId(storeId);
             if (userSidebarList.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(new ApiResponse(null, false,"User sidebar not found", 404));
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(null, false, "User sidebar not found", 404));
+
             } else {
                 return ResponseEntity.ok(new ApiResponse(userSidebarList, true, HttpStatus.OK.value()));
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(null, false, "Failed to retrieve user sidebar",500));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "Failed to retrieve user sidebar", 500));
         }
     }
 
@@ -71,41 +62,35 @@ public class UserSideBarServiceImpl implements UserSideBarService {
             if (existingUserSidebar.isPresent()) {
                 return ResponseEntity.ok(new ApiResponse(existingUserSidebar.get(), true, 200));
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(new ApiResponse("User sidebar not found", false,404));
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("User sidebar not found", false, 404));
             }
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse("Failed to retrieve user sidebar", false,500));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Failed to retrieve user sidebar", false, 500));
         }
     }
 
     @Override
-    public ResponseEntity<ApiResponse> updateUsersidebar(Integer userId , UserSidebar userSidebar) {
-        try{
+    public ResponseEntity<ApiResponse> updateUsersidebar(Integer userId, UserSidebar userSidebar) {
+        try {
             Optional<UserSidebar> existingUserSidebar = userSideBarRepositry.findById(userId);
-            if(existingUserSidebar.isPresent()){
-                return ResponseEntity.ok(new ApiResponse(userSideBarRepositry.save(userSidebar),true,200));
-            }else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(new ApiResponse(null,false,"User sidebar not found",404));
+            if (existingUserSidebar.isPresent()) {
+                return ResponseEntity.ok(new ApiResponse(userSideBarRepositry.save(userSidebar), true, 200));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(null, false, "User sidebar not found", 404));
             }
-        }
-        catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(null,false,"....",500));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "....", 500));
         }
     }
 
     @Override
-    public ResponseEntity<ApiResponse> getByStatusAndStoreId(String storeId ) {
+    public ResponseEntity<ApiResponse> getByStatusAndStoreId(String storeId) {
         try {
 
             List list = new ArrayList<>();
             List<UserSidebar> userSidebarList = userSideBarRepositry.findByStoreId(storeId);
             if (userSidebarList.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(new ApiResponse(null, false, "User sidebar for given store Id  not found", 404));
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(null, false, "User sidebar for given store Id  not found", 404));
             }
             for (UserSidebar userSidebar : userSidebarList) {
                 List<Menu> menuList = userSidebar.getMenu();
@@ -118,19 +103,16 @@ public class UserSideBarServiceImpl implements UserSideBarService {
                                 list.add(userSidebar);
                                 list.add(menu);
                                 list.add(subMenu);
-                                return ResponseEntity.ok()
-                                        .body(new ApiResponse(list, false, 200));
+                                return ResponseEntity.ok().body(new ApiResponse(list, true, 200));
                             }
                         }
                     }
                 }
             }
-                        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                                .body(new ApiResponse(null, false, 404));
-                    }catch(Exception e){
-                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                .body(new ApiResponse(null, false, "....", 500));
-                    }
-                }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(null, false, 404));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "....", 500));
+        }
+    }
 
 }

@@ -8,29 +8,28 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.*;
-
+import java.util.Map;
 
 
 @RequestMapping("/v2/api/auth/tech")
 public interface TechController {
 
     @PostMapping("/signin")
-    public ResponseEntity<ApiResponse> authenticateTech(@Valid @RequestBody TechLoginRequest techLoginRequest) ;
+    ResponseEntity<ApiResponse> authenticateTech(@Valid @RequestBody TechLoginRequest techLoginRequest);
 
     @PostMapping("/techSignup")
-    public ResponseEntity<ApiResponse> registerTech(@Valid @RequestBody TechSignupRequest techsignupRequest) ;
+    ResponseEntity<ApiResponse> registerTech(@Valid @RequestBody TechSignupRequest techsignupRequest);
 
     @PostMapping("/forgotPassword")
-    public ResponseEntity<ApiResponse> forgotPassword(@RequestBody TechSignupRequest techSignupRequest) ;
+    ResponseEntity<ApiResponse> forgotPassword(@RequestBody TechSignupRequest techSignupRequest);
 
     @PostMapping("/resetPassword")
-    public ResponseEntity<ApiResponse> resetPassword(@RequestBody Map<String, String> resetRequest) ;
+    ResponseEntity<ApiResponse> resetPassword(@RequestBody Map<String, String> resetRequest);
 
     @PatchMapping("/{technicianId}")
-    public ResponseEntity<ApiResponse> updateTech(@PathVariable Long technicianId , @RequestBody Tech tech);
+    ResponseEntity<ApiResponse> updateTech(@PathVariable Long technicianId, @RequestBody Tech tech);
 
     @PostMapping("/logout")
-    public ResponseEntity<ApiResponse> logoutTech(@RequestParam String sessionToken);
+    ResponseEntity<ApiResponse> logoutTech(@RequestParam String sessionToken);
 
 }

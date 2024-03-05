@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface AdminMenuRepository extends JpaRepository<AdminMenu,Long> {
+public interface AdminMenuRepository extends JpaRepository<AdminMenu, Long> {
     List<AdminMenu> findByStoreId(Long storeid);
 
     @Query("SELECT a FROM AdminMenu a WHERE a.status = :aTrue")

@@ -11,9 +11,10 @@ public interface AdminMenuService {
     ResponseEntity<ApiResponse> SaveAdminemenu(List<AdminMenu> adminMenu);
 
     ResponseEntity<ApiResponse> getByStoreIdAndStatus(Long storeid);
-    public ResponseEntity<ApiResponse> getStoreByStoreIdAndStatus(Long storeId);
 
-    ResponseEntity<ApiResponse> updateAdminMenu(Long adminMenuId , AdminMenu adminMenu);
+    ResponseEntity<ApiResponse> getStoreByStoreIdAndStatus(Long storeId);
+
+    ResponseEntity<ApiResponse> updateAdminMenu(Long adminMenuId, AdminMenu adminMenu);
 
     ResponseEntity<ApiResponse> getByStoreId(Long storeId);
 

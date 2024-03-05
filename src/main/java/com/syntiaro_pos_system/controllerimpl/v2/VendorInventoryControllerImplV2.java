@@ -27,7 +27,7 @@ public class VendorInventoryControllerImplV2 implements VendorInventoryControlle
 
     @Override
     public ResponseEntity<ApiResponse> getInvoiceByStoreId(Integer storeId) {
-        return new ResponseEntity<>(vendorInventoryService.getInvoiceByStoreId(storeId),HttpStatus.OK);
+        return new ResponseEntity<>(vendorInventoryService.getInvoiceByStoreId(storeId), HttpStatus.OK);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class VendorInventoryControllerImplV2 implements VendorInventoryControlle
 
     @Override
     public ResponseEntity<ApiResponse> getByStore(Integer storeId, Integer page, Integer size, String startDate, String endDate) {
-        return vendorInventoryService.getStore(storeId,page,size,startDate,endDate);
+        return vendorInventoryService.getStore(storeId, page, size, startDate, endDate);
     }
 
 

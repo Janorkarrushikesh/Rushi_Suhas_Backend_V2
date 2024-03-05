@@ -150,9 +150,6 @@ public class Orders implements Serializable {
     public void setQuantity(int requestedQuantity) {
     }
 
-    public void setOrderDate(LocalDate calculationDate) {
-    }
-
     @PostPersist
     public void generateStoreCode() {
         Date date = new Date();
@@ -163,5 +160,10 @@ public class Orders implements Serializable {
         // this.orddate = formattedDate;
     }
 
-    public LocalDate getOrderDate() {return orderDate;}
+    public LocalDate getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(LocalDate calculationDate) {
+    }
 }

@@ -7,7 +7,10 @@ import com.syntiaro_pos_system.service.v1.ButtonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.util.List;
 
 @RestController
@@ -44,10 +47,10 @@ public class CategoryCategoryButtonControllerImpl implements CategoryButtonContr
     }
 
 
-   @Override
+    @Override
     public ResponseEntity<CategoryButton> updateButton(@PathVariable("id") Long id, @RequestBody CategoryButton categoryButton) {
         try {
-            CategoryButton updateCategoryButton = buttonService.updateButton(Long.valueOf(id), categoryButton);
+            CategoryButton updateCategoryButton = buttonService.updateButton(id, categoryButton);
             if (updateCategoryButton != null) {
                 return new ResponseEntity<>(updateCategoryButton, HttpStatus.OK);
             } else {
@@ -69,7 +72,6 @@ public class CategoryCategoryButtonControllerImpl implements CategoryButtonContr
     }
 
 
-
     @Override
     public ResponseEntity<HttpStatus> deleteButton(@PathVariable Long id) {
         try {
@@ -84,7 +86,6 @@ public class CategoryCategoryButtonControllerImpl implements CategoryButtonContr
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 
 
 }

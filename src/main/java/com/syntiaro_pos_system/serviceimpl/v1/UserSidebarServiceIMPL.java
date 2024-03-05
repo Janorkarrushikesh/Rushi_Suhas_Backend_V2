@@ -26,7 +26,7 @@ public class UserSidebarServiceIMPL implements UserSidebarService {
     //THIS METHOD IS USE FOR DELETE USER
     @Override
     public void deleteuser(int i) {
-        UserSidebar entity = userSidebarRepo.getOne((int) parseInt);
+        UserSidebar entity = userSidebarRepo.getOne(parseInt);
         userSidebarRepo.delete(entity);
     }
 

@@ -3,6 +3,7 @@ package com.syntiaro_pos_system.entity.v1;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+
 @NoArgsConstructor
 @Entity
 @Table(name = "state")

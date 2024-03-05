@@ -10,5 +10,5 @@ import java.util.Optional;
 
 @Repository
 public interface SuperAdminRoleRepository extends JpaRepository<SuperAdminRole, Long> {
-  Optional<SuperAdminRole> findByName(ERole name);
+    Optional<SuperAdminRole> findByName(ERole name);
 }

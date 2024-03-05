@@ -1,7 +1,6 @@
 package com.syntiaro_pos_system.repository.v1;
 
 
-
 import com.syntiaro_pos_system.entity.v1.Food;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -25,9 +24,8 @@ public interface FoodRepo extends JpaRepository<Food, Integer> {
     boolean existsByFoodNameAndStoreId(@Param("food_name") String foodName, @Param("store_id") String storeId);
 
 
-
-   @Query("SELECT f FROM Food f WHERE f.storeId = :store_id")
-   List<Food> findByStoreId( @Param("store_id") String store_id);
+    @Query("SELECT f FROM Food f WHERE f.storeId = :store_id")
+    List<Food> findByStoreId(@Param("store_id") String store_id);
 
 
     //-------this code added by Rushikesh for id genrate by store_id-------------------
@@ -36,7 +34,6 @@ public interface FoodRepo extends JpaRepository<Food, Integer> {
 
     @Query("SELECT f FROM Food f WHERE f.storeId = :store_id AND f.category = :category")
     List<Food> findByStoreIdAndCategory(@Param("store_id") String store_id, @Param("category") String category);
-
 
 
 }

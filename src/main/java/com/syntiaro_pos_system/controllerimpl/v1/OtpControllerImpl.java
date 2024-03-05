@@ -11,7 +11,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,9 +21,9 @@ import java.util.Optional;
 
 @RestController
 public class OtpControllerImpl implements OtpController {
-    @Autowired
-    private OtpService otpService;
     private final OtpRepository otpRepository;
+    @Autowired
+    private final OtpService otpService;
 
     public OtpControllerImpl(OtpService otpService, OtpRepository otpRepository) {
         this.otpService = otpService;

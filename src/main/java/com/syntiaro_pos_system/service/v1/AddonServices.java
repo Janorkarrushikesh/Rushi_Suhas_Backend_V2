@@ -9,22 +9,23 @@ import java.util.List;
 
 public interface AddonServices {
 
-	ApiResponse saveaddon(Addon Addon);
-	ApiResponse getAddOn();
+    ApiResponse saveaddon(Addon Addon);
 
-	Addon updateAddon(Addon fAddon);
+    ApiResponse getAddOn();
 
-	void deleteaddon(int itemid);
+    Addon updateAddon(Addon fAddon);
 
-	// THIS METHOD IS USE FOR FETCH ADDON BY ID
-	Addon getAddonDetailsById(Integer itemid);
+    void deleteaddon(int itemid);
 
-
-	// THIS METHOD IS USE FOR UPDATE ADDON
-	Addon updateAddon(Integer itemid, Addon updateaddon);
+    // THIS METHOD IS USE FOR FETCH ADDON BY ID
+    Addon getAddonDetailsById(Integer itemid);
 
 
-	// THIS METHOD IS USE FOR FETCH ADDON BY STOREID
-	List<Addon> getAddonsByStoreId(String storeId);
+    // THIS METHOD IS USE FOR UPDATE ADDON
+    Addon updateAddon(Integer itemid, Addon updateaddon);
+
+
+    // THIS METHOD IS USE FOR FETCH ADDON BY STOREID
+    List<Addon> getAddonsByStoreId(String storeId);
 
 }

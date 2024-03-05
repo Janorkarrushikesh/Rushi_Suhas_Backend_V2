@@ -1,9 +1,10 @@
 package com.syntiaro_pos_system.entity.v2;
 
-import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -39,7 +40,7 @@ public class QuickAccess {
     private String updatedBy;
 
     @PostPersist
-    public void genereateDate(){
+    public void genereateDate() {
         Date date = new Date();
         SimpleDateFormat dateFormate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a");
         String formattedDate = dateFormate.format(date);

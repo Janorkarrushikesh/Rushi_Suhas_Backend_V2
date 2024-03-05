@@ -1,7 +1,5 @@
 package com.syntiaro_pos_system.request.v2;
 
-import com.syntiaro_pos_system.entity.v2.AdminSubMenu;
-
 import java.util.List;
 
 public class AdminMenuDto {

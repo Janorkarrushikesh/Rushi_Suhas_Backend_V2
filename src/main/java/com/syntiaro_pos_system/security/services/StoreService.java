@@ -11,6 +11,4 @@ public interface StoreService {
     List<Store> getStore();
 
 
-
-
 }

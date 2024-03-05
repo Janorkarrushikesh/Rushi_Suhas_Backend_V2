@@ -33,36 +33,29 @@ import java.util.stream.Collectors;
 
 @Service
 public class SuperAdminServiceImplV2 implements SuperAdminService {
+    private static final int MAX_SESSIONS_PER_USER = 500;
+    private final Map<String, Set<String>> userSessions = new ConcurrentHashMap<>();
+    private final Map<String, String> emailToOtpMap = new HashMap<>();
     @Autowired
     UserRepositoryV2 userRepository;
-
     @Autowired
     StoreRepositry storeRepositry;
-
     @Autowired
     TechRepositoryV2 techRepository;
     @Autowired
     SuperAdminRepositoryV2 superAdminRepository;
-
     @Autowired
     SuperAdminRoleRepositoryV2 superAdminRoleRepository;
-
     @Autowired
     EmailSenderService emailSenderService;
-
     @Autowired
     AuthenticationManager authenticationManager;
-
     @Autowired
     SuperAdminJwtUtils superAdminJwtUtils;
     @Autowired
     PasswordEncoder encoder;
     @Autowired
     EmailUsernameValidation validation;
-
-    private final Map<String, Set<String>> userSessions = new ConcurrentHashMap<>();
-    private static final int MAX_SESSIONS_PER_USER = 500;
-    private final Map<String, String> emailToOtpMap = new HashMap<>();
     @Autowired
     JavaMailSender javaMailSender;
 
@@ -76,16 +69,13 @@ public class SuperAdminServiceImplV2 implements SuperAdminService {
             }
 
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(superAdminLoginRequest.getUsername(), superAdminLoginRequest.getPassword()));
-
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String jwt = superAdminJwtUtils.generateJwtToken(authentication);
 
             // // Add the new session token to the active sessions map
             addUserSession(username, jwt); // ADDED BY RUSHIKEH
-
             SuperAdminDetailsImpl userDetails = (SuperAdminDetailsImpl) authentication.getPrincipal();
             List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority()).collect(Collectors.toList());
-
             // Assuming you have a logo URL field in the userDetails
             Optional<SuperAdmin> techOptional = superAdminRepository.findByUsername(superAdminLoginRequest.getUsername());
 
@@ -94,14 +84,12 @@ public class SuperAdminServiceImplV2 implements SuperAdminService {
 
             if (techOptional.isPresent()) {
                 SuperAdmin superAdmin = techOptional.get();
-
             }
             return ResponseEntity.ok().body(new ApiResponse(new SuperAdminJwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), userDetails.getGstno(), roles), true, 200));
 //            return null;
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "...", 500));
-
         }
     }
 
@@ -118,7 +106,6 @@ public class SuperAdminServiceImplV2 implements SuperAdminService {
     @Override
     public ResponseEntity<ApiResponse> registerSuperAdmin(SuperAdminSignupRequest superAdminSignupRequest) {
         try {
-
             if (validation.isDuplicateUsername(superAdminSignupRequest.getUsername()) || validation.isDuplicateEmail(superAdminSignupRequest.getEmail())) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(null, false, "Error: Username or email is already taken!", 400));
             }
@@ -173,6 +160,7 @@ public class SuperAdminServiceImplV2 implements SuperAdminService {
 
     @Override
     public ResponseEntity<ApiResponse> resetPassword(Map<String, String> resetRequest) {
+
         try {
             String email = resetRequest.get("emailID");
             String otp = resetRequest.get("oneTimePassword");
@@ -267,5 +255,4 @@ public class SuperAdminServiceImplV2 implements SuperAdminService {
         }
         return null;
     }
-
 }

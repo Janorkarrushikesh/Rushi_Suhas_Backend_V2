@@ -4,6 +4,7 @@ import com.syntiaro_pos_system.entity.v1.CategoryButton;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -13,21 +14,20 @@ public interface CategoryButtonController {
 
 
     @GetMapping("/getbutton/{store_id}")
-    public ResponseEntity<List<CategoryButton>> getFoodsByStoreId(@PathVariable String store_id);
+    ResponseEntity<List<CategoryButton>> getFoodsByStoreId(@PathVariable String store_id);
 
     @PostMapping("/postbutton")
-    public ResponseEntity<?> createEntity(@RequestBody CategoryButton categoryButton);
+    ResponseEntity<?> createEntity(@RequestBody CategoryButton categoryButton);
 
 
     @PatchMapping("/updateButton/{id}")
-    public ResponseEntity<CategoryButton> updateButton(@PathVariable("id") Long id, @RequestBody CategoryButton categoryButton);
+    ResponseEntity<CategoryButton> updateButton(@PathVariable("id") Long id, @RequestBody CategoryButton categoryButton);
 
     @GetMapping("/getcategory/{id}")
-    public CategoryButton fetchDetailsById(@PathVariable Long id);
-
+    CategoryButton fetchDetailsById(@PathVariable Long id);
 
 
     @DeleteMapping("/deletecategory/{id}")
-    public ResponseEntity<HttpStatus> deleteButton(@PathVariable Long id);
+    ResponseEntity<HttpStatus> deleteButton(@PathVariable Long id);
 
 }

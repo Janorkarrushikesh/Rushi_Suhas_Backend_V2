@@ -21,12 +21,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
+
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
-
-
 
 
 @Service
@@ -50,7 +49,8 @@ public class BillServiceImplV2 implements Billservice {
             billRequest.getBill().setBillId(lastBillId != null ? lastBillId + 1 : 1);
             Integer lastOrderId = orderRepository.findLastOrderNumberForStore(billRequest.getBill().getStoreId(), billdate);
             billRequest.getBill().getOrder().get(0).setOrderId(lastOrderId != null ? lastOrderId + 1 : 1);
-            Bill savedBill =  billRepositry.save(billRequest.getBill());
+
+            Bill savedBill = billRepositry.save(billRequest.getBill());
             return ResponseEntity.ok().body(new ApiResponse(savedBill, true, 200));
         } catch (Exception e) {
             logger.debug(e);
@@ -65,17 +65,15 @@ public class BillServiceImplV2 implements Billservice {
     public ResponseEntity<ApiResponse> getBillBySerialNo(Integer serialNo) {
         try {
             Optional<Bill> existingBill = billRepositry.findById(serialNo);
-            if(existingBill.isPresent()){
+            if (existingBill.isPresent()) {
                 return ResponseEntity.ok().body(new ApiResponse(existingBill, true, 200));
             }
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(null, false,"Id not found ",404));
-
-
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(null, false, "Id not found ", 404));
 
         } catch (Exception e) {
             logger.debug(e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(null, false, "...",500));
+                    .body(new ApiResponse(null, false, "...", 500));
         }
     }
 
@@ -83,15 +81,15 @@ public class BillServiceImplV2 implements Billservice {
     public ResponseEntity<ApiResponse> getBillByStoreId(Integer storeId) {
         try {
             List<Bill> billList = billRepositry.findByStoreId(storeId);
-            if (!billList.isEmpty()){
+            if (!billList.isEmpty()) {
                 return ResponseEntity.ok().body(new ApiResponse(billList, true, 200));
             }
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(null, false,"Store id not found ", 404));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(null, false, "Store id not found ", 404));
 
         } catch (Exception e) {
             logger.debug(e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(null, false, "...",500));
+                    .body(new ApiResponse(null, false, "...", 500));
         }
 
     }
@@ -101,25 +99,25 @@ public class BillServiceImplV2 implements Billservice {
     public ResponseEntity<ApiResponse> updateBillBySerialNo(Integer serialNo, Bill bill) {
 
         try {
-        Bill billList = billRepositry.findById(serialNo)
-                .orElseThrow(() -> new EntityNotFoundExceptionById("Invalid Id was provided"));
+            Bill billList = billRepositry.findById(serialNo)
+                    .orElseThrow(() -> new EntityNotFoundExceptionById("Invalid Id was provided"));
             billList.setBillDate(bill.getBillDate());
             billList.setBillStatus(bill.getBillStatus());
             billList.setContact(bill.getContact());
             billList.setDiscount(bill.getDiscount());
             billList.setPaymentMode(bill.getPaymentMode());
             billList.setOrder(bill.getOrder());
-            return ResponseEntity.ok().body(new ApiResponse(  billRepositry.save(billList), true, 200));
+            return ResponseEntity.ok().body(new ApiResponse(billRepositry.save(billList), true, 200));
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(null, false, "...",500));
+                    .body(new ApiResponse(null, false, "...", 500));
         }
 
     }
 
     @Override // Filter Response
-    public ResponseEntity<ApiResponse> fetchBillByStoreId(Integer storeId , Integer page , Integer size , LocalDate startDate , LocalDate endDate) {
-
+    public ResponseEntity<ApiResponse> fetchBillByStoreId(Integer storeId, Integer page, Integer size, LocalDate startDate, LocalDate endDate) {
         try {
             List<Bill> existingBill = billRepositry.findByStoreId(storeId);
             if (!existingBill.isEmpty()) {
@@ -132,17 +130,17 @@ public class BillServiceImplV2 implements Billservice {
                 }
             }
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new ApiResponse(null, false, "Store Id Not Found ",404));
-        }catch (Exception e){
+                    .body(new ApiResponse(null, false, "Store Id Not Found ", 404));
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(null, false, "...",500));
+                    .body(new ApiResponse(null, false, "...", 500));
         }
 
 
     }
 
     // By page and Size
-    public  List<Map<String, Object>> getBillByPageAndSize(Integer storeId , Integer page , Integer size ){
+    public List<Map<String, Object>> getBillByPageAndSize(Integer storeId, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Bill> billList = billRepositry.findBillByStoreId(storeId, pageable);
 
@@ -188,52 +186,52 @@ public class BillServiceImplV2 implements Billservice {
         return billData;
 
     }
+
     //////////////////////////////////////////////
- public List<Map<String, Object>> getBillByStartDateAndEndDate(Integer storeId , LocalDate startDate , LocalDate endDate){
-     List<Bill> billList = billRepositry.findBillByStoreIds(storeId, startDate, endDate);
-     List<Map<String, Object>> billData = new ArrayList<>();
-     if (billList != null) {
-         Map<String, Object> billMap = null;
-         for (Bill bill : billList) {
-             billMap = new LinkedHashMap<>();
-             billMap.put("serialNumber", bill.getSerialNo());
-             billMap.put("id", bill.getBillId());
-             billMap.put("billDate", bill.getBillDate());
-             billMap.put("billStatus", bill.getBillStatus());
-             billMap.put("discount", bill.getDiscount());
-             billMap.put("total", bill.getTotal());
-             billMap.put("payment", bill.getPaymentMode());
-             billMap.put("storeId", bill.getStoreId());
-             List<Map<String, Object>> orderData = new ArrayList<>();
-             for (Orders orders : bill.getOrder()) {
-                 Map<String, Object> orderMap = new LinkedHashMap<>();
-                 orderMap.put("id", orders.getOrderId());
-                 orderMap.put("orderDate", orders.getOrderDate());
-                 orderMap.put("tableNumber", orders.getTableNo());
-                 orderMap.put("orderStatus", orders.getOrderStatus());
-                 orderMap.put("orderType", orders.getOrderType());
-                 List<Map<String, Object>> orderFoodData = new ArrayList<>();
-                 for (OrderFood orderFood : orders.getOrderFoods()) {
-                     Map<String, Object> orderFoodMap = new LinkedHashMap<>();
-                     orderFoodMap.put("foodName", orderFood.getFoodId());
-                     orderFoodMap.put("category", orderFood.getCategory());
-                     orderFoodMap.put("quantity", orderFood.getQuantity());
-                     orderFoodMap.put("price", orderFood.getPrice());
-                     orderFoodData.add(orderFoodMap);
-                 }
-                 orderMap.put("orderFood", orderFoodData);
-                 orderData.add(orderMap);
-             }
-             billMap.put("order", orderData);
-             billData.add(billMap);
-         }
-     }
-     return billData;
- }
+    public List<Map<String, Object>> getBillByStartDateAndEndDate(Integer storeId, LocalDate startDate, LocalDate endDate) {
+        List<Bill> billList = billRepositry.findBillByStoreIds(storeId, startDate, endDate);
+        List<Map<String, Object>> billData = new ArrayList<>();
+        if (billList != null) {
+            Map<String, Object> billMap = null;
+            for (Bill bill : billList) {
+                billMap = new LinkedHashMap<>();
+                billMap.put("serialNumber", bill.getSerialNo());
+                billMap.put("id", bill.getBillId());
+                billMap.put("billDate", bill.getBillDate());
+                billMap.put("billStatus", bill.getBillStatus());
+                billMap.put("discount", bill.getDiscount());
+                billMap.put("total", bill.getTotal());
+                billMap.put("payment", bill.getPaymentMode());
+                billMap.put("storeId", bill.getStoreId());
+                List<Map<String, Object>> orderData = new ArrayList<>();
+                for (Orders orders : bill.getOrder()) {
+                    Map<String, Object> orderMap = new LinkedHashMap<>();
+                    orderMap.put("id", orders.getOrderId());
+                    orderMap.put("orderDate", orders.getOrderDate());
+                    orderMap.put("tableNumber", orders.getTableNo());
+                    orderMap.put("orderStatus", orders.getOrderStatus());
+                    orderMap.put("orderType", orders.getOrderType());
+                    List<Map<String, Object>> orderFoodData = new ArrayList<>();
+                    for (OrderFood orderFood : orders.getOrderFoods()) {
+                        Map<String, Object> orderFoodMap = new LinkedHashMap<>();
+                        orderFoodMap.put("foodName", orderFood.getFoodId());
+                        orderFoodMap.put("category", orderFood.getCategory());
+                        orderFoodMap.put("quantity", orderFood.getQuantity());
+                        orderFoodMap.put("price", orderFood.getPrice());
+                        orderFoodData.add(orderFoodMap);
+                    }
+                    orderMap.put("orderFood", orderFoodData);
+                    orderData.add(orderMap);
+                }
+                billMap.put("order", orderData);
+                billData.add(billMap);
+            }
+        }
+        return billData;
+    }
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
     @Override
     public ResponseEntity<ApiResponse> quickBill(BillRequest bill) {
@@ -273,11 +271,11 @@ public class BillServiceImplV2 implements Billservice {
 
 
     @Override
-    public ResponseEntity<ApiResponse> billStatusReport(Integer storeId, String orderStatus) {
+    public ResponseEntity<ApiResponse> billStatusReport(Integer storeId, List<String> orderStatus) {
         try {
             LocalDate DaysAgo = LocalDate.now().minusDays(150);
 
-            List<Bill> OrderData = billRepositry.findBillsByStoreAndStatusAndDatekot(storeId, DaysAgo,orderStatus);
+            List<Bill> OrderData = billRepositry.findBillsByStoreAndStatusAndDatekot(storeId, DaysAgo, orderStatus);
             return ResponseEntity.ok().body(new ApiResponse(OrderData, true, 200));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -287,33 +285,31 @@ public class BillServiceImplV2 implements Billservice {
 
     @Override
     public ResponseEntity<ApiResponse> calculateTotalByPaymnetMode(Integer storeId) {
-      try{
-          Date utilDate = java.sql.Date.valueOf(LocalDate.now());
-          Map<String, Object> transaction = new LinkedHashMap<>();
-          Float totalCashAmount = billRepositry.calculateTotalCardAmountByStoreIdAndDay(storeId, utilDate,"cash");
-          Float totalUpiAmount = billRepositry.calculateTotalCardAmountByStoreIdAndDay(storeId, utilDate,"upi");
-          Float totalCardAmount = billRepositry.calculateTotalCardAmountByStoreIdAndDay(storeId, utilDate,"card");
-          transaction.put("cash",totalCashAmount);
-          transaction.put("card",totalCardAmount);
-          transaction.put("upi",totalUpiAmount);
-          return ResponseEntity.ok().body(new ApiResponse(transaction,true,200));
+        try {
+            Date utilDate = java.sql.Date.valueOf(LocalDate.now());
+            Map<String, Object> transaction = new LinkedHashMap<>();
+            Float totalCashAmount = billRepositry.calculateTotalCardAmountByStoreIdAndDay(storeId, utilDate, "cash");
+            Float totalUpiAmount = billRepositry.calculateTotalCardAmountByStoreIdAndDay(storeId, utilDate, "upi");
+            Float totalCardAmount = billRepositry.calculateTotalCardAmountByStoreIdAndDay(storeId, utilDate, "card");
+            transaction.put("cash", totalCashAmount);
+            transaction.put("card", totalCardAmount);
+            transaction.put("upi", totalUpiAmount);
+            return ResponseEntity.ok().body(new ApiResponse(transaction, true, 200));
 
-      }
-      catch (Exception e){
-          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                  .body(new ApiResponse(null,false,"...",500));
-      }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(null, false, "...", 500));
+        }
     }
 
     @Override
     public ResponseEntity<ApiResponse> balanceReportByPaymentMode(Integer storeId) {
-        try{
-     Map<String, Map<LocalDate, Float>> cashReport = getDailyBalanceReport(storeId);
-            return ResponseEntity.ok().body(new ApiResponse(cashReport,true,200)) ;
-        }
-        catch (Exception e){
+        try {
+            Map<String, Map<LocalDate, Float>> cashReport = getDailyBalanceReport(storeId);
+            return ResponseEntity.ok().body(new ApiResponse(cashReport, true, 200));
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(null,false,"..",500));
+                    .body(new ApiResponse(null, false, "..", 500));
         }
     }
 
@@ -354,7 +350,9 @@ public class BillServiceImplV2 implements Billservice {
     public void completeOrderAndPlaceBill(Bill bill, LocalDate calculationDate) {
         if (bill.getPaymentMode().equalsIgnoreCase("cash")) {
             Double billAmount = Double.valueOf(bill.getTotal());
-            if (billAmount == null) {billAmount = 0.0;}
+            if (billAmount == null) {
+                billAmount = 0.0;
+            }
             Balance balance = balanceRepositry.findByStoreIdAndDate(bill.getStoreId(), calculationDate);
             if (balance == null) {
                 balance = new Balance();
@@ -371,20 +369,19 @@ public class BillServiceImplV2 implements Billservice {
         }
     }
 
-    public Map<String, Object> TotalwithDate(Integer storeId , LocalDate date) {
-        try{
+    public Map<String, Object> TotalwithDate(Integer storeId, LocalDate date) {
+        try {
             Date utilDate = java.sql.Date.valueOf(date);
             Map<String, Object> transaction = new LinkedHashMap<>();
-            Float totalCashAmount = billRepositry.calculateTotalCardAmountByStoreIdAndDay(storeId, utilDate,"cash");
-            Float totalUpiAmount = billRepositry.calculateTotalCardAmountByStoreIdAndDay(storeId, utilDate,"upi");
-            Float totalCardAmount = billRepositry.calculateTotalCardAmountByStoreIdAndDay(storeId, utilDate,"card");
-            transaction.put("cash",totalCashAmount);
-            transaction.put("card",totalCardAmount);
-            transaction.put("upi",totalUpiAmount);
+            Float totalCashAmount = billRepositry.calculateTotalCardAmountByStoreIdAndDay(storeId, utilDate, "cash");
+            Float totalUpiAmount = billRepositry.calculateTotalCardAmountByStoreIdAndDay(storeId, utilDate, "upi");
+            Float totalCardAmount = billRepositry.calculateTotalCardAmountByStoreIdAndDay(storeId, utilDate, "card");
+            transaction.put("cash", totalCashAmount);
+            transaction.put("card", totalCardAmount);
+            transaction.put("upi", totalUpiAmount);
             return transaction;
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return null;
 
         }

@@ -18,5 +18,6 @@ public interface TechService {
     ResponseEntity<ApiResponse> resetPasseord(Map<String, String> resetRequest);
 
     ResponseEntity<ApiResponse> updateTech(Long technicianId, Tech tech);
+
     ResponseEntity<ApiResponse> logoutTech(String sessionToken);
 }

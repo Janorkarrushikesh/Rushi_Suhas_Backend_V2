@@ -36,13 +36,15 @@ import java.util.stream.Collectors;
 @Service
 public class TechServiceImpl implements TechService {
 
+    private static final int MAX_SESSIONS_PER_USER = 250;
+    private final Map<String, Set<String>> userSessions = new ConcurrentHashMap<>();
+    private final Map<String, String> emailToOtpMap = new HashMap<>();
     @Autowired
     AuthenticationManager authenticationManager;
     @Autowired
     TechJwtUtils techJwtUtils;
     @Autowired
     TechRepositoryV2 techRepository;
-
     @Autowired
     StoreRepositry storeRepositry;
     @Autowired
@@ -59,10 +61,6 @@ public class TechServiceImpl implements TechService {
     EmailUsernameValidation validation;
     @Autowired
     JavaMailSender javaMailSender;
-
-    private final Map<String, Set<String>> userSessions = new ConcurrentHashMap<>();
-    private static final int MAX_SESSIONS_PER_USER = 250;
-    private final Map<String, String> emailToOtpMap = new HashMap<>();
 
     @Override
     public ResponseEntity<ApiResponse> authenticateTech(TechLoginRequest techLoginRequest) {
@@ -96,6 +94,7 @@ public class TechServiceImpl implements TechService {
                     roles), true, 200));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "...", 500));
+
         }
     }
 
@@ -112,7 +111,6 @@ public class TechServiceImpl implements TechService {
 
     @Override
     public ResponseEntity<ApiResponse> registerTech(TechSignupRequest techsignupRequest) {
-
         try {
             if (validation.isDuplicateUsername(techsignupRequest.getUsername()) || validation.isDuplicateEmail(techsignupRequest.getEmail())) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(null, false, "Error: Username or email is already taken!", 400));
@@ -132,7 +130,6 @@ public class TechServiceImpl implements TechService {
                         techsignupRequest.getComfirmpassword(),
                         // techtechsignupRequest.getPassword(),
                         encoder.encode(techsignupRequest.getPassword()));
-
                 Set<TechRole> techRoles = new HashSet<>();
                 TechRole adminTechRole = techRoleRepository.findByName(ERole.ROLE_SUPPORT)
                         .orElseThrow(() -> new RuntimeException("Error: TechRole is not found."));
@@ -220,6 +217,7 @@ public class TechServiceImpl implements TechService {
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "...", 500));
+
         }
     }
 
@@ -261,7 +259,6 @@ public class TechServiceImpl implements TechService {
             return ResponseEntity.ok().body(new ApiResponse(null, false, "Logged out successfully !", 401));
 
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "...", 500));
         }
     }

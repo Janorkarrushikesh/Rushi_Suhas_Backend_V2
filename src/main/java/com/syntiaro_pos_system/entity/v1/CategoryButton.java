@@ -1,16 +1,21 @@
 package com.syntiaro_pos_system.entity.v1;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "CategoryButton")
 public class CategoryButton {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id ;
+    private Long id;
 
     private String Name;
     private String storeId;
@@ -83,6 +88,7 @@ public class CategoryButton {
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
+
 
     @PostPersist
     public void generateStoreCode() {

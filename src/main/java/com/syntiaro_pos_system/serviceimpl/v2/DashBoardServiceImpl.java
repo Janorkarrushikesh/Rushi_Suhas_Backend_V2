@@ -170,7 +170,7 @@ public class DashBoardServiceImpl implements DashBoardService {
             return ResponseEntity.ok().body(new ApiResponse(savedEntity, true, 200));
         } catch (Exception e) {
             // Handle any exception that may occur during the save operation
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body( new ApiResponse(null, false, "Failed to update the dashboard",500));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "Failed to update the dashboard", 500));
         }
     }
 

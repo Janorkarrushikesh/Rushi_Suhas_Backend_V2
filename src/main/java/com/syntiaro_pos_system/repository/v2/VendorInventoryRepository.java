@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface VendorInventoryRepository extends JpaRepository<VendorInventory,Integer> {
+public interface VendorInventoryRepository extends JpaRepository<VendorInventory, Integer> {
     List<VendorInventory> findInvoiceByStoreId(Integer storeId);
 
     @Query("SELECT MAX(b.invoiceId) FROM VendorInventory b WHERE b.storeId = :storeId")

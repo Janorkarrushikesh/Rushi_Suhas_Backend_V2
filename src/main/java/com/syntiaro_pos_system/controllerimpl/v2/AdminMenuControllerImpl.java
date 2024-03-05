@@ -5,12 +5,11 @@ import com.syntiaro_pos_system.entity.v2.AdminMenu;
 import com.syntiaro_pos_system.entity.v2.ApiResponse;
 import com.syntiaro_pos_system.service.v2.AdminMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.persistence.Cacheable;
 import java.util.List;
+
 @RestController
 public class AdminMenuControllerImpl implements AdminMenuController {
 
@@ -28,7 +27,7 @@ public class AdminMenuControllerImpl implements AdminMenuController {
     }
 
     @Override
-    public ResponseEntity<ApiResponse> updateAdminMenu(Long adminMenuId , AdminMenu adminMenu) {
+    public ResponseEntity<ApiResponse> updateAdminMenu(Long adminMenuId, AdminMenu adminMenu) {
         return adminMenuService.updateAdminMenu(adminMenuId, adminMenu);
     }
 
@@ -40,7 +39,7 @@ public class AdminMenuControllerImpl implements AdminMenuController {
 
     @Override
     public ResponseEntity<ApiResponse> getByTitleAndStoreId(String title, Long storeId) {
-        return adminMenuService.getByTitleAndStoreId(title,storeId);
+        return adminMenuService.getByTitleAndStoreId(title, storeId);
     }
 
 

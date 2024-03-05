@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserRepositoryV2 extends JpaRepository <User,Long>{
+public interface UserRepositoryV2 extends JpaRepository<User, Long> {
     Boolean existsByUsername(String username);
 
     Boolean existsByEmail(String email);

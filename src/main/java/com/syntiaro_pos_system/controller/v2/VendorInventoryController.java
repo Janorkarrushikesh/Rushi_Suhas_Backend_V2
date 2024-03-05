@@ -11,26 +11,26 @@ import org.springframework.web.bind.annotation.*;
 public interface VendorInventoryController {
 
     @PostMapping("/")
-    public ResponseEntity<ApiResponse> saveInvoice(@RequestBody VendorInventory vendorInventory);
+    ResponseEntity<ApiResponse> saveInvoice(@RequestBody VendorInventory vendorInventory);
 
     @GetMapping("/id/{SerialNo}")
-    public ResponseEntity<ApiResponse> getInvoiceById(@PathVariable Integer SerialNo );
+    ResponseEntity<ApiResponse> getInvoiceById(@PathVariable Integer SerialNo);
 
     @GetMapping("/store/{storeId}")
-    public ResponseEntity<ApiResponse> getInvoiceByStoreId(@PathVariable Integer storeId);
+    ResponseEntity<ApiResponse> getInvoiceByStoreId(@PathVariable Integer storeId);
 
     @PatchMapping("/id/{SerialNo}")
-    public ResponseEntity<ApiResponse> updateInvoice(@PathVariable Integer SerialNo,@RequestBody VendorInventory vendorInventory);
+    ResponseEntity<ApiResponse> updateInvoice(@PathVariable Integer SerialNo, @RequestBody VendorInventory vendorInventory);
 
     @DeleteMapping("/{SerialNo}")
-    public ResponseEntity<ApiResponse> deleteInvoiceById(@PathVariable Integer SerialNo);
+    ResponseEntity<ApiResponse> deleteInvoiceById(@PathVariable Integer SerialNo);
 
     @GetMapping("storePage/{storeId}")
-    public ResponseEntity<ApiResponse> getByStore(@PathVariable Integer storeId,
-                                                  @RequestParam(required = false) Integer page,
-                                                  @RequestParam(required = false) Integer size,
-                                                  @RequestParam(required = false) String startDate,
-                                                  @RequestParam(required = false) String endDate);
+    ResponseEntity<ApiResponse> getByStore(@PathVariable Integer storeId,
+                                           @RequestParam(required = false) Integer page,
+                                           @RequestParam(required = false) Integer size,
+                                           @RequestParam(required = false) String startDate,
+                                           @RequestParam(required = false) String endDate);
 
 
 }

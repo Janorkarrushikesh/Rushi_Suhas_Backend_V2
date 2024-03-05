@@ -1,7 +1,9 @@
 package com.syntiaro_pos_system.entity.v2;
 
-import javax.persistence.*;
-import lombok.*;
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 
 //@Getter

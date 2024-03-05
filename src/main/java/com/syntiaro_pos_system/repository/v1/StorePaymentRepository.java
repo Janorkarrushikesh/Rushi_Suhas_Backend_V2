@@ -20,7 +20,6 @@ public interface StorePaymentRepository extends JpaRepository<StorePayment, Long
     boolean existsByUpiIdAndStoreId(String upiId, Long storeId);
 
 
-
     StorePayment findByStoreIdAndAccountNo(Long storeId, String updatedAccountNo);
 
     StorePayment findByStoreIdAndUpiId(Long storeId, String updatedUpiId);

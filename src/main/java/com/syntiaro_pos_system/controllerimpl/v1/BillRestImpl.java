@@ -1,5 +1,9 @@
 package com.syntiaro_pos_system.controllerimpl.v1;
 
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.syntiaro_pos_system.controller.v1.BillController;
 import com.syntiaro_pos_system.entity.v1.*;
 import com.syntiaro_pos_system.repository.v1.BalanceRepository;
@@ -9,10 +13,6 @@ import com.syntiaro_pos_system.request.v1.BillRequest;
 import com.syntiaro_pos_system.service.v1.BillService;
 import com.syntiaro_pos_system.service.v1.OrderService;
 import com.syntiaro_pos_system.serviceimpl.v1.BalanceService;
-import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
@@ -36,7 +36,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.print.*;
 import javax.print.attribute.HashPrintRequestAttributeSet;
@@ -49,8 +52,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 @RestController
 public class BillRestImpl implements BillController {
@@ -70,11 +73,13 @@ public class BillRestImpl implements BillController {
     @Autowired
     private BalanceService balanceService;
     private FoodControllerIMPL targetOrder;
+    private final String twilioAccountSid = "AC67689bd3ddd5cf78130c0c2a1c6530ff";
+    private final String twilioAuthToken = "44379fb1ee8c2e91ad560601bf52ee81";
 
     public ResponseEntity<String> placebill(@RequestBody BillRequest request) {
 
         LocalDate today = LocalDate.now();
-      //  Balance existingBalance = balanceRepository.findByStoreIdAndDate(request.getBill().getStoreId(), today);
+        //  Balance existingBalance = balanceRepository.findByStoreIdAndDate(request.getBill().getStoreId(), today);
         // check final closing status .
         // rushikesh
 //        if(existingBalance.getFinalClosingBalance() != null){
@@ -87,9 +92,9 @@ public class BillRestImpl implements BillController {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a");
         String formattedDate = dateFormat.format(date);
         String orddate = formattedDate;
-        Integer lastBillNumber = billRepository.findLastBillNumberForStore(request.getBill().getStoreId() , billdate );
+        Integer lastBillNumber = billRepository.findLastBillNumberForStore(request.getBill().getStoreId(), billdate);
         request.getBill().setBillId(lastBillNumber != null ? lastBillNumber + 1 : 1);
-        Integer lastBillNumbers = orderRepo.findLastOrderNumberForStore(request.getBill().getStoreId(),billdate);
+        Integer lastBillNumbers = orderRepo.findLastOrderNumberForStore(request.getBill().getStoreId(), billdate);
         request.getBill().getOrder().get(0).setOrderId(lastBillNumbers != null ? lastBillNumbers + 1 : 1);
 
 
@@ -164,8 +169,6 @@ public class BillRestImpl implements BillController {
         }
     }
 
-
-
     private String formatBillAsString(Bill bill) {
         // Format the bill details as a string
         // You can customize this method based on your bill structure
@@ -207,8 +210,6 @@ public class BillRestImpl implements BillController {
         }
         return billText.toString();
     }
-
-
 
     private String formatBillAsStringkot(Bill bill) {
         StringBuilder billText = new StringBuilder();
@@ -255,7 +256,6 @@ public class BillRestImpl implements BillController {
         }
     }
 
-
     @Override
     public Bill placebilld(@RequestBody BillRequest request) {
         List<OrderFood> orderFoodList = request.getOrderFood();
@@ -267,14 +267,14 @@ public class BillRestImpl implements BillController {
                 System.out.println(maxId);
                 System.out.println(result);
                 request.getBill().setBillId(maxId != null ? maxId + 1 : 1);
-                request.getOrder().set(0,new Orders()).setOrderId(maxId != null ? maxId + 1 : 1);
+                request.getOrder().set(0, new Orders()).setOrderId(maxId != null ? maxId + 1 : 1);
             } else {
                 request.getBill().setBillId(1); // Set to 1 if there are no previous records
             }
         } else {
             request.getBill().setBillId(1); // Set to 1 if there are no previous records
         }
-        String id = request.getBill().getOrder().get(0).getStoreId() ;
+        String id = request.getBill().getOrder().get(0).getStoreId();
         Integer lastBillNumbers = orderRepo.findLastNumberForStore(id);
         request.getBill().getOrder().get(0).setOrderId(lastBillNumbers != null ? lastBillNumbers + 1 : 1);
         if (orderFoodList != null && !orderFoodList.isEmpty()) {
@@ -296,12 +296,11 @@ public class BillRestImpl implements BillController {
         return ResponseEntity.ok(lastBill);
     }
 
-
-
     @Override // For Update Data
     public Bill updateBill(@RequestBody Bill bill) {
         return this.billService.updateBill(bill);
     }
+
     @Override
     public ResponseEntity<HttpStatus> deletebill(@PathVariable String id) {
         try {
@@ -312,21 +311,26 @@ public class BillRestImpl implements BillController {
         }
     }
 
-
     @Override
     public Optional<Bill> getbillbyid(@PathVariable Integer id) {
         return this.billService.getbillbyid(id);
 
     }
+
     @Override // For Add Data
     public int saveBill(@RequestBody Bill bill) {
         int id = billService.addBill(bill);
         return id;
     }
+
     @Override
     public List<Bill> getBill() {
         return this.billService.getBill();
     }
+
+    // THIS METHOD IS USE FOR FETCH BILL BY STOREID
+    // this method added for filter last record  3 day  ---- by rushikesh
+
     @Override
     public ResponseEntity<?> getBillById(@PathVariable Integer id) {
         Optional<Bill> bill = billService.getbillbyid(id);
@@ -342,10 +346,7 @@ public class BillRestImpl implements BillController {
         return billService.getBillsByStoreId(storeId);
     }
 
-    // THIS METHOD IS USE FOR FETCH BILL BY STOREID
-    // this method added for filter last record  3 day  ---- by rushikesh
-
-   @Override
+    @Override
     public List<Bill> pendingOrder(@PathVariable Integer storeId) {
         LocalDate DaysAgo = LocalDate.now().minusDays(3);
         return billRepository.findBillsByStoreAndStatusAndDate(storeId, DaysAgo);
@@ -382,18 +383,17 @@ public class BillRestImpl implements BillController {
 
     }
 
-
-    public Bill Qucikbill (@RequestBody BillRequest request) {
+    public Bill Qucikbill(@RequestBody BillRequest request) {
         List<OrderFood> orderFoodList = request.getOrderFood();
         LocalDate billdate = LocalDate.now();
         Date date = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a");
         String formattedDate = dateFormat.format(date);
         String orddate = formattedDate;
-        Integer lastBillNumber = billRepository.findLastBillNumberForStore(request.getBill().getStoreId() , billdate );
+        Integer lastBillNumber = billRepository.findLastBillNumberForStore(request.getBill().getStoreId(), billdate);
         request.getBill().setBillId(lastBillNumber != null ? lastBillNumber + 1 : 1);
-        String id = request.getBill().getOrder().get(0).getStoreId() ;
-        Integer lastBillNumbers = orderRepo.findLastOrderNumberForStore(request.getBill().getStoreId(),billdate);
+        String id = request.getBill().getOrder().get(0).getStoreId();
+        Integer lastBillNumbers = orderRepo.findLastOrderNumberForStore(request.getBill().getStoreId(), billdate);
         request.getBill().getOrder().get(0).setOrderId(lastBillNumbers != null ? lastBillNumbers + 1 : 1);
         if (orderFoodList != null && !orderFoodList.isEmpty()) {
             for (OrderFood orderFood : orderFoodList) {
@@ -421,7 +421,7 @@ public class BillRestImpl implements BillController {
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Bill Data");
             Row headerRow = sheet.createRow(0);
-            String[] headerss = { "Bill Date", "Contact", "Paymentmod", "total", "Store ID" };
+            String[] headerss = {"Bill Date", "Contact", "Paymentmod", "total", "Store ID"};
             for (int i = 0; i < headerss.length; i++) {
                 Cell cell = headerRow.createCell(i);
                 cell.setCellValue(headerss[i]);
@@ -441,7 +441,7 @@ public class BillRestImpl implements BillController {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
             headers.setContentDispositionFormData("attachment", "BIll_DATA.xlsx");
-             return ResponseEntity.ok()
+            return ResponseEntity.ok()
                     .headers(headers)
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .body(outputStream.toByteArray());
@@ -449,8 +449,6 @@ public class BillRestImpl implements BillController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
-
 
     @Override
     public ResponseEntity<Float> getTotalCashAmountByStoreIdAndToday(@PathVariable Integer storeId) {
@@ -465,6 +463,7 @@ public class BillRestImpl implements BillController {
         Float totalCardAmount = billService.calculateTotalCardAmountByStoreIdAndDay(storeId, today);
         return ResponseEntity.ok(totalCardAmount);
     }
+
     @Override
     public ResponseEntity<Float> getTotalUpiAmountByStoreIdAndToday(@PathVariable Integer storeId) {
         LocalDate today = LocalDate.now();
@@ -481,9 +480,6 @@ public class BillRestImpl implements BillController {
         Float totalPayments = totalCashAmount + totalCardAmount + totalUpiAmount;
         return ResponseEntity.ok(totalPayments);
     }
-    private String twilioAccountSid = "AC67689bd3ddd5cf78130c0c2a1c6530ff";
-    private String twilioAuthToken = "44379fb1ee8c2e91ad560601bf52ee81";
-
 
     public void sendWhatsappMassage(@RequestBody BillRequest billRequest) {
         Twilio.init(twilioAccountSid, twilioAuthToken);
@@ -595,6 +591,7 @@ public class BillRestImpl implements BillController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
     @Override
     public ResponseEntity<List<Bill>> getDailyBalanceReportUpi(@PathVariable(name = "store_id") Integer storeId) {
         try {
@@ -658,8 +655,6 @@ public class BillRestImpl implements BillController {
 //    }
 
 
-
-
     @Override
     public ResponseEntity<String> createBill(@RequestBody BillRequest request) {
         List<OrderFood> orderFoodList = request.getOrderFood();
@@ -697,7 +692,7 @@ public class BillRestImpl implements BillController {
 
         // Complete order and place the bill
         completeOrderAndPlaceBill(savedBill, billDate);
-       // printBillkot(request.getBill() , "POS58 Printer(2)11");
+        // printBillkot(request.getBill() , "POS58 Printer(2)11");
         return ResponseEntity.ok(String.valueOf(savedBill));
 
     }
@@ -845,9 +840,6 @@ public class BillRestImpl implements BillController {
     }
 
 
-
-
-
     @Override
     public ResponseEntity<byte[]> generateExcel(
             @RequestParam(required = false) Integer store_id,
@@ -987,7 +979,7 @@ public class BillRestImpl implements BillController {
 
                 // Format the date
                 String formattedDate = billDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-               // Add date to the row
+                // Add date to the row
                 table.addCell(formattedDate);
                 // Add payment details to the table
                 table.addCell(amounts.getOrDefault("cash", 0.0f).toString());
@@ -1104,11 +1096,9 @@ public class BillRestImpl implements BillController {
     }
 
 
-
-
     // No of cells increased by 1 .
     @Override
-    public ResponseEntity<byte[]> getTotalPaymentGeneratePdfbyStoreid( @PathVariable Integer storeId) throws DocumentException {
+    public ResponseEntity<byte[]> getTotalPaymentGeneratePdfbyStoreid(@PathVariable Integer storeId) throws DocumentException {
 
         Map<LocalDate, Map<String, Float>> totalAmountMap = new TreeMap<>();
 
@@ -1232,13 +1222,13 @@ public class BillRestImpl implements BillController {
             @RequestParam(name = "page", defaultValue = "0") Integer page,
             @RequestParam(name = "size", defaultValue = "20") Integer size) {
 
-        ApiResponse apiResponse=null;
+        ApiResponse apiResponse = null;
         try {
-            apiResponse =  billService.getBillsReport(storeId,page,size);
+            apiResponse = billService.getBillsReport(storeId, page, size);
             return ResponseEntity.ok(apiResponse);
         } catch (Exception e) {
             // Log the exception or handle it appropriately
-            apiResponse = new ApiResponse(null,false,500,"something went wrong!");
+            apiResponse = new ApiResponse(null, false, 500, "something went wrong!");
             return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

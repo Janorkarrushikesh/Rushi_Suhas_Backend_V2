@@ -1,14 +1,14 @@
 package com.syntiaro_pos_system.controllerimpl.v1;
 
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.syntiaro_pos_system.controller.v1.PaymentController;
 import com.syntiaro_pos_system.entity.v1.Payment;
 import com.syntiaro_pos_system.repository.v1.PaymentRepo;
 import com.syntiaro_pos_system.request.v1.paymentRequest;
 import com.syntiaro_pos_system.service.v1.PaymentService;
-import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
 import net.glxn.qrgen.QRCode;
 import net.glxn.qrgen.image.ImageType;
 import org.apache.poi.ss.usermodel.Cell;
@@ -23,7 +23,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -68,8 +71,8 @@ public class PaymentControllerImpl implements PaymentController {
     @Override
     public Payment placepayment(@RequestBody paymentRequest request) {
         Integer lastBillNumber = paymentRepo.findLastNumberForStore(request.getPayment().getStoreId());
-        System.out.println("hi" +lastBillNumber);
-       // request.getPayment().setUpi_id("upi://pay?pa="+request.getPayment().getUpi_id());
+        System.out.println("hi" + lastBillNumber);
+        // request.getPayment().setUpi_id("upi://pay?pa="+request.getPayment().getUpi_id());
         request.getPayment().setUpiId(request.getPayment().getUpiId());
         request.getPayment().setPaymentId(lastBillNumber != null ? lastBillNumber + 1 : 1);
         return paymentRepo.save(request.getPayment());
@@ -91,8 +94,7 @@ public class PaymentControllerImpl implements PaymentController {
     }
 
 
-
- // this method paymentgatway
+    // this method paymentgatway
     @Override
     public ResponseEntity<Payment> Paymentgatway(Integer payment_id, Payment payment) {
         try {
@@ -142,8 +144,8 @@ public class PaymentControllerImpl implements PaymentController {
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Invoice Data");
             Row headerRow = sheet.createRow(0);
-            String[] headerss = { "Payment Id", "Vendor Name", "Payment Date", "payment_mode", "Bank_name",
-                    "Account no", "Branch", "IFSC code", "total" };
+            String[] headerss = {"Payment Id", "Vendor Name", "Payment Date", "payment_mode", "Bank_name",
+                    "Account no", "Branch", "IFSC code", "total"};
             for (int i = 0; i < headerss.length; i++) {
                 Cell cell = headerRow.createCell(i);
                 cell.setCellValue(headerss[i]);
@@ -235,7 +237,7 @@ public class PaymentControllerImpl implements PaymentController {
             String upiId = getUpiIdForVendor(paymentid);
             String total = getUpiIdForVendortotal((paymentid));
             // Generate a QR code for the UPI ID
-            byte[] qrCodeBytes = generateQRCodeForUPI("upi://pay?pa="+upiId); // remove total amount fetch after qr scan .
+            byte[] qrCodeBytes = generateQRCodeForUPI("upi://pay?pa=" + upiId); // remove total amount fetch after qr scan .
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.IMAGE_PNG);
             return new ResponseEntity<>(qrCodeBytes, headers, HttpStatus.OK);
@@ -277,14 +279,14 @@ public class PaymentControllerImpl implements PaymentController {
 
         if (store_id != null) {
             // Fetch payments for a specific store ID
-            paymentList = paymentRepo.findByStoreIdAndCreatedDateBetween(store_id , startDate , endDate);
+            paymentList = paymentRepo.findByStoreIdAndCreatedDateBetween(store_id, startDate, endDate);
 
         } else if (startDate != null && endDate != null) {
             try {
                 // Parse date strings into java.util.Date
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                startDates = dateFormat.parse(String.valueOf(startDate));
-                endDates = dateFormat.parse(String.valueOf(endDate));
+                startDates = dateFormat.parse(startDate);
+                endDates = dateFormat.parse(endDate);
             } catch (ParseException ex) {
                 // Handle the parsing error here, e.g., return an error response
                 return ResponseEntity.badRequest().body("Invalid date format");
@@ -307,7 +309,7 @@ public class PaymentControllerImpl implements PaymentController {
 
         document.open();
 
-        Paragraph title = new Paragraph("PAYMENT DETAILS" , new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD));
+        Paragraph title = new Paragraph("PAYMENT DETAILS", new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD));
         title.setAlignment(Element.ALIGN_CENTER);
         document.add(title);// Add spacing between title and table
 
@@ -315,7 +317,6 @@ public class PaymentControllerImpl implements PaymentController {
         Paragraph spacing = new Paragraph(" "); // Empty paragraph
         spacing.setSpacingAfter(10f); // Adjust the spacing as needed
         document.add(spacing);
-
 
 
         PdfPTable table = new PdfPTable(11); // Number of columns
@@ -343,7 +344,6 @@ public class PaymentControllerImpl implements PaymentController {
         table.addCell(cell);
         cell = new PdfPCell(new Phrase("Total ₹", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
         table.addCell(cell);
-        ;
         int serialNumber = 1;
         for (Payment payment : paymentList) {
             table.addCell(String.valueOf(serialNumber++));
@@ -377,7 +377,6 @@ public class PaymentControllerImpl implements PaymentController {
     }
 
 
-
     @Override
     public ResponseEntity<?> generatePDFByStoreId(
             @PathVariable Integer store_id) throws DocumentException {
@@ -404,7 +403,7 @@ public class PaymentControllerImpl implements PaymentController {
 
         document.open();
 
-        Paragraph title = new Paragraph("PAYMENT DETAILS" , new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD));
+        Paragraph title = new Paragraph("PAYMENT DETAILS", new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD));
         title.setAlignment(Element.ALIGN_CENTER);
         document.add(title);// Add spacing between title and table
 
@@ -412,7 +411,6 @@ public class PaymentControllerImpl implements PaymentController {
         Paragraph spacing = new Paragraph(" "); // Empty paragraph
         spacing.setSpacingAfter(10f); // Adjust the spacing as needed
         document.add(spacing);
-
 
 
         PdfPTable table = new PdfPTable(11); // Number of columns
@@ -440,7 +438,6 @@ public class PaymentControllerImpl implements PaymentController {
         table.addCell(cell);
         cell = new PdfPCell(new Phrase("Total ₹", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
         table.addCell(cell);
-        ;
         int serialNumber = 1;
         for (Payment payment : paymentList) {
             table.addCell(String.valueOf(serialNumber++));
@@ -485,8 +482,6 @@ public class PaymentControllerImpl implements PaymentController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-
 
 
 }

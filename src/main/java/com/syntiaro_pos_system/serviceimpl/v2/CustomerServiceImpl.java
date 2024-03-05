@@ -38,7 +38,7 @@ public class CustomerServiceImpl implements CustomerService {
         } catch (Exception e) {
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(null, false, "... ",500));
+                    .body(new ApiResponse(null, false, "... ", 500));
         }
     }
 
@@ -52,36 +52,36 @@ public class CustomerServiceImpl implements CustomerService {
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(null, false, "Id Not Found", 404));
             }
-        }catch (Exception e)
-        {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null,false,"....",500));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "....", 500));
         }
 
     }
 
     @Override
-    public ResponseEntity<ApiResponse> getByStoreId(Integer storeId , Integer page , Integer size,String startDate,String endDate) {
+
+    public ResponseEntity<ApiResponse> getByStoreId(Integer storeId, Integer page, Integer size, String startDate, String endDate) {
         try {
             List<CustomerDetails> existingCustomer = customerRepository.findByStoreId(storeId);
-            if (existingCustomer.isEmpty()){
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(null,false,"Id Not Found",404));
-            }else {
-                if (page!=null && size!=null){
-                    return ResponseEntity.ok().body(new ApiResponse(getByPageAndSize(storeId,page,size),true,200));
-                } else if (startDate!=null && endDate!=null) {
-                    return ResponseEntity.ok().body(new ApiResponse(getByDate(storeId,startDate,endDate),true,200));
-                }else  return ResponseEntity.ok().body(new ApiResponse(existingCustomer,true,200));
+            if (existingCustomer.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(null, false, "Id Not Found", 404));
+            } else {
+                if (page != null && size != null) {
+                    return ResponseEntity.ok().body(new ApiResponse(getByPageAndSize(storeId, page, size), true, 200));
+                } else if (startDate != null && endDate != null) {
+                    return ResponseEntity.ok().body(new ApiResponse(getByDate(storeId, startDate, endDate), true, 200));
+                } else return ResponseEntity.ok().body(new ApiResponse(existingCustomer, true, 200));
             }
-        }catch (Exception e)
-        {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null,false,"....",500));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "....", 500));
         }
     }
 
+
     private Object getByDate(Integer storeId, String startDate, String endDate) {
-        List<CustomerDetails> customerList = customerRepository.findByStoreIdAndDateRange(storeId,startDate,endDate);
-        List<Map<String ,Object>> customerMapList= new ArrayList<>();
-        if (customerList!=null) {
+        List<CustomerDetails> customerList = customerRepository.findByStoreIdAndDateRange(storeId, startDate, endDate);
+        List<Map<String, Object>> customerMapList = new ArrayList<>();
+        if (customerList != null) {
             for (CustomerDetails customerDetails : customerList) {
                 Map<String, Object> customerMap = new HashMap<>();
                 customerMap.put("id", customerDetails.getCustomerId());
@@ -96,9 +96,9 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     private Object getByPageAndSize(Integer storeId, Integer page, Integer size) {
-        Pageable pageable = PageRequest.of(page,size);
-        Page<CustomerDetails> existingCustomerDetails = customerRepository.findByStore_id(storeId ,pageable);
-        List<Map<String,Object>> customerList = new ArrayList<>();
+        Pageable pageable = PageRequest.of(page, size);
+        Page<CustomerDetails> existingCustomerDetails = customerRepository.findByStore_id(storeId, pageable);
+        List<Map<String, Object>> customerList = new ArrayList<>();
         for (CustomerDetails customerDetails : existingCustomerDetails) {
             Map<String, Object> customerMap = new HashMap<>();
             customerMap.put("id", customerDetails.getCustomerId());
@@ -110,6 +110,4 @@ public class CustomerServiceImpl implements CustomerService {
         }
         return customerList;
     }
-
-
 }

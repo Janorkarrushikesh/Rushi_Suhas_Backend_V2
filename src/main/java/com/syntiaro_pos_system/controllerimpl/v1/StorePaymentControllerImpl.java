@@ -1,22 +1,24 @@
 package com.syntiaro_pos_system.controllerimpl.v1;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.syntiaro_pos_system.controller.v1.StorePaymentController;
 import com.syntiaro_pos_system.entity.v1.StorePayment;
 import com.syntiaro_pos_system.repository.v1.StorePaymentRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import net.glxn.qrgen.QRCode;
 import net.glxn.qrgen.image.ImageType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
 
 @RestController
 public class StorePaymentControllerImpl implements StorePaymentController {
@@ -62,7 +64,6 @@ public class StorePaymentControllerImpl implements StorePaymentController {
             return ResponseEntity.notFound().build();
         }
     }
-
 
 
     // THIS METHOD IS USE FOR DELETE STOREPAYMENT

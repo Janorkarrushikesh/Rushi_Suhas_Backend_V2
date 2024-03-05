@@ -14,17 +14,17 @@ import java.util.Map;
 public interface SubMenuController {
 
     @PostMapping(path = "/saves")
-    public String saveSubMenu(@RequestBody SubMenu subMenu);
+    String saveSubMenu(@RequestBody SubMenu subMenu);
 
     @GetMapping(path = "/allSubMenu")
-    public List<SubMenu> getSubMenu();
+    List<SubMenu> getSubMenu();
 
     @DeleteMapping(path = "/delete/{subMenu_id}")
-    public ResponseEntity<HttpStatus> deleteSubMenu(@PathVariable String subMenu_id);
+    ResponseEntity<HttpStatus> deleteSubMenu(@PathVariable String subMenu_id);
 
     @PatchMapping("/patchsubmenu/{id}")
-    public ResponseEntity<SubMenu> updateSubMenuFields(
+    ResponseEntity<SubMenu> updateSubMenuFields(
             @PathVariable("id") int id,
-            @RequestBody Map<String, String> updatedFields) ;
+            @RequestBody Map<String, String> updatedFields);
 
 }

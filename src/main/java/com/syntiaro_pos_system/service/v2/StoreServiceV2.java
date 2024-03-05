@@ -3,7 +3,6 @@ package com.syntiaro_pos_system.service.v2;
 import com.syntiaro_pos_system.entity.v2.ApiResponse;
 import com.syntiaro_pos_system.request.v1.StoreLoginRequest;
 import com.syntiaro_pos_system.request.v1.StoreSignupRequest;
-import com.syntiaro_pos_system.response.v2.StoreJwtResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,18 +11,20 @@ import java.util.Map;
 
 
 public interface StoreServiceV2 {
+
     ResponseEntity<ApiResponse> storeLogin(StoreLoginRequest storeLoginRequest);
+
     ResponseEntity<ApiResponse> storeConfig(Long storeid);
 
-    ResponseEntity<ApiResponse> storeLsit( Integer page , Integer size);
+    ResponseEntity<ApiResponse> storeLsit(Integer page, Integer size);
 
     ResponseEntity<ApiResponse> forgotPassword(StoreSignupRequest storeSignupRequest);
 
     ResponseEntity<ApiResponse> resetPassword(Map<String, String> resetRequest);
+
     ResponseEntity<byte[]> getlogoByStoreId(Long storeId);
 
     ResponseEntity<ApiResponse> registerStore(StoreSignupRequest signUpRequestStore);
-
 
     ResponseEntity<ApiResponse> renewSubscriptionByStoreId(String username, String email, Integer year);
 

@@ -1,12 +1,11 @@
 package com.syntiaro_pos_system.service.v2;
 
-import com.syntiaro_pos_system.entity.v2.ApiResponse;
 import com.syntiaro_pos_system.entity.v1.Food;
+import com.syntiaro_pos_system.entity.v2.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 
@@ -27,7 +26,7 @@ public interface FoodService {
 
     ResponseEntity<ApiResponse> downloadExcelfileByStoreId(String storeId);
 
-    ResponseEntity<ApiResponse> getFoodsByStoreId(String storeId , Integer page, Integer size,String startDate,String endDate);
+    ResponseEntity<ApiResponse> getFoodsByStoreId(String storeId, Integer page, Integer size, String startDate, String endDate);
 
     ResponseEntity<ApiResponse> addonlist(String storeId);
 }

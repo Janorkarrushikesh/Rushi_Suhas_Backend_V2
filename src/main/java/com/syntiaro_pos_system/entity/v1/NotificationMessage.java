@@ -44,10 +44,6 @@ public class NotificationMessage {
         this.id = id;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
     public String getSubject() {
         return subject;
     }
@@ -64,10 +60,6 @@ public class NotificationMessage {
         this.startDateTime = startDateTime;
     }
 
-    public void setEndDateTime(String endDateTime) {
-        this.endDateTime = endDateTime;
-    }
-
     @PostPersist
     public void generateStoreCode() {
         Date date = new Date();
@@ -78,15 +70,19 @@ public class NotificationMessage {
     }
 
     public String getEndDateTime() {
-        return  endDateTime;
+        return endDateTime;
+    }
+
+    public void setEndDateTime(String endDateTime) {
+        this.endDateTime = endDateTime;
     }
 
     public String getDateTime() {
-        return  dateTime;
+        return dateTime;
     }
 
     public void setDateTime(String dateTime) {
-        this.dateTime=dateTime;
+        this.dateTime = dateTime;
     }
 
     public String getEmail() {
@@ -94,10 +90,14 @@ public class NotificationMessage {
     }
 
     public void setEmail(String email) {
-        this.email=email;
+        this.email = email;
     }
 
     public @Size(max = 8000) String getMessage() {
-        return  message;
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

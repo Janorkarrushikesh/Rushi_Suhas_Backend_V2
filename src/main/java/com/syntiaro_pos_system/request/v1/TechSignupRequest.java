@@ -154,16 +154,6 @@ public class TechSignupRequest {
         this.roles = roles;
     }
 
-
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public void setUpdatedby(String updatedby) {
-        this.updatedby = updatedby;
-    }
-
     public Date getCreated_date() {
         return created_date;
     }
@@ -184,7 +174,15 @@ public class TechSignupRequest {
         return createdBy;
     }
 
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
     public String getUpdatedby() {
         return updatedby;
+    }
+
+    public void setUpdatedby(String updatedby) {
+        this.updatedby = updatedby;
     }
 }

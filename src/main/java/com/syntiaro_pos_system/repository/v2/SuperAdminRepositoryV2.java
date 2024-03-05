@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface SuperAdminRepositoryV2 extends JpaRepository<SuperAdmin,Long> {
+public interface SuperAdminRepositoryV2 extends JpaRepository<SuperAdmin, Long> {
     Boolean existsByUsername(String username);
 
     boolean existsByEmail(String email);

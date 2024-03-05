@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
 
-public interface OrderRepository extends JpaRepository<Orders,Integer> {
+public interface OrderRepository extends JpaRepository<Orders, Integer> {
     @Query("SELECT MAX(b.BillId)  FROM Bill b WHERE b.storeId = :storeId AND b.billDate = :billdate")
     Integer findLastOrderNumberForStore(Integer storeId, LocalDate billdate);
 }

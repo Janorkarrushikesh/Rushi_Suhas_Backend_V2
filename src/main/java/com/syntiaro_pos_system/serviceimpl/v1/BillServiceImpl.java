@@ -1,7 +1,6 @@
 package com.syntiaro_pos_system.serviceimpl.v1;
 
 
-
 import com.syntiaro_pos_system.entity.v1.*;
 import com.syntiaro_pos_system.repository.v1.BalanceRepository;
 import com.syntiaro_pos_system.repository.v1.BillRepo;
@@ -10,15 +9,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.*;
 
 @Slf4j
 @Service
-public class  BillServiceImpl implements BillService {
+public class BillServiceImpl implements BillService {
     @Autowired
     BillRepo billRepo;
 
@@ -73,7 +72,6 @@ public class  BillServiceImpl implements BillService {
     }
 
 
-
     // THIS METHOD IS USE FOR FETCH BILL BY ID
     @Override
     public Optional<Bill> getbillbyid(Integer id) {
@@ -83,7 +81,7 @@ public class  BillServiceImpl implements BillService {
 
     @Override
     public Bill updateBill(Integer id, Bill bill) {
-        Optional<Bill> existingBill = billRepo.findById((int) Integer.parseInt(String.valueOf((id))));
+        Optional<Bill> existingBill = billRepo.findById(Integer.parseInt(String.valueOf((id))));
 
 
         if (existingBill.isPresent()) {
@@ -120,7 +118,7 @@ public class  BillServiceImpl implements BillService {
             if (bill.getDiscount() != null) {
                 updatebill.setDiscount(bill.getDiscount());
             }
-            if(bill.getBillDate() != null){
+            if (bill.getBillDate() != null) {
                 updatebill.setBillDate(LocalDate.now());
             }
 
@@ -258,9 +256,6 @@ public class  BillServiceImpl implements BillService {
 
         return new ApiResponse(data, true, 200);
     }
-
-
-
 
 
 }

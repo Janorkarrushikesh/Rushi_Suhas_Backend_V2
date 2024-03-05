@@ -9,7 +9,7 @@ public interface CategoryBtnService {
 
     ResponseEntity<ApiResponse> getButtonById(Long id);
 
-    public ResponseEntity<ApiResponse> saveButton(CategoryButton categoryButton);
+    ResponseEntity<ApiResponse> saveButton(CategoryButton categoryButton);
 
     ResponseEntity<ApiResponse> updatecategoryById(Long id, CategoryButton categoryButton);
 

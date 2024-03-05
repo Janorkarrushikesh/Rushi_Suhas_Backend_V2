@@ -26,6 +26,7 @@ public class EmailUsernameValidation {
                 techRepository.existsByUsername(username) ||
                 superAdminRepository.existsByUsername(username);
     }
+
     public boolean isDuplicateEmail(String email) {
         return techRepository.existsByEmail(email) ||
                 userRepository.existsByEmail(email) ||

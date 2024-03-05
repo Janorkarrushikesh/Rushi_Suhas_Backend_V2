@@ -1,8 +1,8 @@
 package com.syntiaro_pos_system.controller.v2;
 
 
-import com.syntiaro_pos_system.entity.v2.ApiResponse;
 import com.syntiaro_pos_system.entity.v1.Tax;
+import com.syntiaro_pos_system.entity.v2.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,18 +10,18 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/v2/sys/tax")
 public interface TaxController {
     @PostMapping("/")
-    public ResponseEntity<ApiResponse> saveTax(@RequestBody Tax tax);
+    ResponseEntity<ApiResponse> saveTax(@RequestBody Tax tax);
 
     @GetMapping("/{SerialNo}")
-    public ResponseEntity<ApiResponse> getTaxById(@PathVariable Long SerialNo);
+    ResponseEntity<ApiResponse> getTaxById(@PathVariable Long SerialNo);
 
     @GetMapping("/store/{storeid}")
-    public ResponseEntity<ApiResponse> getTaxByStoreId(@PathVariable String storeid);
+    ResponseEntity<ApiResponse> getTaxByStoreId(@PathVariable String storeid);
 
     @PatchMapping("/id/{SerialNo}")
-    public ResponseEntity<ApiResponse> updateTaxById(@PathVariable Long SerialNo, @RequestBody Tax tax);
+    ResponseEntity<ApiResponse> updateTaxById(@PathVariable Long SerialNo, @RequestBody Tax tax);
 
     @DeleteMapping("/{SerialNo}")
-    public ResponseEntity<ApiResponse> deletetaxById(@PathVariable Long SerialNo);
+    ResponseEntity<ApiResponse> deletetaxById(@PathVariable Long SerialNo);
 
 }

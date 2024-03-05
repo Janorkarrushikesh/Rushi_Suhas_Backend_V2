@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface TechRepositoryV2 extends JpaRepository <Tech,Long>{
+public interface TechRepositoryV2 extends JpaRepository<Tech, Long> {
     Boolean existsByUsername(String username);
 
     boolean existsByEmail(String email);

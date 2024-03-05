@@ -141,30 +141,30 @@ public class VendorInventoryServiceImpl implements VendorInventoryService {
         List<VendorInventory> vendorInventoryList = vendorInventoryRepository.findBetweenDate(storeId, startDate, endDate);
         List<Map<String, Object>> invoiceMap = new ArrayList<>();
         if (vendorInventoryList != null) {
-            for (VendorInventory vendorInventory : vendorInventoryList){
+            for (VendorInventory vendorInventory : vendorInventoryList) {
                 Map<String, Object> map = new HashMap<>();
-            map.put("id", vendorInventory.getInvoiceId());
-            map.put("name", vendorInventory.getVendorName());
-            map.put("itemName", vendorInventory.getItemName());
-            map.put("price", vendorInventory.getPrice());
-            map.put("quantity", vendorInventory.getQuantity());
-            map.put("discount", vendorInventory.getDiscount());
-            map.put("invoiceStatus", vendorInventory.getPaymentStatus());
-            map.put("total", vendorInventory.getTotal());
-            map.put("unit", vendorInventory.getUnit());
-            invoiceMap.add(map);
-        }
+                map.put("id", vendorInventory.getInvoiceId());
+                map.put("name", vendorInventory.getVendorName());
+                map.put("itemName", vendorInventory.getItemName());
+                map.put("price", vendorInventory.getPrice());
+                map.put("quantity", vendorInventory.getQuantity());
+                map.put("discount", vendorInventory.getDiscount());
+                map.put("invoiceStatus", vendorInventory.getPaymentStatus());
+                map.put("total", vendorInventory.getTotal());
+                map.put("unit", vendorInventory.getUnit());
+                invoiceMap.add(map);
+            }
             return invoiceMap;
-    }
+        }
         return " Data Not Found ";
     }
 
     private Object getByPageAndSize(Integer storeId, Integer page, Integer size) {
-      Pageable pageable=PageRequest.of(page,size);
-        Page<VendorInventory> invoiceData = vendorInventoryRepository.findByStoreId(storeId,pageable);
-        List<Map<String,Object>> invoiceList = new ArrayList<>();
-        for (VendorInventory vendorInventory : invoiceData){
-            Map<String,Object> map = new HashMap<>();
+        Pageable pageable = PageRequest.of(page, size);
+        Page<VendorInventory> invoiceData = vendorInventoryRepository.findByStoreId(storeId, pageable);
+        List<Map<String, Object>> invoiceList = new ArrayList<>();
+        for (VendorInventory vendorInventory : invoiceData) {
+            Map<String, Object> map = new HashMap<>();
             map.put("id", vendorInventory.getInvoiceId());
             map.put("name", vendorInventory.getVendorName());
             map.put("itemName", vendorInventory.getItemName());

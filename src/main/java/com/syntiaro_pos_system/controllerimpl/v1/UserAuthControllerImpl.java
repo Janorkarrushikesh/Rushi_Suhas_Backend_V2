@@ -1,12 +1,5 @@
 package com.syntiaro_pos_system.controllerimpl.v1;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityNotFoundException;
-import javax.validation.Valid;
-
 import com.syntiaro_pos_system.controller.v1.UserAuthController;
 import com.syntiaro_pos_system.entity.v1.ERole;
 import com.syntiaro_pos_system.entity.v1.User;
@@ -33,51 +26,48 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.persistence.EntityNotFoundException;
+import javax.validation.Valid;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @RestController
 public class UserAuthControllerImpl implements UserAuthController {
-    @Autowired
-    AuthenticationManager authenticationManagers;
-
-    @Autowired
-    StoreRepository storeRepository;
-
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    TechRepository techRepository;
-
-    @Autowired
-    SuperAdminRepository superAdminRepository;
-
-    @Autowired
-    UserRoleRepository userRoleRepository;
-
-    @Autowired
-    PasswordEncoder encoder;
-
-    @Autowired
-    JwtUtils jwtUtils;
-
-    @Autowired
-    EmailSenderService emailSenderService;
-
-    @Autowired
-    JavaMailSender javaMailSender;
-
+    private static final int MAX_SESSIONS_PER_USER = 500;
     /// {----------------------MADE BY RUSHIKESH-----------------START
     /// HERE--------------------}
     private final Map<String, Set<String>> userSessions = new ConcurrentHashMap<>();
-    private static final int MAX_SESSIONS_PER_USER = 500;
+    private final Map<String, String> emailToOtpMap = new HashMap<>();
+    @Autowired
+    AuthenticationManager authenticationManagers;
+    @Autowired
+    StoreRepository storeRepository;
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    TechRepository techRepository;
+    @Autowired
+    SuperAdminRepository superAdminRepository;
+    @Autowired
+    UserRoleRepository userRoleRepository;
+    @Autowired
+    PasswordEncoder encoder;
+    @Autowired
+    JwtUtils jwtUtils;
+    @Autowired
+    EmailSenderService emailSenderService;
 
     /// {----------------------MADE BY RUSHIKESH-----------------END
     /// HETE--------------------}
-
-    private final Map<String, String> emailToOtpMap = new HashMap<>();
-
-    private String otp = OTPUtil.generateOTP(6);
+    @Autowired
+    JavaMailSender javaMailSender;
+    private final String otp = OTPUtil.generateOTP(6);
 
     // THIS METHOD IS USE FOR USER SIGNIN
     @Override

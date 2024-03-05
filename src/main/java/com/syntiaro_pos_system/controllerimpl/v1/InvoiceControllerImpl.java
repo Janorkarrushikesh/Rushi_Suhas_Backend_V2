@@ -1,13 +1,13 @@
 package com.syntiaro_pos_system.controllerimpl.v1;
 
-import com.syntiaro_pos_system.controller.v1.InvoiceController;
-import com.syntiaro_pos_system.entity.v1.VendorInventory;
-import com.syntiaro_pos_system.repository.v1.InvoiceRepo;
-import com.syntiaro_pos_system.service.v1.InvoiceService;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.syntiaro_pos_system.controller.v1.InvoiceController;
+import com.syntiaro_pos_system.entity.v1.VendorInventory;
+import com.syntiaro_pos_system.repository.v1.InvoiceRepo;
+import com.syntiaro_pos_system.service.v1.InvoiceService;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -20,7 +20,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.ByteArrayInputStream;
@@ -102,12 +105,12 @@ public class InvoiceControllerImpl implements InvoiceController {
     }
 
     @Override
-    public ResponseEntity<byte[]> generateExcelByStoreId(@PathVariable Integer storeId ) {
+    public ResponseEntity<byte[]> generateExcelByStoreId(@PathVariable Integer storeId) {
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Invoice Data");
             Row headerRow = sheet.createRow(0);
-            String[] headerss = { "invoice Id", "Vendor Name", "invoice Date", "item_name",
-                    "Quantity", "Unit", "Total", "Store ID" };
+            String[] headerss = {"invoice Id", "Vendor Name", "invoice Date", "item_name",
+                    "Quantity", "Unit", "Total", "Store ID"};
             for (int i = 0; i < headerss.length; i++) {
                 Cell cell = headerRow.createCell(i);
                 cell.setCellValue(headerss[i]);
@@ -150,8 +153,8 @@ public class InvoiceControllerImpl implements InvoiceController {
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Invoice Data");
             Row headerRow = sheet.createRow(0);
-            String[] headers = { "invoice Id", "Vendor Name", "Inventory Code","Item Name","Quantity","Price", "Unit", "Discount",
-                     "Total" };
+            String[] headers = {"invoice Id", "Vendor Name", "Inventory Code", "Item Name", "Quantity", "Price", "Unit", "Discount",
+                    "Total"};
             for (int i = 0; i < headers.length; i++) {
                 Cell cell = headerRow.createCell(i);
                 cell.setCellValue(headers[i]);
@@ -163,10 +166,10 @@ public class InvoiceControllerImpl implements InvoiceController {
             int rowNum = 1;
             for (VendorInventory vendorInventory : vendorInventories) {
                 Row row = sheet.createRow(rowNum++);
-               row.createCell(0).setCellValue(vendorInventory.getInvoiceId());
+                row.createCell(0).setCellValue(vendorInventory.getInvoiceId());
                 row.createCell(1).setCellValue(vendorInventory.getVendorName());
                 row.createCell(2).setCellValue(vendorInventory.getInventoryCode());
-               row.createCell(3).setCellValue(vendorInventory.getItemName());
+                row.createCell(3).setCellValue(vendorInventory.getItemName());
                 row.createCell(4).setCellValue(vendorInventory.getQuantity());
                 row.createCell(5).setCellValue(vendorInventory.getPrice());
                 row.createCell(6).setCellValue(vendorInventory.getUnit());
@@ -187,6 +190,7 @@ public class InvoiceControllerImpl implements InvoiceController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
     @Override
     public ResponseEntity<?> generatePDF(
             @RequestParam Integer store_id,
@@ -198,21 +202,21 @@ public class InvoiceControllerImpl implements InvoiceController {
 
         if (store_id != null) {
             // Fetch payments for a specific store ID
-            vendorInventoryList = invoiceRepo.findByStoreIdAndDateRange(store_id , startDate , endDate);
+            vendorInventoryList = invoiceRepo.findByStoreIdAndDateRange(store_id, startDate, endDate);
 
         } else if (startDate != null && endDate != null) {
             try {
                 // Parse date strings into java.util.Date
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                startDates = dateFormat.parse(String.valueOf(startDate));
-                endDates = dateFormat.parse(String.valueOf(endDate));
+                startDates = dateFormat.parse(startDate);
+                endDates = dateFormat.parse(endDate);
             } catch (ParseException ex) {
                 // Handle the parsing error here, e.g., return an error response
                 return ResponseEntity.badRequest().body("Invalid date format");
             }
 
             // Filter the stores based on the date range
-            vendorInventoryList = invoiceRepo.findByStoreIdAndDateRange(store_id , startDate , endDate);
+            vendorInventoryList = invoiceRepo.findByStoreIdAndDateRange(store_id, startDate, endDate);
         } else {
             // If no date range is specified, retrieve all stores
             vendorInventoryList = invoiceRepo.findAll();
@@ -228,7 +232,7 @@ public class InvoiceControllerImpl implements InvoiceController {
 
         document.open();
 
-        Paragraph title = new Paragraph("VENDOR_INVENTORY_DETAILS" , new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD));
+        Paragraph title = new Paragraph("VENDOR_INVENTORY_DETAILS", new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD));
         title.setAlignment(Element.ALIGN_CENTER);
         document.add(title);// Add spacing between title and table
 
@@ -238,13 +242,12 @@ public class InvoiceControllerImpl implements InvoiceController {
         document.add(spacing);
 
 
-
         PdfPTable table = new PdfPTable(9); // Number of columns
         table.setWidthPercentage(100);
 
         PdfPCell cell = new PdfPCell(new Phrase("Sr No", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
         table.addCell(cell);
-         cell = new PdfPCell(new Phrase("Vendor Name", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
+        cell = new PdfPCell(new Phrase("Vendor Name", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
         table.addCell(cell);
         cell = new PdfPCell(new Phrase("Inventory code", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
         table.addCell(cell);
@@ -260,7 +263,6 @@ public class InvoiceControllerImpl implements InvoiceController {
         table.addCell(cell);
         cell = new PdfPCell(new Phrase("Total", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
         table.addCell(cell);
-        ;
         int serialNumber = 1;
 
         for (VendorInventory vendorInventory : vendorInventoryList) {
@@ -318,7 +320,7 @@ public class InvoiceControllerImpl implements InvoiceController {
 
         document.open();
 
-        Paragraph title = new Paragraph("VENDOR_INVENTORY_DETAILS" , new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD));
+        Paragraph title = new Paragraph("VENDOR_INVENTORY_DETAILS", new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD));
         title.setAlignment(Element.ALIGN_CENTER);
         document.add(title);// Add spacing between title and table
 
@@ -326,7 +328,6 @@ public class InvoiceControllerImpl implements InvoiceController {
         Paragraph spacing = new Paragraph(" "); // Empty paragraph
         spacing.setSpacingAfter(10f); // Adjust the spacing as needed
         document.add(spacing);
-
 
 
         PdfPTable table = new PdfPTable(9); // Number of columns
@@ -350,7 +351,6 @@ public class InvoiceControllerImpl implements InvoiceController {
         table.addCell(cell);
         cell = new PdfPCell(new Phrase("Total", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
         table.addCell(cell);
-        ;
         int serialNumber = 1;
 
         for (VendorInventory vendorInventory : vendorInventoryList) {
@@ -381,8 +381,6 @@ public class InvoiceControllerImpl implements InvoiceController {
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(new InputStreamResource(byteArrayInputStream));
     }
-
-
 
 
 }

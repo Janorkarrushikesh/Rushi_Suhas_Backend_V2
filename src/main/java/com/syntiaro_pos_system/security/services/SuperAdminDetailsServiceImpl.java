@@ -12,16 +12,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class SuperAdminDetailsServiceImpl implements UserDetailsService {
-  @Autowired
-  SuperAdminRepository superAdminRepository;
+    @Autowired
+    SuperAdminRepository superAdminRepository;
 
-  @Override
-  @Transactional
-  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    SuperAdmin superAdmin = superAdminRepository.findByUsername(username)
-        .orElseThrow(() -> new UsernameNotFoundException("SuperAdmin Not Found with username: " + username));
+    @Override
+    @Transactional
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        SuperAdmin superAdmin = superAdminRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("SuperAdmin Not Found with username: " + username));
 
-    return SuperAdminDetailsImpl.build(superAdmin);
-  }
+        return SuperAdminDetailsImpl.build(superAdmin);
+    }
 
 }

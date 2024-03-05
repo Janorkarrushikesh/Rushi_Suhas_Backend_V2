@@ -1,7 +1,6 @@
 package com.syntiaro_pos_system.serviceimpl.v1;
 
 
-
 import com.syntiaro_pos_system.entity.v1.Inventory;
 import com.syntiaro_pos_system.repository.v1.InventoryRepo;
 import com.syntiaro_pos_system.service.v1.InventoryService;
@@ -39,7 +38,7 @@ public class InventoryServiceIMPL implements InventoryService {
     // THIS METHOD IS USE FOR FETCH INVENTORY BY STOREID
     @Override
     public Inventory getInventoryDetailsById(int id) {
-        return inventoryRepo.findById((int) id).orElse(null);
+        return inventoryRepo.findById(id).orElse(null);
     }
 
     // THIS METHOD IS USE FOR FETCH INVENTORY BY STOREID
@@ -56,7 +55,7 @@ public class InventoryServiceIMPL implements InventoryService {
             Inventory updatedInventory = existingInventory.get();
             // Update the properties of the updatedInventory
             if (inventory.getQuantity() != null) {
-                updatedInventory.setQuantity(existingInventory.get().getQuantity()+inventory.getQuantity());  // bug_01 Add Calculation code
+                updatedInventory.setQuantity(existingInventory.get().getQuantity() + inventory.getQuantity());  // bug_01 Add Calculation code
             }
             if (inventory.getName() != null) {
                 updatedInventory.setName(inventory.getName());
@@ -133,10 +132,6 @@ public class InventoryServiceIMPL implements InventoryService {
     public boolean existsInventory(int inventoryId) {
         return inventoryRepo.existsById(inventoryId);
     }
-
-
-
-
 
 
 }

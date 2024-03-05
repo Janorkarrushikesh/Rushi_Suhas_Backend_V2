@@ -18,5 +18,6 @@ public interface SuperAdminService {
     ResponseEntity<ApiResponse> resetPassword(Map<String, String> resetRequest);
 
     ResponseEntity<ApiResponse> updateSuperAdmin(Long superid, SuperAdmin updateSuperAdmin);
+
     ResponseEntity<ApiResponse> logoutSuperAdmin(String sessionToken);
 }

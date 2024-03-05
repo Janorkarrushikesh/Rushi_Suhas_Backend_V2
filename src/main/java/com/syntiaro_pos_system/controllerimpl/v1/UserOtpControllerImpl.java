@@ -12,7 +12,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,10 +22,9 @@ import java.util.Optional;
 
 @RestController
 public class UserOtpControllerImpl implements UserOtpController {
-    @Autowired
-    private OtpService otpService;
-
     private final UserOtpRepository userOtpRepository;
+    @Autowired
+    private final OtpService otpService;
 
     public UserOtpControllerImpl(OtpService otpService, UserOtpRepository userOtpRepository) {
         this.otpService = otpService;
@@ -88,9 +89,6 @@ public class UserOtpControllerImpl implements UserOtpController {
         System.out.println(latestUserOtpEntity.toString());
         return ResponseEntity.ok(latestUserOtpEntity);
     }
-
-
-
 
 
 }

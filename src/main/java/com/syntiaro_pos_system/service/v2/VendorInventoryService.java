@@ -6,13 +6,13 @@ import org.springframework.http.ResponseEntity;
 
 public interface VendorInventoryService {
 
-    public ApiResponse getInvoiceById(Integer SerialNo);
+    ApiResponse getInvoiceById(Integer SerialNo);
 
     ApiResponse getInvoiceByStoreId(Integer storeId);
 
     ResponseEntity<ApiResponse> saveInvoice(VendorInventory vendorInventory);
 
-    public ResponseEntity<ApiResponse> updateInvoice(Integer SerialNo, VendorInventory vendorInventory);
+    ResponseEntity<ApiResponse> updateInvoice(Integer SerialNo, VendorInventory vendorInventory);
 
     ResponseEntity<ApiResponse> deleteInvoiceByid(Integer serialNo);
 

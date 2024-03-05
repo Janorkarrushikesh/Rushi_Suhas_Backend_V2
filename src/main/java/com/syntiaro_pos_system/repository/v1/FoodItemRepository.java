@@ -11,9 +11,12 @@ import java.util.List;
 @Repository
 public interface FoodItemRepository extends JpaRepository<Receipe, Long> {
     Receipe findByName(String foodName);
+
     List<Receipe> getFoodItemsByStoreId(String storeid);
+
     @Query("SELECT CASE WHEN COUNT(f) > 0 THEN true ELSE false END FROM Receipe f WHERE f.storeId = :storeid AND f.name = :name")
     boolean checkFoodNameExists(String storeid, String name);
+
     @Query("SELECT f FROM Receipe f WHERE f.name = :name AND f.storeId = :storeid")
     Receipe findByNameAndStoreId(String name, String storeid);
 

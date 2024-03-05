@@ -14,22 +14,23 @@ import java.util.Map;
 public interface UserController {
 
     @PostMapping("/signin")
-    public ResponseEntity<ApiResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest);
+    ResponseEntity<ApiResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest);
 
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponse> registerUser(@Valid @RequestBody SignupRequest signUpRequest) ;
+    ResponseEntity<ApiResponse> registerUser(@Valid @RequestBody SignupRequest signUpRequest);
+
     @PostMapping("/forgotPassword")
-    public ResponseEntity<ApiResponse> forgotPassword(@RequestBody SignupRequest signupRequest);
+    ResponseEntity<ApiResponse> forgotPassword(@RequestBody SignupRequest signupRequest);
 
     @PostMapping("/resetPassword")
-    public ResponseEntity<ApiResponse> resetPassword(@RequestBody Map<String, String> resetRequest) ;
+    ResponseEntity<ApiResponse> resetPassword(@RequestBody Map<String, String> resetRequest);
 
     @GetMapping("store/{storeId}")
-    public ResponseEntity<ApiResponse> userByStoreId(@PathVariable Integer storeId);
+    ResponseEntity<ApiResponse> userByStoreId(@PathVariable Integer storeId);
 
     @PostMapping("/logout")
-    public ResponseEntity<ApiResponse> logoutUser(@RequestParam String sessionToken);
+    ResponseEntity<ApiResponse> logoutUser(@RequestParam String sessionToken);
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ApiResponse> updateUser(@PathVariable Long id , @Valid @RequestBody SignupRequest signUpRequest);
+    ResponseEntity<ApiResponse> updateUser(@PathVariable Long id, @Valid @RequestBody SignupRequest signUpRequest);
 }

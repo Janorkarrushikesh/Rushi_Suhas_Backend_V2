@@ -21,215 +21,215 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "vendor_inventory")
-public class VendorInventory implements Serializable{
+public class VendorInventory implements Serializable {
 
-	@Serial
-	private static final long SerialVersion =1L;
+    @Serial
+    private static final long SerialVersion = 1L;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer SerialNo;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer SerialNo;
 
-	@Column(name = "invoice_id")
-	private Integer invoiceId;
+    @Column(name = "invoice_id")
+    private Integer invoiceId;
 
-	@Column(name = "store_id", length = 255)
-	private Integer storeId;
+    @Column(name = "store_id", length = 255)
+    private Integer storeId;
 
-	@Column(name = "vendor_name")
-	private String vendorName;
+    @Column(name = "vendor_name")
+    private String vendorName;
 
-	@Column(name = "item_name")
-	private String itemName;
+    @Column(name = "item_name")
+    private String itemName;
 
-	@Column(name = "invoice_date")
-	private Date invoiceDate = new Date();
+    @Column(name = "invoice_date")
+    private Date invoiceDate = new Date();
 
-	@Column(name = "price")
-	private String price;
+    @Column(name = "price")
+    private String price;
 
-	@Column(name = "quantity")
-	private String quantity;
+    @Column(name = "quantity")
+    private String quantity;
 
-	@Column(name = "discount")
-	private String discount;
-
-
-	@Column(name = "payment_status")
-	private String paymentStatus;
-
-	@Column(name = "total")
-	private String total;
-
-	@Column(name = "gstno")
-	private String gstNo;
-
-	@Column(name = "createby")
-	private String createdBy;
-
-	@Column(name = "updtaeby")
-	private String updatedBy;
-
-	@Column(name = "create_date")
-	private String createDate;
-
-	@Column(name = "update_date")
-	private String updateDate;
-
-	@Column(name = "inventory_code")
-	private String inventoryCode;
-
-	@Column(name = "unit")
-	private String unit;
+    @Column(name = "discount")
+    private String discount;
 
 
-	public Integer getInvoiceId() {
-		return invoiceId;
-	}
+    @Column(name = "payment_status")
+    private String paymentStatus;
 
-	public void setInvoiceId(Integer invoiceId) {
-		this.invoiceId = invoiceId;
-	}
+    @Column(name = "total")
+    private String total;
 
-	public Integer getStoreId() {
-		return storeId;
-	}
+    @Column(name = "gstno")
+    private String gstNo;
 
-	public void setStoreId(Integer storeId) {
-		this.storeId = storeId;
-	}
+    @Column(name = "createby")
+    private String createdBy;
 
-	public String getVendorName() {
-		return vendorName;
-	}
+    @Column(name = "updtaeby")
+    private String updatedBy;
 
-	public void setVendorName(String vendorName) {
-		this.vendorName = vendorName;
-	}
+    @Column(name = "create_date")
+    private String createDate;
 
-	public String getItemName() {
-		return itemName;
-	}
+    @Column(name = "update_date")
+    private String updateDate;
 
-	public void setItemName(String itemName) {
-		this.itemName = itemName;
-	}
+    @Column(name = "inventory_code")
+    private String inventoryCode;
 
-	public Date getInvoiceDate() {
-		return invoiceDate;
-	}
-
-	public void setInvoiceDate(Date invoiceDate) {
-		this.invoiceDate = invoiceDate;
-	}
-
-	public String getPrice() {
-		return price;
-	}
-
-	public void setPrice(String price) {
-		this.price = price;
-	}
-
-	public String getQuantity() {
-		return quantity;
-	}
-
-	public void setQuantity(String quantity) {
-		this.quantity = quantity;
-	}
-
-	public String getDiscount() {
-		return discount;
-	}
-
-	public void setDiscount(String discount) {
-		this.discount = discount;
-	}
+    @Column(name = "unit")
+    private String unit;
 
 
-	public String getPaymentStatus() {
-		return paymentStatus;
-	}
+    public Integer getInvoiceId() {
+        return invoiceId;
+    }
 
-	public void setPaymentStatus(String paymentStatus) {
-		this.paymentStatus = paymentStatus;
-	}
+    public void setInvoiceId(Integer invoiceId) {
+        this.invoiceId = invoiceId;
+    }
 
-	public String getTotal() {
-		return total;
-	}
+    public Integer getStoreId() {
+        return storeId;
+    }
 
-	public void setTotal(String total) {
-		this.total = total;
-	}
+    public void setStoreId(Integer storeId) {
+        this.storeId = storeId;
+    }
 
-	public String getGstNo() {
-		return gstNo;
-	}
+    public String getVendorName() {
+        return vendorName;
+    }
 
-	public void setGstNo(String gstNo) {
-		this.gstNo = gstNo;
-	}
+    public void setVendorName(String vendorName) {
+        this.vendorName = vendorName;
+    }
 
-	public String getCreatedBy() {
-		return createdBy;
-	}
+    public String getItemName() {
+        return itemName;
+    }
 
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
+    }
 
-	public String getUpdatedBy() {
-		return updatedBy;
-	}
+    public Date getInvoiceDate() {
+        return invoiceDate;
+    }
 
-	public void setUpdatedBy(String updatedBy) {
-		this.updatedBy = updatedBy;
-	}
+    public void setInvoiceDate(Date invoiceDate) {
+        this.invoiceDate = invoiceDate;
+    }
 
-	public String getCreateDate() {
-		return createDate;
-	}
+    public String getPrice() {
+        return price;
+    }
 
-	public void setCreateDate(String createDate) {
-		this.createDate = createDate;
-	}
+    public void setPrice(String price) {
+        this.price = price;
+    }
 
-	public String getUpdateDate() {
-		return updateDate;
-	}
+    public String getQuantity() {
+        return quantity;
+    }
 
-	public void setUpdateDate(String updateDate) {
-		this.updateDate = updateDate;
-	}
+    public void setQuantity(String quantity) {
+        this.quantity = quantity;
+    }
 
-	public String getInventoryCode() {
-		return inventoryCode;
-	}
+    public String getDiscount() {
+        return discount;
+    }
 
-	public void setInventoryCode(String inventoryCode) {
-		this.inventoryCode = inventoryCode;
-	}
+    public void setDiscount(String discount) {
+        this.discount = discount;
+    }
 
-	public String getUnit() {
-		return unit;
-	}
 
-	public void setUnit(String unit) {
-		this.unit = unit;
-	}
+    public String getPaymentStatus() {
+        return paymentStatus;
+    }
 
-	@PostPersist
-	public void generateStoreCode() {
-		Date date = new Date();
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a");
-		String formattedDate = dateFormat.format(date);
-		SimpleDateFormat dateFormats = new SimpleDateFormat("yyyy-MM-dd");
-		String formattedDates = dateFormats.format(date);
-		this.updateDate = formattedDate;
-		this.createDate = formattedDates;
-	}
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
+
+    public String getTotal() {
+        return total;
+    }
+
+    public void setTotal(String total) {
+        this.total = total;
+    }
+
+    public String getGstNo() {
+        return gstNo;
+    }
+
+    public void setGstNo(String gstNo) {
+        this.gstNo = gstNo;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public String getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
+    }
+
+    public String getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(String updateDate) {
+        this.updateDate = updateDate;
+    }
+
+    public String getInventoryCode() {
+        return inventoryCode;
+    }
+
+    public void setInventoryCode(String inventoryCode) {
+        this.inventoryCode = inventoryCode;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    @PostPersist
+    public void generateStoreCode() {
+        Date date = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a");
+        String formattedDate = dateFormat.format(date);
+        SimpleDateFormat dateFormats = new SimpleDateFormat("yyyy-MM-dd");
+        String formattedDates = dateFormats.format(date);
+        this.updateDate = formattedDate;
+        this.createDate = formattedDates;
+    }
 }
 	
 

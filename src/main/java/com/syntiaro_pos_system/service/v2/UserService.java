@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Map;
 
+
 public interface UserService {
     ResponseEntity<ApiResponse> authenticateUser(LoginRequest loginRequest);
 
@@ -17,6 +18,9 @@ public interface UserService {
     ResponseEntity<ApiResponse> resetPassword(Map<String, String> resetRequest);
 
     ResponseEntity<ApiResponse> userByStoreId(Integer storeId);
+
     ResponseEntity<ApiResponse> updateUser(Long id, SignupRequest signUpRequest);
+
     ResponseEntity<ApiResponse> logoutUser(String sessionToken);
+
 }

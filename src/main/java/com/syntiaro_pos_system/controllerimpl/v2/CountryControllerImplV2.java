@@ -5,7 +5,6 @@ import com.syntiaro_pos_system.entity.v1.Country;
 import com.syntiaro_pos_system.entity.v2.ApiResponse;
 import com.syntiaro_pos_system.service.v2.CountryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 

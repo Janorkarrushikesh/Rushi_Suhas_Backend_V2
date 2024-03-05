@@ -5,6 +5,9 @@ public class UserOtpVerificationRequest {
     private String email;
     private String otp;
 
+    public UserOtpVerificationRequest() {
+    }
+
     // Getters and setters
     @Override
     public String toString() {
@@ -12,9 +15,6 @@ public class UserOtpVerificationRequest {
                 "email='" + email + '\'' +
                 ", otp='" + otp + '\'' +
                 '}';
-    }
-
-    public UserOtpVerificationRequest() {
     }
 
     public String getEmail() {

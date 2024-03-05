@@ -7,23 +7,30 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping(path = "/v1/sys/addons")
 public interface AddonRest {
-        @PostMapping(path = "/saveaddon")
-        public ApiResponse saveaddon(@RequestBody Addon addon);
-        @GetMapping(path = "/allAddon")
-        public ApiResponse getAddon();
-        @PutMapping(path = "/updateaddon")
-        public Addon updateAddon(@RequestBody Addon addon);
-        @DeleteMapping(path = "/addon/{itemid}")
-        public ResponseEntity<HttpStatus> deleteUser(@PathVariable String itemid);
-        @GetMapping("/getAddonByID/{itemid}")
-        public Addon fetchDetailsById(@PathVariable Integer itemid);
-        @PatchMapping(path = "/updateaddon/{itemid}")
-        public ResponseEntity<Addon> updateAddon( @PathVariable("itemid") Integer itemid,  @RequestBody Addon foodAddon);
-        @GetMapping("/addon/{storeId}")
-        public List<Addon> getAddonsByStoreId(@PathVariable String storeId);
+    @PostMapping(path = "/saveaddon")
+    ApiResponse saveaddon(@RequestBody Addon addon);
+
+    @GetMapping(path = "/allAddon")
+    ApiResponse getAddon();
+
+    @PutMapping(path = "/updateaddon")
+    Addon updateAddon(@RequestBody Addon addon);
+
+    @DeleteMapping(path = "/addon/{itemid}")
+    ResponseEntity<HttpStatus> deleteUser(@PathVariable String itemid);
+
+    @GetMapping("/getAddonByID/{itemid}")
+    Addon fetchDetailsById(@PathVariable Integer itemid);
+
+    @PatchMapping(path = "/updateaddon/{itemid}")
+    ResponseEntity<Addon> updateAddon(@PathVariable("itemid") Integer itemid, @RequestBody Addon foodAddon);
+
+    @GetMapping("/addon/{storeId}")
+    List<Addon> getAddonsByStoreId(@PathVariable String storeId);
 
 }

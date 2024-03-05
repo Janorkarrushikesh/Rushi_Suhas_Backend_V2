@@ -1,5 +1,9 @@
 package com.syntiaro_pos_system.controllerimpl.v1;
 
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.syntiaro_pos_system.controller.v1.OrderController;
 import com.syntiaro_pos_system.entity.v1.Bill;
 import com.syntiaro_pos_system.entity.v1.OrderFood;
@@ -8,10 +12,6 @@ import com.syntiaro_pos_system.repository.v1.BillRepo;
 import com.syntiaro_pos_system.repository.v1.OrderRepo;
 import com.syntiaro_pos_system.request.v1.OrderRequest;
 import com.syntiaro_pos_system.service.v1.OrderService;
-import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -19,7 +19,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.text.ParseException;
@@ -35,9 +39,9 @@ public class OrderControllerImpl implements OrderController {
     @Autowired
     OrderService orderService;
     @Autowired
-    private OrderRepo orderRepo;
-    @Autowired
     BillRepo billRepo;
+    @Autowired
+    private OrderRepo orderRepo;
 
     // THIS METHOS IS USE FOR POST ORDER
     @Override

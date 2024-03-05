@@ -1,9 +1,7 @@
 package com.syntiaro_pos_system.repository.v1;
 
 
-
 import com.syntiaro_pos_system.entity.v1.VendorInventory;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -15,7 +13,7 @@ import java.util.List;
 
 @Repository
 @EnableJpaRepositories
-public interface InvoiceRepo extends JpaRepository<VendorInventory, Integer >{
+public interface InvoiceRepo extends JpaRepository<VendorInventory, Integer> {
 
 
     // THIS METHOD IS USE FOR FETCH INVOICE BY STOREID

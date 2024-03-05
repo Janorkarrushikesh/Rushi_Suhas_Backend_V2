@@ -39,8 +39,9 @@ public class SuperAdminControllerImplV2 implements SuperAdminController {
 
     @Override
     public ResponseEntity<ApiResponse> updateSuperAdmin(Long superid, SuperAdmin updateSuperAdmin) {
-        return superAdminService.updateSuperAdmin(superid,updateSuperAdmin);
+        return superAdminService.updateSuperAdmin(superid, updateSuperAdmin);
     }
+
     @Override
     public ResponseEntity<ApiResponse> logoutSuperAdmin(String sessionToken) {
         return superAdminService.logoutSuperAdmin(sessionToken);

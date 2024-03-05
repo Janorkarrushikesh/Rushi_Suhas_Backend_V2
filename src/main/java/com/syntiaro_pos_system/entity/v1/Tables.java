@@ -8,11 +8,11 @@ public class Tables {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long serialNo;
-  private String tableName;
+    private String tableName;
 
-  private long chair;
+    private long chair;
 
-  private String storeid;
+    private String storeid;
 
 
     public Tables(long serial_no, String tablename, long chair, String storeid) {

@@ -15,21 +15,21 @@ public interface CustomerController {
 
 
     @PostMapping("/savecustomer")
-    public ResponseEntity<?> addCustomer(@RequestBody CustomerDetails customerDetails);
+    ResponseEntity<?> addCustomer(@RequestBody CustomerDetails customerDetails);
 
 
     @GetMapping("/getcustomer/{storeId}")
-    public ResponseEntity<List<CustomerDetails>> getCustomerByStoreId(@PathVariable Integer storeId);
+    ResponseEntity<List<CustomerDetails>> getCustomerByStoreId(@PathVariable Integer storeId);
 
     @PostMapping("/generate-pdf-customer/")
-    public ResponseEntity<?> generatePDF(
+    ResponseEntity<?> generatePDF(
             @RequestParam Integer store_id,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") String startDate,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") String endDate) throws DocumentException;
 
 
     @PostMapping("/generate-pdf-customer/{store_id}")
-    public ResponseEntity<?> generatePDFbyStoreid(
+    ResponseEntity<?> generatePDFbyStoreid(
             @PathVariable Integer store_id) throws DocumentException;
 
 

@@ -8,7 +8,9 @@ import com.syntiaro_pos_system.repository.v1.TaxRepo;
 import com.syntiaro_pos_system.service.v1.Taxservice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Optional;
@@ -55,7 +57,7 @@ public class TaxControllerImpl implements TaxController {
             if (updatedTax.getRate() != null) {
                 taxToUpdate.setRate(updatedTax.getRate());
             }
-            if(updatedTax.getName() != null){
+            if (updatedTax.getName() != null) {
                 taxToUpdate.setName(updatedTax.getName());
             }
             Tax updatedTaxEntity = taxRepo.save(taxToUpdate);
@@ -66,7 +68,6 @@ public class TaxControllerImpl implements TaxController {
             return ResponseEntity.notFound().build();
         }
     }
-
 
 
     // THIS METHOD IS USE FOR GET ALL TAX WITH STORE

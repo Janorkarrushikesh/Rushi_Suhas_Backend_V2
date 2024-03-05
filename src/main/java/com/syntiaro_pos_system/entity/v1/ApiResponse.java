@@ -19,14 +19,14 @@ public class ApiResponse {
         this.data = data;
     }
 
-    public ApiResponse(Map<String, Object> data,boolean status,int responseCode, String message) {
+    public ApiResponse(Map<String, Object> data, boolean status, int responseCode, String message) {
         this.status = status;
         this.message = message;
         this.responseCode = responseCode;
         this.data = data;
     }
 
-    public ApiResponse(Map<String, Object> data,boolean status,int responseCode) {
+    public ApiResponse(Map<String, Object> data, boolean status, int responseCode) {
         this.status = status;
         this.responseCode = responseCode;
         this.data = data;
