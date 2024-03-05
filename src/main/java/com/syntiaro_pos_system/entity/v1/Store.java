@@ -116,7 +116,7 @@ public class Store {
     private List<Tax> tax;
 
     @OneToMany(targetEntity = StorePayment.class, cascade = CascadeType.ALL)
-    @JoinColumn(name = "Storeid", referencedColumnName = "Storeid")
+    @JoinColumn(name = "storeId", referencedColumnName = "Storeid")
 
     private List<StorePayment> storePayments;
 

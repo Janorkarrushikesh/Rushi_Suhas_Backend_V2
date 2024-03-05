@@ -54,4 +54,10 @@ public interface BillController {
         return "Cache has been cleared";
     }
 
+    @PatchMapping("/updatebyStatus/{SerialNo}")
+    public ResponseEntity<ApiResponse> updateOrderStatus(@PathVariable Integer SerialNo,@RequestParam String orderStatus);
+
+    @PatchMapping("/printBill/{SerialNo}")
+    public ResponseEntity<ApiResponse> printBill(@PathVariable Integer SerialNo);
+
 }

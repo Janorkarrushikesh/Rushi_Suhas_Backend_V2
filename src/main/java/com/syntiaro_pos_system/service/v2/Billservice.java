@@ -26,4 +26,8 @@ public interface Billservice {
     ResponseEntity<ApiResponse> calculateTotalByPaymnetMode(Integer storeId);
 
     ResponseEntity<ApiResponse> balanceReportByPaymentMode(Integer storeId);
+
+    ResponseEntity<ApiResponse> updateOrderStatus(Integer serialNo, String orderStatus);
+
+    ResponseEntity<ApiResponse> printBill(Integer serialNo);
 }

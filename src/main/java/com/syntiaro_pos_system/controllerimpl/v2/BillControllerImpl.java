@@ -68,4 +68,14 @@ public class BillControllerImpl implements BillController {
     public ResponseEntity<ApiResponse> balanceReportByPaymentMode(Integer storeId) {
         return billservice.balanceReportByPaymentMode(storeId);
     }
+
+    @Override
+    public ResponseEntity<ApiResponse> updateOrderStatus(Integer SerialNo, String orderStatus) {
+        return billservice.updateOrderStatus(SerialNo,orderStatus);
+    }
+
+    @Override
+    public ResponseEntity<ApiResponse> printBill(Integer SerialNo) {
+        return billservice.printBill(SerialNo);
+    }
 }
