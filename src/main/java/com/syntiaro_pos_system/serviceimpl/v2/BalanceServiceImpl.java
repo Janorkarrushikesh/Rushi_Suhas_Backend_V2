@@ -1,16 +1,14 @@
 package com.syntiaro_pos_system.serviceimpl.v2;
 
-import com.syntiaro_pos_system.entity.v1.Store;
+import com.syntiaro_pos_system.entity.v1.Balance;
 import com.syntiaro_pos_system.entity.v1.TransactionRecord;
 import com.syntiaro_pos_system.entity.v2.ApiResponse;
-import com.syntiaro_pos_system.entity.v1.Balance;
 import com.syntiaro_pos_system.repository.v2.BalanceRepositry;
 import com.syntiaro_pos_system.repository.v2.TransactionRepositry;
 import com.syntiaro_pos_system.service.v2.BalanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,7 +17,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class BalanceServiceImpl implements BalanceService {
@@ -38,98 +35,98 @@ public class BalanceServiceImpl implements BalanceService {
 
     @Override
     public ResponseEntity<ApiResponse> openBalance(Balance balance) {
-        try{
+        try {
 
-        if (balance == null) {
-            return ResponseEntity.badRequest().body(new ApiResponse(null, false, "Invalid request", 400));
-        }
-        LocalDate today = LocalDate.now();
-        Balance existingBalance = balanceRepository.findByStoreIdAndDate(balance.getStoreId(), today);
-        Balance newBalance = new Balance();
-        if (existingBalance == null) {
-            Double addMoreAmount = Double.valueOf(balance.getAddMoreAmount());
-            if (addMoreAmount == null) {
-                return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
-                        .body(new ApiResponse(null, false, "Invalid addMoreAmount value", 406));
+            if (balance == null) {
+                return ResponseEntity.badRequest().body(new ApiResponse(null, false, "Invalid request", 400));
             }
-            newBalance.setAddMoreAmount(addMoreAmount);
-            newBalance.setRemainingBalance(addMoreAmount);
-            newBalance.setStoreId(balance.getStoreId());
-            newBalance.setTodays_Opening_Balance(addMoreAmount);
-            newBalance.setCreatedBy(balance.getCreatedBy());
-            newBalance.setUpdatedBy(balance.getUpdatedBy());
-            newBalance.setCreatedDate(String.valueOf(LocalDateTime.now()));
-            newBalance.setUpdatedDate(String.valueOf(LocalDateTime.now()));
-            balanceRepository.save(newBalance);
+            LocalDate today = LocalDate.now();
+            Balance existingBalance = balanceRepository.findByStoreIdAndDate(balance.getStoreId(), today);
+            Balance newBalance = new Balance();
+            if (existingBalance == null) {
+                Double addMoreAmount = balance.getAddMoreAmount();
+                if (addMoreAmount == null) {
+                    return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+                            .body(new ApiResponse(null, false, "Invalid addMoreAmount value", 406));
+                }
+                newBalance.setAddMoreAmount(addMoreAmount);
+                newBalance.setRemainingBalance(addMoreAmount);
+                newBalance.setStoreId(balance.getStoreId());
+                newBalance.setTodays_Opening_Balance(addMoreAmount);
+                newBalance.setCreatedBy(balance.getCreatedBy());
+                newBalance.setUpdatedBy(balance.getUpdatedBy());
+                newBalance.setCreatedDate(String.valueOf(LocalDateTime.now()));
+                newBalance.setUpdatedDate(String.valueOf(LocalDateTime.now()));
+                balanceRepository.save(newBalance);
 
-            return ResponseEntity.ok(new ApiResponse(newBalance, true, 200));
-        } else if (existingBalance.getAddMoreAmount() != null) {
+                return ResponseEntity.ok(new ApiResponse(newBalance, true, 200));
+            } else if (existingBalance.getAddMoreAmount() != null) {
 
-            if (existingBalance.getFinalClosingBalance() != null) {
-                return ResponseEntity.badRequest()
-                        .body(new ApiResponse(null, false, " After Final closing you dont have access", 400));
+                if (existingBalance.getFinalClosingBalance() != null) {
+                    return ResponseEntity.badRequest()
+                            .body(new ApiResponse(null, false, " After Final closing you dont have access", 400));
+                }
+                Double addMoreAmount = balance.getAddMoreAmount();
+                if (addMoreAmount == null) {
+                    return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+                            .body(new ApiResponse(null, false, "Invalid addMoreAmount value", 406));
+                }
+                newBalance.setId(existingBalance.getId());
+                newBalance.setStoreId(balance.getStoreId());
+                newBalance.setAddMoreAmount(addMoreAmount + existingBalance.getAddMoreAmount());
+                newBalance.setRemainingBalance(addMoreAmount + existingBalance.getRemainingBalance());
+                newBalance.setTodays_Opening_Balance(existingBalance.getTodays_Opening_Balance());
+                newBalance.setUpdatedDate(String.valueOf(LocalDateTime.now()));
+                newBalance.setCreatedDate(existingBalance.getCreatedDate());
+                newBalance.setCreatedBy(existingBalance.getCreatedBy());
+                newBalance.setUpdatedBy(balance.getUpdatedBy());
+                balanceRepository.save(newBalance);
+
+                TransactionRecord endOfDayTransaction = new TransactionRecord();
+                endOfDayTransaction.setDate(LocalDate.now()); // Set the date to the current date
+                endOfDayTransaction.setCashier(balance.getCreatedBy());
+                endOfDayTransaction.setStoreId(balance.getStoreId());
+                endOfDayTransaction.setStatus(("Credited"));
+                endOfDayTransaction.setExpense(balance.getCreatedBy());
+                endOfDayTransaction.setAmount(balance.getAddMoreAmount());
+                transactionRepositry.save(endOfDayTransaction);
+
+                return ResponseEntity.ok(new ApiResponse(endOfDayTransaction, true, 200));
+            } else {
+
+                if (existingBalance.getFinalClosingBalance() != null) {
+                    return ResponseEntity.badRequest()
+                            .body(new ApiResponse(null, false, " After Final closing you dont have access", 400));
+                }
+
+                Double addMoreAmount = balance.getAddMoreAmount();
+                if (addMoreAmount == null) {
+                    return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+                            .body(new ApiResponse(null, false, "Invalid addMoreAmount value", 406));
+                }
+                newBalance.setId(existingBalance.getId());
+                newBalance.setStoreId(balance.getStoreId());
+                newBalance.setAddMoreAmount(addMoreAmount);
+                newBalance.setRemainingBalance(addMoreAmount + existingBalance.getRemainingBalance());
+                newBalance.setTodays_Opening_Balance(existingBalance.getTodays_Opening_Balance());
+                newBalance.setUpdatedDate(String.valueOf(LocalDateTime.now()));
+                newBalance.setCreatedDate(existingBalance.getCreatedDate());
+                newBalance.setCreatedBy(existingBalance.getCreatedBy());
+                newBalance.setUpdatedBy(balance.getUpdatedBy());
+                balanceRepository.save(newBalance);
+
+                TransactionRecord endOfDayTransaction = new TransactionRecord();
+                endOfDayTransaction.setDate(LocalDate.now()); // Set the date to the current date
+                endOfDayTransaction.setCashier(balance.getCreatedBy());
+                endOfDayTransaction.setStoreId(balance.getStoreId());
+                endOfDayTransaction.setStatus(("Credited"));
+                endOfDayTransaction.setExpense(balance.getCreatedBy());
+                endOfDayTransaction.setAmount(balance.getAddMoreAmount());
+
+                transactionRepositry.save(endOfDayTransaction);
+                return ResponseEntity.ok(new ApiResponse(endOfDayTransaction, true, 200));
             }
-            Double addMoreAmount = balance.getAddMoreAmount();
-            if (addMoreAmount == null) {
-                return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
-                        .body(new ApiResponse(null, false, "Invalid addMoreAmount value", 406));
-            }
-            newBalance.setId(existingBalance.getId());
-            newBalance.setStoreId(balance.getStoreId());
-            newBalance.setAddMoreAmount(addMoreAmount + existingBalance.getAddMoreAmount());
-            newBalance.setRemainingBalance(addMoreAmount + existingBalance.getRemainingBalance());
-            newBalance.setTodays_Opening_Balance(existingBalance.getTodays_Opening_Balance());
-            newBalance.setUpdatedDate(String.valueOf(LocalDateTime.now()));
-            newBalance.setCreatedDate(existingBalance.getCreatedDate());
-            newBalance.setCreatedBy(existingBalance.getCreatedBy());
-            newBalance.setUpdatedBy(balance.getUpdatedBy());
-            balanceRepository.save(newBalance);
-
-            TransactionRecord endOfDayTransaction = new TransactionRecord();
-            endOfDayTransaction.setDate(LocalDate.now()); // Set the date to the current date
-            endOfDayTransaction.setCashier(balance.getCreatedBy());
-            endOfDayTransaction.setStoreId(balance.getStoreId());
-            endOfDayTransaction.setStatus(("Credited"));
-            endOfDayTransaction.setExpense(balance.getCreatedBy());
-            endOfDayTransaction.setAmount(balance.getAddMoreAmount());
-            transactionRepositry.save(endOfDayTransaction);
-
-            return ResponseEntity.ok(new ApiResponse(endOfDayTransaction, true, 200));
-        } else {
-
-            if (existingBalance.getFinalClosingBalance() != null) {
-                return ResponseEntity.badRequest()
-                        .body(new ApiResponse(null, false, " After Final closing you dont have access", 400));
-            }
-
-            Double addMoreAmount = balance.getAddMoreAmount();
-            if (addMoreAmount == null) {
-                return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
-                        .body(new ApiResponse(null, false, "Invalid addMoreAmount value", 406));
-            }
-            newBalance.setId(existingBalance.getId());
-            newBalance.setStoreId(balance.getStoreId());
-            newBalance.setAddMoreAmount(addMoreAmount);
-            newBalance.setRemainingBalance(addMoreAmount + existingBalance.getRemainingBalance());
-            newBalance.setTodays_Opening_Balance(existingBalance.getTodays_Opening_Balance());
-            newBalance.setUpdatedDate(String.valueOf(LocalDateTime.now()));
-            newBalance.setCreatedDate(existingBalance.getCreatedDate());
-            newBalance.setCreatedBy(existingBalance.getCreatedBy());
-            newBalance.setUpdatedBy(balance.getUpdatedBy());
-            balanceRepository.save(newBalance);
-
-            TransactionRecord endOfDayTransaction = new TransactionRecord();
-            endOfDayTransaction.setDate(LocalDate.now()); // Set the date to the current date
-            endOfDayTransaction.setCashier(balance.getCreatedBy());
-            endOfDayTransaction.setStoreId(balance.getStoreId());
-            endOfDayTransaction.setStatus(("Credited"));
-            endOfDayTransaction.setExpense(balance.getCreatedBy());
-            endOfDayTransaction.setAmount(balance.getAddMoreAmount());
-
-            transactionRepositry.save(endOfDayTransaction);
-            return ResponseEntity.ok(new ApiResponse(endOfDayTransaction, true, 200));
-        }
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "...", 500));
 
         }
@@ -168,7 +165,7 @@ public class BalanceServiceImpl implements BalanceService {
             return ResponseEntity.ok(new ApiResponse(data, true, 200));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(null, false, "..." , 500));
+                    .body(new ApiResponse(null, false, "...", 500));
         }
     }
 
@@ -186,7 +183,7 @@ public class BalanceServiceImpl implements BalanceService {
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(null, false,"...", 500));
+                    .body(new ApiResponse(null, false, "...", 500));
 
         }
     }
@@ -203,40 +200,39 @@ public class BalanceServiceImpl implements BalanceService {
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(null, false,"...", 500));
+                    .body(new ApiResponse(null, false, "...", 500));
         }
     }
 
     @Override
     public ResponseEntity<ApiResponse> balanceList(Integer storeId) {
-        try{
+        try {
 
             List<Balance> balanceList = balanceRepository.findByStoreId(storeId);
             System.out.println(balanceList);
-            List<Map<String,Object>> balanceData = new ArrayList<>();
+            List<Map<String, Object>> balanceData = new ArrayList<>();
 
             for (Balance balance : balanceList) {
-                Map<String,Object> balanceMap = new LinkedHashMap<>();
-                balanceMap.put("date",balance.getDate());
-                balanceMap.put("openingBalance",String.format("%.2f",balance.getTodays_Opening_Balance()));
-                balanceMap.put("sales",billServiceImplV2.TotalwithDate(balance.getStoreId(),balance.getDate()));
-                balanceMap.put("remainingBalance",String.format("%.2f",balance.getRemainingBalance()));
-                balanceMap.put("handedOver",balance.getFinalHandedOverTo());
-                balanceMap.put("handedAmonut",balance.getFinalAmount());
-                balanceMap.put("closingBalance",balance.getFinalClosingBalance());
-                balanceMap.put("transction",transactionServiceimpl.transactionByStoreAndDate(balance.getStoreId(),balance.getDate()));
+                Map<String, Object> balanceMap = new LinkedHashMap<>();
+                balanceMap.put("date", balance.getDate());
+                balanceMap.put("openingBalance", String.format("%.2f", balance.getTodays_Opening_Balance()));
+                balanceMap.put("sales", billServiceImplV2.TotalwithDate(balance.getStoreId(), balance.getDate()));
+                balanceMap.put("remainingBalance", String.format("%.2f", balance.getRemainingBalance()));
+                balanceMap.put("handedOver", balance.getFinalHandedOverTo());
+                balanceMap.put("handedAmonut", balance.getFinalAmount());
+                balanceMap.put("closingBalance", balance.getFinalClosingBalance());
+                balanceMap.put("transction", transactionServiceimpl.transactionByStoreAndDate(balance.getStoreId(), balance.getDate()));
                 balanceData.add(balanceMap);
 
             }
 
 
-            return ResponseEntity.ok().body(new ApiResponse(balanceData,true,200));
+            return ResponseEntity.ok().body(new ApiResponse(balanceData, true, 200));
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(null,false,"...",500));
+                    .body(new ApiResponse(null, false, "...", 500));
         }
     }
 

@@ -36,12 +36,10 @@ public class Balance {
     private Double addMoreAmount;
 
     public Balance(LocalDate date, Integer storeId) {
-        this.date =date;
+        this.date = date;
         this.storeId = storeId;
 
     }
-
-
 
 
     public Long getId() {

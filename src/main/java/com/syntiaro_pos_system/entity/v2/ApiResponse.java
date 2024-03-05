@@ -1,6 +1,7 @@
 package com.syntiaro_pos_system.entity.v2;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter

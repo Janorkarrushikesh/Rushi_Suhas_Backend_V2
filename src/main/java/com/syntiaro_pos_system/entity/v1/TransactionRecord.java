@@ -1,8 +1,10 @@
 package com.syntiaro_pos_system.entity.v1;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -46,6 +48,10 @@ public class TransactionRecord {
         return amount;
     }
 
+    public void setAmount(Double amount) {
+        this.amount = amount;
+    }
+
     public Integer getStoreId() {
         return storeId;
     }
@@ -68,9 +74,6 @@ public class TransactionRecord {
 
     public void setExpense(String expense) {
         this.expense = expense;
-    }
-    public void setAmount(Double amount) {
-        this.amount = amount;
     }
 
     public String getStatus() {

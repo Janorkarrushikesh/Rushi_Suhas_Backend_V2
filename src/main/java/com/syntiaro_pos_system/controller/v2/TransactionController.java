@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.*;
 public interface TransactionController {
 
     @PostMapping("/")
-    public ResponseEntity<ApiResponse> debiteTransaction(@RequestBody TransactionRecord transactionRecord);
+    ResponseEntity<ApiResponse> debiteTransaction(@RequestBody TransactionRecord transactionRecord);
 
     @GetMapping("/store/{storeId}")
-    public ResponseEntity<ApiResponse> transactionByStore(@PathVariable Integer storeId);
+    ResponseEntity<ApiResponse> transactionByStore(@PathVariable Integer storeId);
 
 }

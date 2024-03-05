@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface CategoryBtnRepository extends JpaRepository<CategoryButton,Long> {
+public interface CategoryBtnRepository extends JpaRepository<CategoryButton, Long> {
 
     List<CategoryButton> findByStoreId(String storeId);
 

@@ -1,14 +1,12 @@
 package com.syntiaro_pos_system.service.v1;
 
 
-
-
 import com.syntiaro_pos_system.entity.v1.Inventory;
 
 import java.util.List;
 
 public interface InventoryService {
-    public Inventory addInventoryItem(Inventory newItem);
+    Inventory addInventoryItem(Inventory newItem);
 
     Inventory updateInventory(Inventory inventory);
 

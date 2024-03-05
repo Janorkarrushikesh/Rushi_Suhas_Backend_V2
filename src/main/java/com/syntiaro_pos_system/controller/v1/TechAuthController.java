@@ -6,10 +6,12 @@ import com.syntiaro_pos_system.request.v1.TechLoginRequest;
 import com.syntiaro_pos_system.request.v1.TechSignupRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.*;
-
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -18,45 +20,46 @@ import java.util.*;
 public interface TechAuthController {
 
     @PostMapping("/TechSignin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody TechLoginRequest techLoginRequest) ;
+    ResponseEntity<?> authenticateUser(@Valid @RequestBody TechLoginRequest techLoginRequest);
 
     @PostMapping("/techSignup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody TechSignupRequest techtechsignupRequest) ;
+    ResponseEntity<?> registerUser(@Valid @RequestBody TechSignupRequest techtechsignupRequest);
 
     // THIS METHOD IS USE FOR DELETE STORE
     @DeleteMapping("/{Techid}")
-    public ResponseEntity<?> deleteStore(@PathVariable("Techid") Long techid) ;
+    ResponseEntity<?> deleteStore(@PathVariable("Techid") Long techid);
 
     // THIS METHOD IS USE FOR FETCH STORE BY ID
     @GetMapping("/stores/{techid}")
-    public ResponseEntity<Tech> getStoreById(@PathVariable Long techid) ;
+    ResponseEntity<Tech> getStoreById(@PathVariable Long techid);
 
     @PostMapping("/reset-password")
-    public ResponseEntity<String> resetPassword(@RequestBody Map<String, String> resetRequest) ;
+    ResponseEntity<String> resetPassword(@RequestBody Map<String, String> resetRequest);
 
     @PostMapping("/forgot-password")
-    public ResponseEntity<?> forgotPassword(@RequestBody TechSignupRequest techSignupRequest) ;
+    ResponseEntity<?> forgotPassword(@RequestBody TechSignupRequest techSignupRequest);
 
     // THIS METHOD IS USE FOR CHANGE PASSWORD OF STORE
     @PostMapping("/tech_change-password")
-    public ResponseEntity<String> changePassword(@RequestBody TechSignupRequest techSignupRequest) ;
+    ResponseEntity<String> changePassword(@RequestBody TechSignupRequest techSignupRequest);
 
     // THIS METHOD IS USE FOR GET ALL STORE DETAIL
     @GetMapping("/gettech")
     // @PreAuthorize("hasRole('ADMIN')")
-    public List<Tech> getStore() ;
+    List<Tech> getStore();
 
     @GetMapping("/updated-tech/{techId}")
-    public ResponseEntity<?> getUpdatedStoreInfo(@PathVariable Long techid) ;
+    ResponseEntity<?> getUpdatedStoreInfo(@PathVariable Long techid);
 
     // THIS METHOD FOR FETCH ALL STORES
     @GetMapping("/alltech")
-    public ResponseEntity<List<Tech>> getAllStores() ;
+    ResponseEntity<List<Tech>> getAllStores();
+
     @PatchMapping("/UpdateStoreInfo/{storeId}")
-    public ResponseEntity<?> updateStoreInfo(@PathVariable Long storeId, @Valid @RequestBody TechSignupRequest updateRequest) ;
+    ResponseEntity<?> updateStoreInfo(@PathVariable Long storeId, @Valid @RequestBody TechSignupRequest updateRequest);
 
     @PatchMapping("/updatetech/{techid}")
-    public ResponseEntity<String> updatestore(
+    ResponseEntity<String> updatestore(
             @PathVariable Long techid,
             @RequestParam(required = false) String username,
             @RequestParam(required = false) String address,
@@ -66,8 +69,8 @@ public interface TechAuthController {
             @RequestParam(required = false) String state,
             @RequestParam(required = false) Date date,
             @RequestParam(required = false) String updatedby,
-            @RequestParam(required = false) String createdBy) throws IOException ;
+            @RequestParam(required = false) String createdBy) throws IOException;
 
     @PostMapping("/Logout")
-    public ResponseEntity<?> logoutUser(@RequestParam String sessionToken) ;
+    ResponseEntity<?> logoutUser(@RequestParam String sessionToken);
 }

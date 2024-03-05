@@ -1,0 +1,27 @@
+2024-02-26 18:45:56 WARN  StoreServiceImpl:146 - Login By StoreAdmin =Tejas3 Login failed: The login period has expired.
+[2024-02-26 17:31:53,493] http-nio-8080-exec-6 com.syntiaro_pos_system.controllerimpl.v2.StoreControllerImpl 27 INFO  -This Store Admin Loginrushikesh
+[2024-02-26 17:32:33,820] http-nio-8080-exec-7 com.syntiaro_pos_system.controllerimpl.v2.StoreControllerImpl 27 INFO  -This Store Admin Loginadmin1
+[2024-02-26 17:34:44,366] http-nio-8080-exec-10 com.syntiaro_pos_system.controllerimpl.v2.StoreControllerImpl 27 INFO  -This Store Admin Loginadmin1
+[2024-02-26 17:36:57,419] http-nio-8080-exec-1 com.syntiaro_pos_system.controllerimpl.v2.StoreControllerImpl 27 INFO  -This Store Admin Loginadmin1
+2024-02-26 18:01:43 INFO  StoreControllerImpl:28 - Login By StoreAdmin =admin1 
+ Login Status Succesfull
+2024-02-26 18:01:43 WARN  StoreControllerImpl:29 - Login By StoreAdmin =admin1 
+ Login Status fail
+2024-02-26 18:04:48 INFO  StoreControllerImpl:28 - Login By StoreAdmin = admin1.  Login Status Succesfull
+2024-02-26 18:04:48 WARN  StoreControllerImpl:29 - Login By StoreAdmin = admin1.  Login Status fail
+2024-02-26 18:06:42 INFO  StoreControllerImpl:28 - Login By StoreAdmin = admin1.  Login Status Succesfull
+2024-02-26 18:06:42 WARN  StoreControllerImpl:29 - Login By StoreAdmin = admin1.  Login Status fail
+2024-02-26 18:12:26 ERROR StoreServiceImpl:157 - Login failed: Authentication failed: Invalid username or password
+2024-02-26 18:12:44 INFO  StoreServiceImpl:134 - Login By StoreAdmin =admin1 
+ Login Status Succesfull
+2024-02-26 18:14:03 INFO  StoreServiceImpl:134 - Login Succesfull username =admin1
+2024-02-26 18:14:43 ERROR StoreServiceImpl:151 - Login failed: User not found
+2024-02-26 18:16:33 WARN  StoreServiceImpl:146 - Login By StoreAdmin =Tejas3 
+ Login StatusLogin failed: The login period has expired.
+2024-02-26 18:16:33 ERROR StoreServiceImpl:159 - Login failed: An unexpected error occurred
+
+2024-02-26 18:18:57 WARN  StoreServiceImpl:146 - Login By StoreAdmin =Tejas3 .Login StatusLogin failed: The login period has expired.
+2024-02-26 18:18:57 ERROR StoreServiceImpl:159 - Login failed: An unexpected error occurred
+2024-02-26 18:19:57 WARN  StoreServiceImpl:146 - Login By StoreAdmin =Tejas3Login failed: The login period has expired.
+2024-02-26 18:19:57 ERROR StoreServiceImpl:159 - Login failed: An unexpected error occurred
+2024-02-26 18:21:01 WARN  StoreServiceImpl:146 - Login By StoreAdmin =Tejas3Login failed: The login period has expired.

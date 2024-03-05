@@ -6,7 +6,7 @@ import com.syntiaro_pos_system.request.v1.SignupRequest;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
+
 
 public interface UserService {
     ResponseEntity<ApiResponse> authenticateUser(LoginRequest loginRequest);
@@ -19,7 +19,8 @@ public interface UserService {
 
     ResponseEntity<ApiResponse> userByStoreId(Integer storeId);
 
+    ResponseEntity<ApiResponse> updateUser(Long id, SignupRequest signUpRequest);
+
     ResponseEntity<ApiResponse> logoutUser(String sessionToken);
 
-    ResponseEntity<ApiResponse> updateUser(Long id, SignupRequest signUpRequest);
 }

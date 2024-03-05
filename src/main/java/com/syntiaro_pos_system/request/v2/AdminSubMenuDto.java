@@ -1,7 +1,5 @@
 package com.syntiaro_pos_system.request.v2;
 
-import javax.persistence.Column;
-
 public class AdminSubMenuDto {
 
     private String title;

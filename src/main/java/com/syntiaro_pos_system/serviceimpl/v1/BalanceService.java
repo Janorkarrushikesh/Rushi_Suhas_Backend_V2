@@ -13,7 +13,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -25,15 +24,12 @@ import java.util.stream.Collectors;
 @Service
 public class BalanceService {
     @Autowired
+    BillRepo billRepo;
+    @Autowired
     private BalanceRepository balanceRepository;
-
     @Autowired
     private StoreRepository storeRepository;
-
-    @Autowired
-    BillRepo billRepo;
-
-    private Map<Integer, LocalDateTime> lastUsedTimeMap = new HashMap<>();
+    private final Map<Integer, LocalDateTime> lastUsedTimeMap = new HashMap<>();
 
     //THIS METHOD IS USE FOR ADD AMOUNT IN CLOSING BALANCE
     @Transactional
@@ -98,7 +94,7 @@ public class BalanceService {
             BalanceWithPaymentSummaryResponse response = new BalanceWithPaymentSummaryResponse();
             response.setId(balance.getId());
             response.setDate(balance.getDate());
-           // Calculate cumulative opening balance
+            // Calculate cumulative opening balance
             cumulativeOpeningBalance += balance.getTodays_Opening_Balance();
 
             // Get bills for the specific day
@@ -119,10 +115,11 @@ public class BalanceService {
         }
         return responseList;
     }
+
     private Float calculateTotalAmountForPaymentModes(List<Bill> bills, String paymentMode) {
         return bills.stream()
                 .filter(bill -> paymentMode.equals(bill.getPaymentMode()))
-                .map(bill -> Float.valueOf(bill.getTotal()))
+                .map(bill -> bill.getTotal())
                 .reduce(0.0f, Float::sum);
     }
 
@@ -130,7 +127,7 @@ public class BalanceService {
     /*------------------------CHANGES MADE BY TRUPTI--------------------------*/
     //THIS METHOD IS USE FOR CALCULATE OPENING BALANCE + CASH = TOTAL CLOSING BALANCE
     public Double getClosingBalanceForDateAndStoreId(LocalDate date, Integer store_id) {
-        List<Balance> balances = (List<Balance>) balanceRepository.findByDateAndStoreId(date, store_id);
+        List<Balance> balances = balanceRepository.findByDateAndStoreId(date, store_id);
         for (Balance balance : balances) {
             Double closingbalance = balance.getFinalClosingBalance();
 
@@ -143,7 +140,7 @@ public class BalanceService {
     private Float calculateTotalAmountForPaymentMode(List<Bill> bills, String paymentMode) {
         return bills.stream()
                 .filter(bill -> paymentMode.equals(bill.getPaymentMode()))
-                .map(bill -> Float.valueOf(bill.getTotal()))
+                .map(bill -> bill.getTotal())
                 .reduce(0.0f, Float::sum);
     }
 
@@ -168,42 +165,39 @@ public class BalanceService {
             LocalDate yesterdayDate = LocalDate.now().minusDays(1);
             List<Balance> lastBalance = balanceRepository.findYesterdayClosingBalanceByStoreId(Math.toIntExact(storeId), yesterdayDate);
             Balance currentBalance = balanceRepository.findByStoreIdAndToday(Math.toIntExact(storeId), LocalDate.now());
-            if(currentBalance == null){
-            if (lastBalance != null && !lastBalance.get(0).getDate().equals(currentDate)) {
-            if(lastBalance.get(0).getFinalClosingBalance() != null){
-            double todaysOpeningBalance = lastBalance.get(0).getFinalClosingBalance();
-             double remainingBalance = lastBalance.get(0).getFinalClosingBalance() ;
-           // Create a new balance entry for the current day
-                    Balance newBalance = new Balance();
-                    newBalance.setDate(LocalDate.from(currentDate));
-                    newBalance.setTodays_Opening_Balance(todaysOpeningBalance);
-                    newBalance.setRemainingBalance( remainingBalance);
-                    newBalance.setStoreId(Math.toIntExact(storeId)); // Set the current store ID
-                    newBalance.setUpdatedDate(String.valueOf(LocalDateTime.now()));
-                    newBalance.setCreatedDate(String.valueOf(LocalDateTime.now()));
+            if (currentBalance == null) {
+                if (lastBalance != null && !lastBalance.get(0).getDate().equals(currentDate)) {
+                    if (lastBalance.get(0).getFinalClosingBalance() != null) {
+                        double todaysOpeningBalance = lastBalance.get(0).getFinalClosingBalance();
+                        double remainingBalance = lastBalance.get(0).getFinalClosingBalance();
+                        // Create a new balance entry for the current day
+                        Balance newBalance = new Balance();
+                        newBalance.setDate(LocalDate.from(currentDate));
+                        newBalance.setTodays_Opening_Balance(todaysOpeningBalance);
+                        newBalance.setRemainingBalance(remainingBalance);
+                        newBalance.setStoreId(Math.toIntExact(storeId)); // Set the current store ID
+                        newBalance.setUpdatedDate(String.valueOf(LocalDateTime.now()));
+                        newBalance.setCreatedDate(String.valueOf(LocalDateTime.now()));
 
-                    balanceRepository.save(newBalance);
-                }
-                else {
+                        balanceRepository.save(newBalance);
+                    } else {
 
-                    Double todaysOpeningBalance = lastBalance.get(0).getRemainingBalance();
-                    Double remainingBalance = lastBalance.get(0).getRemainingBalance();
+                        Double todaysOpeningBalance = lastBalance.get(0).getRemainingBalance();
+                        Double remainingBalance = lastBalance.get(0).getRemainingBalance();
 
-                    // Create a new balance entry for the current day
-                    Balance newBalance = new Balance();
-                    newBalance.setDate(LocalDate.from(currentDate));
-                    newBalance.setTodays_Opening_Balance(todaysOpeningBalance);
-                    newBalance.setRemainingBalance(remainingBalance);
-                    newBalance.setStoreId(Math.toIntExact(storeId)); // Set the current store ID
+                        // Create a new balance entry for the current day
+                        Balance newBalance = new Balance();
+                        newBalance.setDate(LocalDate.from(currentDate));
+                        newBalance.setTodays_Opening_Balance(todaysOpeningBalance);
+                        newBalance.setRemainingBalance(remainingBalance);
+                        newBalance.setStoreId(Math.toIntExact(storeId)); // Set the current store ID
 
-                    balanceRepository.save(newBalance);
+                        balanceRepository.save(newBalance);
+                    }
                 }
             }
         }
-        }
     }
-
-
 
 
 }

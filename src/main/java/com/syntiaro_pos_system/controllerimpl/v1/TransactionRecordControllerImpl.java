@@ -1,5 +1,9 @@
 package com.syntiaro_pos_system.controllerimpl.v1;
 
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.syntiaro_pos_system.controller.v1.TransactionRecordController;
 import com.syntiaro_pos_system.entity.v1.Balance;
 import com.syntiaro_pos_system.entity.v1.TransactionRecord;
@@ -7,16 +11,16 @@ import com.syntiaro_pos_system.repository.v1.BalanceRepository;
 import com.syntiaro_pos_system.repository.v1.TransactionRecordRepository;
 import com.syntiaro_pos_system.request.v1.TransactionRequest;
 import com.syntiaro_pos_system.serviceimpl.v1.TransactionRecordService;
-import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.text.ParseException;
@@ -45,7 +49,7 @@ public class TransactionRecordControllerImpl implements TransactionRecordControl
             // Fetch a list of balances based on the store ID and the current date
             List<Balance> balances = balanceRepository.findAllByStoreIdAndDate(request.getStore_id(), LocalDate.now());
 
-            if(balances.get(0).getFinalClosingBalance()!=null) {
+            if (balances.get(0).getFinalClosingBalance() != null) {
                 return ResponseEntity.badRequest().body("After Final Closing You Not Able To Do Process ");
             }
             if (balances.isEmpty()) {
@@ -55,7 +59,7 @@ public class TransactionRecordControllerImpl implements TransactionRecordControl
             for (Balance balance : balances) {
                 // Calculate the new closing balance by subtracting the given amount
                 Double currentClosingBalance = balance.getRemainingBalance();
-                 Float givenAmount = request.getAmount();
+                Float givenAmount = request.getAmount();
 
                 if (currentClosingBalance < givenAmount) {
                     return ResponseEntity.badRequest().body("Not sufficient balance for end-of-day close.");
@@ -117,7 +121,7 @@ public class TransactionRecordControllerImpl implements TransactionRecordControl
     public ResponseEntity<?> generatePDF(
             @RequestParam(required = false) Integer store_id,
             @RequestParam(required = false) String startDate,
-            @RequestParam(required = false)  String endDate) throws DocumentException {
+            @RequestParam(required = false) String endDate) throws DocumentException {
 
         List<TransactionRecord> transactionlist;
         List<Balance> balancelist;
@@ -134,8 +138,8 @@ public class TransactionRecordControllerImpl implements TransactionRecordControl
             try {
                 // Parse date strings into java.util.Date
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                startDates = dateFormat.parse(String.valueOf(startDate));
-                endDates = dateFormat.parse(String.valueOf(endDate));
+                startDates = dateFormat.parse(startDate);
+                endDates = dateFormat.parse(endDate);
             } catch (ParseException ex) {
                 // Handle the parsing error here, e.g., return an error response
                 return ResponseEntity.badRequest().body("Invalid date format");
@@ -201,8 +205,7 @@ public class TransactionRecordControllerImpl implements TransactionRecordControl
         int serialNumber = 1;
 
         for (Object item : combinedList) {
-            if (item instanceof Balance) {
-                Balance balance = (Balance) item;
+            if (item instanceof Balance balance) {
 
                 // Find matching TransactionRecords for the current Balance based on date
                 List<TransactionRecord> matchingTransactions = transactionlist.stream()
@@ -212,7 +215,7 @@ public class TransactionRecordControllerImpl implements TransactionRecordControl
                 // Add data to the table for the matched dates
                 table.addCell(String.valueOf(serialNumber++));
                 table.addCell(String.valueOf(balance.getDate()));
-                table.addCell(String.format("%.2f",balance.getTodays_Opening_Balance()));
+                table.addCell(String.format("%.2f", balance.getTodays_Opening_Balance()));
 
                 // If there are matching TransactionRecords, concatenate their data into a single cell
                 if (!matchingTransactions.isEmpty()) {
@@ -238,21 +241,20 @@ public class TransactionRecordControllerImpl implements TransactionRecordControl
                 }
 
                 // Add remaining data
-                table.addCell(String.format("%.2f",balance.getRemainingBalance()));
+                table.addCell(String.format("%.2f", balance.getRemainingBalance()));
                 table.addCell(String.valueOf(balance.getFinalHandedOverTo()));
                 table.addCell(String.valueOf(balance.getFinalAmount()));
-                table.addCell(String.format("%.2f",balance.getFinalClosingBalance()));
+                table.addCell(String.format("%.2f", balance.getFinalClosingBalance()));
 
-            } else if (item instanceof TransactionRecord) {
+            } else if (item instanceof TransactionRecord transaction) {
                 // This block is for TransactionRecord only, as you're handling Balance separately
-                TransactionRecord transaction = (TransactionRecord) item;
 
                 // Check if there is a matching Balance for the current TransactionRecord based on date
                 Balance matchingBalance = balancelist.stream()
                         .filter(balance -> transaction.getCreatedDate().equals(balance.getCreatedDate()))
                         .findFirst()
                         .orElse(null);
-              }
+            }
         }
 
         document.add(table);
@@ -287,7 +289,7 @@ public class TransactionRecordControllerImpl implements TransactionRecordControl
             // Fetch payments for a specific store ID
             balancelist = balanceRepository.findByStoreid(store_id);
 
-        }  else {
+        } else {
             // If no date range is specified, retrieve all stores
             transactionlist = transactionRecordRepository.findAll();
             balancelist = balanceRepository.findAll();
@@ -341,8 +343,7 @@ public class TransactionRecordControllerImpl implements TransactionRecordControl
         combinedList.addAll(transactionlist);
         combinedList.addAll(balancelist);
         for (Object item : combinedList) {
-            if (item instanceof Balance) {
-                Balance balance = (Balance) item;
+            if (item instanceof Balance balance) {
 
                 // Find matching TransactionRecords for the current Balance based on date
                 List<TransactionRecord> matchingTransactions = transactionlist.stream()
@@ -352,7 +353,6 @@ public class TransactionRecordControllerImpl implements TransactionRecordControl
                 // Add data to the table for the matched dates
                 table.addCell(String.valueOf(balance.getDate()));
                 table.addCell(String.format("%.2f", balance.getTodays_Opening_Balance()));
-
 
 
                 // If there are matching TransactionRecords, concatenate their data into a single cell
@@ -382,11 +382,10 @@ public class TransactionRecordControllerImpl implements TransactionRecordControl
                 table.addCell(String.format("%.2f", balance.getRemainingBalance()));
                 table.addCell(String.valueOf(balance.getFinalHandedOverTo()));
                 table.addCell(String.valueOf(balance.getFinalAmount()));
-                table.addCell(String.format("%.2f",balance.getFinalClosingBalance()));
+                table.addCell(String.format("%.2f", balance.getFinalClosingBalance()));
 
-            } else if (item instanceof TransactionRecord) {
+            } else if (item instanceof TransactionRecord transaction) {
                 // This block is for TransactionRecord only, as you're handling Balance separately
-                TransactionRecord transaction = (TransactionRecord) item;
 
                 // Check if there is a matching Balance for the current TransactionRecord based on date
                 Balance matchingBalance = balancelist.stream()
@@ -411,8 +410,6 @@ public class TransactionRecordControllerImpl implements TransactionRecordControl
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(new InputStreamResource(byteArrayInputStream));
     }
-
-
 
 
 }

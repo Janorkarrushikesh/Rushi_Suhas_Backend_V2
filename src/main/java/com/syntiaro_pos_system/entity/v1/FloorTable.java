@@ -1,9 +1,6 @@
 package com.syntiaro_pos_system.entity.v1;
 
-import com.syntiaro_pos_system.entity.v1.Tables;
-
 import javax.persistence.*;
-import javax.persistence.Table;
 import java.util.List;
 
 @Entity
@@ -15,8 +12,8 @@ public class FloorTable {
 
     private String floorname;
 
-    @OneToMany(targetEntity = Tables.class,cascade = CascadeType.ALL)
-    @JoinColumn(name = "floor_table_id",referencedColumnName = "serialNo")
+    @OneToMany(targetEntity = Tables.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "floor_table_id", referencedColumnName = "serialNo")
     private List<Tables> tables;
 
     @Column(name = "store_id")

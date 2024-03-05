@@ -33,7 +33,6 @@ public class DashBoardServiceImpl implements DashBoardService {
                 if (existingDashBoard != null) {
                     throw new DashboardAlreadyExistsException("Dashboard with StoreId " + dashBoard.getStoreId() + " already exists");
                 }
-
                 return ResponseEntity.ok().body(new ApiResponse(dashBoardRepository.save(dashBoard), true, 200));
             } catch (DashboardAlreadyExistsException ex) {
                 return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body(new ApiResponse(dashBoard, false, ex.getMessage(), 208));
@@ -171,7 +170,7 @@ public class DashBoardServiceImpl implements DashBoardService {
             return ResponseEntity.ok().body(new ApiResponse(savedEntity, true, 200));
         } catch (Exception e) {
             // Handle any exception that may occur during the save operation
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body( new ApiResponse(null, false, "Failed to update the dashboard",500));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "Failed to update the dashboard", 500));
         }
     }
 

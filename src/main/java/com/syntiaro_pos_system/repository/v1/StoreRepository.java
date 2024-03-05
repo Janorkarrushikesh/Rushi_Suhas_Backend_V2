@@ -20,22 +20,22 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
     Optional<Store> findByUsername(String username);
 
-  Boolean existsByUsername(String username);
+    Boolean existsByUsername(String username);
 
-  Boolean existsByEmail(String email);
+    Boolean existsByEmail(String email);
 
-  Boolean existsByContact(String contact);
+    Boolean existsByContact(String contact);
 
-  Optional<Store> findByEmail(String email);
+    Optional<Store> findByEmail(String email);
 
 
-  @Query("SELECT DISTINCT s FROM Store s LEFT JOIN FETCH s.tax")
-  List<Store> findAllStoresWithTax();
+    @Query("SELECT DISTINCT s FROM Store s LEFT JOIN FETCH s.tax")
+    List<Store> findAllStoresWithTax();
 
     List<Store> findByStoreRoles_Name(ERole eRole);
 
 
-// THIS METHOD USE RENEWSUBSCRIPTION USING REGISTRATION NUMBER
+    // THIS METHOD USE RENEWSUBSCRIPTION USING REGISTRATION NUMBER
     @Query("SELECT s FROM Store s WHERE s.registrationNo = :regiNum")
     Optional<Store> findByRegistrationNumber(@Param("regiNum") String registrationNumber);
 

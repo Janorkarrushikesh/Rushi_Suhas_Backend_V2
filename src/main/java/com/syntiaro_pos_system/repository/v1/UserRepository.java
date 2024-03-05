@@ -14,22 +14,22 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
 
 
-  Optional<User> findByUsername(String username);
+    Optional<User> findByUsername(String username);
 
-  Boolean existsByUsername(String username);
+    Boolean existsByUsername(String username);
 
-  Boolean existsByEmail(String email);
+    Boolean existsByEmail(String email);
 
-  Boolean existsByContact(Long contact);
+    Boolean existsByContact(Long contact);
 
-  Optional<User> findByEmail(String email);
+    Optional<User> findByEmail(String email);
 
-  List<User> findByStoreId(Integer storeid);
+    List<User> findByStoreId(Integer storeid);
 
 
-  //-------this code added by Rushikesh for id genrate by store_id-------------------
-  @Query("SELECT MAX(b.id) FROM User b WHERE b.storeId = :store_id")
-  Long findLastNumberForStore(@Param("store_id") Integer store_id);
+    //-------this code added by Rushikesh for id genrate by store_id-------------------
+    @Query("SELECT MAX(b.id) FROM User b WHERE b.storeId = :store_id")
+    Long findLastNumberForStore(@Param("store_id") Integer store_id);
 
 
 }

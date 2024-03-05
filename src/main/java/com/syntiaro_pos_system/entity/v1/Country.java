@@ -1,6 +1,5 @@
 package com.syntiaro_pos_system.entity.v1;
 
-import com.syntiaro_pos_system.entity.v1.State;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,8 +29,8 @@ public class Country {
     private String createdBy;
     private Double tax;
 
-    @OneToMany(targetEntity = State.class,cascade = CascadeType.ALL)
-    @JoinColumn(name = "country_id",referencedColumnName = "countryId")
+    @OneToMany(targetEntity = State.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "country_id", referencedColumnName = "countryId")
     private List<State> states;
 
     // Constructors, getters, setters
@@ -108,8 +107,6 @@ public class Country {
     public void setTax(Double tax) {
         this.tax = tax;
     }
-
-
 
 
     public <R> R getCountryName() {

@@ -1,6 +1,5 @@
 package com.syntiaro_pos_system.serviceimpl.v2;
 
-import com.syntiaro_pos_system.entity.v1.Store;
 import com.syntiaro_pos_system.entity.v1.Tax;
 import com.syntiaro_pos_system.entity.v2.ApiResponse;
 import com.syntiaro_pos_system.repository.v2.TaxRepository;
@@ -20,16 +19,17 @@ public class TaxServiceV2Impl implements TaxService {
     TaxRepository taxRepository;
 
     @Override
-    public ApiResponse saveTax(Tax tax) {
+    public ResponseEntity<ApiResponse> saveTax(Tax tax) {
 
         try {
             // Optional<Store> store = storeRepository.findById(Long.valueOf(tax.getStoreidfk()));
-            Long lastBillNumber = taxRepository.findLastNumberForStore(tax.getStoreidfk());
-            tax.setTaxId(lastBillNumber != null ? lastBillNumber + 1 : 1);
+            Long lastTaxId = taxRepository.findLastNumberForStore(tax.getStoreidfk());
+            tax.setTaxId(lastTaxId != null ? lastTaxId + 1 : 1);
             Tax createdTax = taxRepository.save(tax);
-            return new ApiResponse(createdTax, true, 200);
+            return ResponseEntity.ok().body(new ApiResponse(createdTax, true, 200));
         } catch (Exception e) {
-            return new ApiResponse(null, false, "Store Not Found ", 400);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(null, false, ".....", 500));
         }
     }
 
@@ -37,14 +37,15 @@ public class TaxServiceV2Impl implements TaxService {
     public ResponseEntity<ApiResponse> getTaxById(Long serialNo) {
 
         try {
-            Optional<Tax> taxData = taxRepository.findById(serialNo);
-            if (taxData.isPresent()) {
-                return ResponseEntity.ok().body(new ApiResponse(taxData, true, 200));
+
+            Optional<Tax> existingTax = taxRepository.findById(serialNo);
+            if (existingTax.isPresent()) {
+                return ResponseEntity.ok().body(new ApiResponse(existingTax, true, 200));
             }
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(null, false, "Id Not Found", 404));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(null, false, ".....", 500));
+                    .body(new ApiResponse(null, false, "...", 500));
         }
     }
 
@@ -63,45 +64,42 @@ public class TaxServiceV2Impl implements TaxService {
         }
     }
 
-
     @Override
     public ResponseEntity<ApiResponse> updateTaxById(Long serialNo, Tax tax) {
 
-        try{
+        try {
             Optional<Tax> existing = taxRepository.findById(serialNo);
-            if(existing.isPresent()){
+            if (existing.isPresent()) {
                 Tax taxToUpdate = existing.get();
                 if (tax.getRate() != null) {
                     taxToUpdate.setRate(tax.getRate());
                 }
-                if(tax.getName() != null){
+                if (tax.getName() != null) {
                     taxToUpdate.setName(tax.getName());
                 }
-                if (tax.getUpdatedBy()!=null)
-                {
+                if (tax.getUpdatedBy() != null) {
                     taxToUpdate.setUpdatedBy(tax.getUpdatedBy());
                 }
-                return ResponseEntity.ok().body(new ApiResponse( taxRepository.save(taxToUpdate),true,"updated Successfully",200));
+                return ResponseEntity.ok().body(new ApiResponse(taxRepository.save(taxToUpdate), true, "updated Successfully", 200));
             }
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(null,false,"Id Not Found",404));
-        }catch(Exception e){
-            return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(null,false,"...",500));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(null, false, "Id Not Found", 404));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(null, false, "...", 500));
         }
     }
 
     @Override
     public ResponseEntity<ApiResponse> deletetaxById(Long serialNo) {
-        try{
-            Optional<Tax> data= taxRepository.findById(serialNo);
-            if(data.isPresent())
-            {
+        try {
+            Optional<Tax> existingTax = taxRepository.findById(serialNo);
+            if (existingTax.isPresent()) {
                 taxRepository.deleteById(serialNo);
-                return ResponseEntity.ok().body(new ApiResponse(null,true,"deleted Successfully",200));
+                return ResponseEntity.ok().body(new ApiResponse(null, true, "deleted Successfully", 200));
             }
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(null,false,"Id Not Found",404));
-        }catch(Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null,false,"....",500));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(null, false, "Id Not Found", 404));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "....", 500));
         }
     }
 

@@ -7,62 +7,68 @@ import com.syntiaro_pos_system.service.v1.AddonServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
 public class AddonControllerImpl implements AddonRest {
 
-	@Autowired
-	AddonServices addonServices;
-	@Override
-	public ApiResponse saveaddon(@RequestBody Addon Addon) {
-		ApiResponse id = addonServices.saveaddon(Addon);
-		return id;
+    @Autowired
+    AddonServices addonServices;
 
-	}
-	@Override
-	public ApiResponse getAddon() {
-		return addonServices.getAddOn();
-	}
+    @Override
+    public ApiResponse saveaddon(@RequestBody Addon Addon) {
+        ApiResponse id = addonServices.saveaddon(Addon);
+        return id;
 
-	@Override
-	public Addon updateAddon(@RequestBody Addon Addon) {
-		return this.addonServices.updateAddon(Addon);
-	}
+    }
 
-	@Override
-	public ResponseEntity<HttpStatus> deleteUser(@PathVariable String itemid) {
-		try {
-			this.addonServices.deleteaddon(Integer.parseInt(itemid));
-			return new ResponseEntity<>(HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
+    @Override
+    public ApiResponse getAddon() {
+        return addonServices.getAddOn();
+    }
 
-	@Override
-	public Addon fetchDetailsById(Integer itemid) {
-		return addonServices.getAddonDetailsById(itemid);
+    @Override
+    public Addon updateAddon(@RequestBody Addon Addon) {
+        return this.addonServices.updateAddon(Addon);
+    }
 
-	}
-	@Override
-	public ResponseEntity<Addon> updateAddon(@PathVariable("itemid") Integer itemid, @RequestBody Addon Addon) {
-		try {
-			Addon updateFoodAddon = addonServices.updateAddon(itemid, Addon);
-			if (updateFoodAddon != null) {
-				return new ResponseEntity<>(updateFoodAddon, HttpStatus.OK);
-			} else {
-				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-			}
-		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-	@Override
-	public List<Addon> getAddonsByStoreId(@PathVariable String storeId) {
-		return addonServices.getAddonsByStoreId(storeId);
-	}
+    @Override
+    public ResponseEntity<HttpStatus> deleteUser(@PathVariable String itemid) {
+        try {
+            this.addonServices.deleteaddon(Integer.parseInt(itemid));
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public Addon fetchDetailsById(Integer itemid) {
+        return addonServices.getAddonDetailsById(itemid);
+
+    }
+
+    @Override
+    public ResponseEntity<Addon> updateAddon(@PathVariable("itemid") Integer itemid, @RequestBody Addon Addon) {
+        try {
+            Addon updateFoodAddon = addonServices.updateAddon(itemid, Addon);
+            if (updateFoodAddon != null) {
+                return new ResponseEntity<>(updateFoodAddon, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public List<Addon> getAddonsByStoreId(@PathVariable String storeId) {
+        return addonServices.getAddonsByStoreId(storeId);
+    }
 
 }

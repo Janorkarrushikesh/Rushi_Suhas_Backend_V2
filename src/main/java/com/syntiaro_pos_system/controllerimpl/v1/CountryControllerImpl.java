@@ -9,7 +9,8 @@ import com.syntiaro_pos_system.response.StateResponse;
 import com.syntiaro_pos_system.serviceimpl.v1.CountryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,7 @@ public class CountryControllerImpl implements CountryController {
 
     @Autowired
     CountryService countryService;
+
     @Autowired
     public CountryControllerImpl(CountryRepository countryRepository) {
         this.countryRepository = countryRepository;

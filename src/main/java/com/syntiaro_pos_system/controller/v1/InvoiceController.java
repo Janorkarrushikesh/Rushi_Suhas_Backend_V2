@@ -1,53 +1,58 @@
 package com.syntiaro_pos_system.controller.v1;
 
-import com.syntiaro_pos_system.entity.v1.Invoice;
-import com.itextpdf.text.*;
+import com.itextpdf.text.DocumentException;
+import com.syntiaro_pos_system.entity.v1.VendorInventory;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping(path = "/v1/sys/vendorinvoice")
 public interface InvoiceController {
-	@PostMapping(path = "/postinvoice")
-	String saveInvoice(@RequestBody Invoice invoice);
-	@PutMapping(path = "/updatess")
-	public Invoice updateinvoice(@RequestBody Invoice invoice);
-	@GetMapping(path = "/allinvoice")
-	List<Invoice> getInvoice();
-	@PatchMapping(path = "/updateinvoice/{invoice_id}")
-	public ResponseEntity<Invoice> updateInvoice(
-			@PathVariable("invoice_id") Integer invoice_id,
-			@RequestBody Invoice invoice);
+    @PostMapping(path = "/postinvoice")
+    String saveInvoice(@RequestBody VendorInventory vendorInventory);
 
-	@GetMapping("/invoices/{storeId}")
-	public List<Invoice> getInvoicesByStoreId(@PathVariable Integer storeId) ;
-	@GetMapping("/getInvoiceByID/{id}")
-	public ResponseEntity<?> fetchDetailsById(@PathVariable Integer id) ;
+    @PutMapping(path = "/updatess")
+    VendorInventory updateinvoice(@RequestBody VendorInventory vendorInventory);
 
-	// THIS METHOD IS USE FOR DELETE INVOICE
-	@DeleteMapping("/{invoiceId}")
-	public ResponseEntity<String> deleteInvoice(@PathVariable Integer invoiceId) ;
+    @GetMapping(path = "/allinvoice")
+    List<VendorInventory> getInvoice();
 
-	@PostMapping("/excelinvoice/{storeId}")
-	public ResponseEntity<byte[]> generateExcelByStoreId(@PathVariable Integer storeId ) ;
+    @PatchMapping(path = "/updateinvoice/{invoice_id}")
+    ResponseEntity<VendorInventory> updateInvoice(
+            @PathVariable("invoice_id") Integer invoice_id,
+            @RequestBody VendorInventory vendorInventory);
 
-	@PostMapping("/excelinvoicedate/")
-	public ResponseEntity<byte[]> generateExcelByStoreId(
-			@RequestParam Integer store_id,
-			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") String startDate,
-			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") String endDate) ;
+    @GetMapping("/invoices/{storeId}")
+    List<VendorInventory> getInvoicesByStoreId(@PathVariable Integer storeId);
 
-	@PostMapping("/generate-pdf-invoice/")
-	public ResponseEntity<?> generatePDF(
-			@RequestParam Integer store_id,
-			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") String startDate,
-			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") String endDate) throws DocumentException ;
+    @GetMapping("/getInvoiceByID/{id}")
+    ResponseEntity<?> fetchDetailsById(@PathVariable Integer id);
 
-	@PostMapping("/generate-pdf-invoice/{store_id}")
-	public ResponseEntity<?> generatePDFbystoreid(
-			@PathVariable Integer store_id) throws DocumentException;
+    // THIS METHOD IS USE FOR DELETE INVOICE
+    @DeleteMapping("/{invoiceId}")
+    ResponseEntity<String> deleteInvoice(@PathVariable Integer invoiceId);
+
+    @PostMapping("/excelinvoice/{storeId}")
+    ResponseEntity<byte[]> generateExcelByStoreId(@PathVariable Integer storeId);
+
+    @PostMapping("/excelinvoicedate/")
+    ResponseEntity<byte[]> generateExcelByStoreId(
+            @RequestParam Integer store_id,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") String startDate,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") String endDate);
+
+    @PostMapping("/generate-pdf-invoice/")
+    ResponseEntity<?> generatePDF(
+            @RequestParam Integer store_id,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") String startDate,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") String endDate) throws DocumentException;
+
+    @PostMapping("/generate-pdf-invoice/{store_id}")
+    ResponseEntity<?> generatePDFbystoreid(
+            @PathVariable Integer store_id) throws DocumentException;
 
 }

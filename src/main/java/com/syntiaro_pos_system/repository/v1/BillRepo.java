@@ -19,6 +19,8 @@ import java.util.Optional;
 
 public interface BillRepo extends JpaRepository<Bill, Integer> {
 
+    LocalDate date = LocalDate.now();
+
     Optional<Bill> findById(Integer billid);
 
     // THIS METHOD IS USE FOR FETCH BILL BY STOREID
@@ -45,15 +47,13 @@ public interface BillRepo extends JpaRepository<Bill, Integer> {
     @Query("SELECT COALESCE(SUM(b.total), 0) FROM Bill b WHERE b.storeId = :storeId AND DATE(b.billDate) = :day AND b.paymentMode = 'card'")
     Float calculateTotalCardAmountByStoreIdAndDay(@Param("storeId") Integer storeId, @Param("day") Date day);
 
-    //THIS METHOD IS USE FOR CALCULATE OPENING BALANCE + CASH = TOTAL CLOSING BALANCE IT SHOW WHOLE LIST OF BALANCE
-    @Query("SELECT b FROM Bill b WHERE b.billDate = :billdate")
-    List<Bill> findByBilldate(LocalDate billdate);
-
     //THIS METHOD IS USE FOR CALCULATE OPENING BALANCE + CASH = TOTAL CLOSING BALANCE
 //    @Query("SELECT b FROM Bill b WHERE b.storeId = :storeId AND b.billDate = :billdate")
 //    List<Bill> findByBilldateAndStoreId(@Param("billdate") LocalDate billdate, @Param("store_id") Integer store_id);
 
-    LocalDate date = LocalDate.now();
+    //THIS METHOD IS USE FOR CALCULATE OPENING BALANCE + CASH = TOTAL CLOSING BALANCE IT SHOW WHOLE LIST OF BALANCE
+    @Query("SELECT b FROM Bill b WHERE b.billDate = :billdate")
+    List<Bill> findByBilldate(LocalDate billdate);
 
     @Query("SELECT MAX(b.id)  FROM Bill b WHERE b.storeId = :store_id AND b.billDate = :billdate")
     Integer findLastBillNumberForStore(@Param("store_id") Integer store_id, LocalDate billdate);

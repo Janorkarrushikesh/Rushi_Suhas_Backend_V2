@@ -6,11 +6,12 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
 @Entity
 public class Receipe implements Serializable {
 
     @Serial
-    private static final long serialVersionUID =1L;
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,11 +32,8 @@ public class Receipe implements Serializable {
     private String createdDate;
 
     private String updatedDate;
-
-
-
-    @OneToMany(targetEntity = Ingredient.class,cascade = CascadeType.ALL)
-    @JoinColumn(name = "ingredients_id",referencedColumnName = "Serial_no")
+    @OneToMany(targetEntity = Ingredient.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "ingredients_id", referencedColumnName = "Serial_no")
     private List<Ingredient> ingredients;
 
     public Long getSerialNo() {

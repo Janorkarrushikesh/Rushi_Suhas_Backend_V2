@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface StoreRoleRepositoryV2 extends  JpaRepository <StoreRole,Long>{
+public interface StoreRoleRepositoryV2 extends JpaRepository<StoreRole, Long> {
     Optional<StoreRole> findByName(ERole name);
 }

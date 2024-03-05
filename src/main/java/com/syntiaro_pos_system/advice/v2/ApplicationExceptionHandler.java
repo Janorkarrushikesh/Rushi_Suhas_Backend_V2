@@ -9,9 +9,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @RestControllerAdvice
 public class ApplicationExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -29,7 +26,7 @@ public class ApplicationExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ApiResponse> handleClassCastException(ClassCastException ex) {
         ex.printStackTrace();
-        ApiResponse response = new ApiResponse(null, false, "Invalid request format" ,500);
+        ApiResponse response = new ApiResponse(null, false, "Invalid request format", 500);
         return ResponseEntity.badRequest().body(response);
     }
 

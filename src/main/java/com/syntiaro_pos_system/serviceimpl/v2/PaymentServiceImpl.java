@@ -10,15 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -29,61 +25,96 @@ public class PaymentServiceImpl implements PaymentService {
 
 
     @Override
-    public ResponseEntity<ApiResponse> getPaymentByStoreId(Integer storeId , Integer page,Integer size) {
+    public ResponseEntity<ApiResponse> getPaymentByStoreId(Integer storeId, Integer page, Integer size, String startDate, String endDate) {
         try {
-            Pageable pageable = PageRequest.of(page,size);
-            Page<Payment> paymenylist = paymentRepository.findByStoreId(storeId,pageable);
-            List<Map<String, Object>> paymentData = new ArrayList<>();
-            if (paymenylist.isEmpty()) {
+            List<Payment> existingPayment = paymentRepository.findByStoreId(storeId);
+            if (existingPayment.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(new ApiResponse(null, false, "Payment Detail Not Found", HttpStatus.NOT_FOUND.value()));
+                        .body(new ApiResponse(null, false, "Data Not found for given Id", 404));
             } else {
-                Map<String, Object> paymentMap = new LinkedHashMap<>();
-                for (Payment payment : paymenylist) {
-                    paymentMap.put("serialNumber", payment.getSerialNo());
-                    paymentMap.put("id", payment.getPaymentId());
-                    paymentMap.put("paymentDate", payment.getPaymentDate());
-                    paymentMap.put("vendorName", payment.getVendorName());
-                    paymentMap.put("paymentMode", payment.getPaymentMode());
-                    paymentMap.put("paymentStatus", payment.getPaymentStatus());
-                    paymentMap.put("dueDate", payment.getPaymentMode());
-                    paymentMap.put("bankName", payment.getBankName());
-                    paymentMap.put("branch", payment.getBranch());
-                    paymentMap.put("accountNo", payment.getAccountNo());
-                    paymentMap.put("ifscCode", payment.getIfscCode());
-                    paymentMap.put("upi", payment.getUpiId());
-                    paymentMap.put("storeId", payment.getStoreId());
-                    paymentMap.put("gst", payment.getGst());
-                    paymentMap.put("total", payment.getTotal());
-                    paymentData.add(paymentMap);
-                }
-                return ResponseEntity.ok(new ApiResponse(paymentData, true, 200));
+                if (page != null && size != null) {
+                    return ResponseEntity.ok().body(new ApiResponse(getByPageAndSize(storeId, page, size), true, 200));
+                } else if (startDate != null && endDate != null) {
+                    return ResponseEntity.ok().body(new ApiResponse(getByDate(storeId, startDate, endDate), true, 200));
+                } else return ResponseEntity.ok().body(new ApiResponse(existingPayment, true, 200));
             }
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(null, false, "Failed to retrieve payment data", HttpStatus.INTERNAL_SERVER_ERROR.value()));
+                    .body(new ApiResponse(null, false, "...", 500));
         }
     }
 
+    private Object getByDate(Integer storeId, String startDate, String endDate) {
+        List<Payment> existingPayment = paymentRepository.findBetweenDate(storeId, startDate, endDate);
+        List<Map<String, Object>> listMap = new ArrayList<>();
+        if (existingPayment != null) {
+            Map<String, Object> paymentMap = new HashMap<>();
+            for (Payment payment : existingPayment) {
+                paymentMap.put("id", payment.getPaymentId());
+                paymentMap.put("paymentDate", payment.getPaymentDate());
+                paymentMap.put("vendorName", payment.getVendorName());
+                paymentMap.put("paymentMode", payment.getPaymentMode());
+                paymentMap.put("paymentStatus", payment.getPaymentStatus());
+                paymentMap.put("dueDate", payment.getPaymentMode());
+                paymentMap.put("bankName", payment.getBankName());
+                paymentMap.put("branch", payment.getBranch());
+                paymentMap.put("accountNo", payment.getAccountNo());
+                paymentMap.put("ifscCode", payment.getIfscCode());
+                paymentMap.put("upi", payment.getUpiId());
+                paymentMap.put("storeId", payment.getStoreId());
+                paymentMap.put("gst", payment.getGst());
+                paymentMap.put("total", payment.getTotal());
+                listMap.add(paymentMap);
+            }
+            return listMap;
+        }
+        return "Not Found ";
+    }
+
+    private Object getByPageAndSize(Integer storeId, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Payment> pageList = paymentRepository.findByStoreId(storeId, pageable);
+        List<Map<String, Object>> listMap = new LinkedList<>();
+        if (pageList != null) {
+            Map<String, Object> paymentMap = new HashMap<>();
+            for (Payment payment : pageList) {
+                paymentMap.put("id", payment.getPaymentId());
+                paymentMap.put("paymentDate", payment.getPaymentDate());
+                paymentMap.put("vendorName", payment.getVendorName());
+                paymentMap.put("paymentMode", payment.getPaymentMode());
+                paymentMap.put("paymentStatus", payment.getPaymentStatus());
+                paymentMap.put("dueDate", payment.getPaymentMode());
+                paymentMap.put("bankName", payment.getBankName());
+                paymentMap.put("branch", payment.getBranch());
+                paymentMap.put("accountNo", payment.getAccountNo());
+                paymentMap.put("ifscCode", payment.getIfscCode());
+                paymentMap.put("upi", payment.getUpiId());
+                paymentMap.put("storeId", payment.getStoreId());
+                paymentMap.put("gst", payment.getGst());
+                paymentMap.put("total", payment.getTotal());
+                listMap.add(paymentMap);
+            }
+            return listMap;
+        }
+        return "not found";
+
+    }
+
     @Override
-    public  ResponseEntity<ApiResponse> getPaymenyById(Integer serialNo)  {
-        try{
+    public ResponseEntity<ApiResponse> getPaymenyById(Integer serialNo) {
+        try {
 
             Optional<Payment> paymentlist = paymentRepository.findById(serialNo);
-            if(paymentlist.isPresent()){
+            if (paymentlist.isPresent()) {
                 return ResponseEntity.ok(new ApiResponse(paymentlist.get(), true, 200));
-            }
-            else {
+            } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(new ApiResponse(null,false,"Payment Detail Not Found" , HttpStatus.NOT_FOUND.value()));
+                        .body(new ApiResponse(null, false, "Payment Detail Not Found", 404));
             }
 
-        }
-        catch (Exception e){
-            e.printStackTrace();
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(null, false, "Failed to retrieve payment data", HttpStatus.INTERNAL_SERVER_ERROR.value()));
+                    .body(new ApiResponse(null, false, "...", 500));
         }
 
     }
@@ -111,37 +142,34 @@ public class PaymentServiceImpl implements PaymentService {
         return payment.getUpiId();
     }
 
-
     @Override
-    public ApiResponse savePayment(Payment payment) {
+    public ResponseEntity<ApiResponse> savePayment(Payment payment) {
         try {
-            Integer lastBillNumber = paymentRepository.findLastNumberForStore(payment.getStoreId());
-            payment.setPaymentId(lastBillNumber != null ? lastBillNumber + 1 : 1);
-            return new ApiResponse(paymentRepository.save(payment),true,200);
-        }catch(Exception e) {
-            e.printStackTrace();
-            return new ApiResponse(null,false,400);
+            Integer lastPaymentId = paymentRepository.findLastNumberForStore(payment.getStoreId());
+            payment.setPaymentId(lastPaymentId != null ? lastPaymentId + 1 : 1);
+            return ResponseEntity.ok().body(new ApiResponse(paymentRepository.save(payment), true, 200));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "....", 500));
         }
     }
 
     @Override
     public ResponseEntity<ApiResponse> deletePaymentById(Integer serialNo) {
-        try{
-            Optional<Payment> data= paymentRepository.findById(serialNo);
-            if(data.isPresent())
-            {
+        try {
+            Optional<Payment> existingPayment = paymentRepository.findById(serialNo);
+            if (existingPayment.isPresent()) {
                 paymentRepository.deleteById(serialNo);
-                return ResponseEntity.ok().body(new ApiResponse(null,true,"deleted Successfully",200));
+                return ResponseEntity.ok().body(new ApiResponse(null, true, "deleted Successfully", 200));
             }
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(null,false,"Id Not Found",404));
-        }catch(Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null,false,"....",500));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(null, false, "Id Not Found", 404));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "....", 500));
         }
     }
 
     @Override
     public ResponseEntity<ApiResponse> updatePayment(Integer serialNo, Payment payment) {
-        try{
+        try {
             Optional<Payment> existingPayment = paymentRepository.findById(serialNo);
             if (existingPayment.isPresent()) {
                 Payment updatepayment = existingPayment.get();
@@ -196,8 +224,8 @@ public class PaymentServiceImpl implements PaymentService {
             }
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(null, false, "Id Not Found", 404));
 
-        }catch (Exception e ){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null,false,"....",500));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "....", 500));
         }
     }
 

@@ -7,7 +7,9 @@ import com.syntiaro_pos_system.service.v1.UserSidebarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,14 +20,16 @@ public class UserSidebarControllerImpl implements UserSidebarController {
     UserSidebarService userSidebarService;
     @Autowired
     UserSidebarRepo userSidebarRepo;
+
     //THIS METHOD IS USE FOR POST USER
     @Override
     public List<UserSidebar> getUser() {
         return userSidebarService.getUsers();
     }
+
     // THIS METHOD IS USE FOR FETCH USER BY ID
     @Override
-    public ResponseEntity<?> fetchDetailsById(Integer id){
+    public ResponseEntity<?> fetchDetailsById(Integer id) {
         Optional<UserSidebar> usersidebar = userSidebarService.getUserDetailsById(id);
         if (usersidebar.isPresent()) {
             return ResponseEntity.ok(usersidebar.get());
@@ -34,6 +38,7 @@ public class UserSidebarControllerImpl implements UserSidebarController {
         }
 
     }
+
     //THIS METHOD IS USE FOR UPDATE USER
     @Override // For Update Data
     public UserSidebar updateUser(@RequestBody UserSidebar userSidebar) {
@@ -41,7 +46,7 @@ public class UserSidebarControllerImpl implements UserSidebarController {
     }
     //THIS METHOD IS USE FOR POST USER
 
-   @Override
+    @Override
     public ResponseEntity<String> saveUser(@RequestBody UserSidebar userSidebar) {
         boolean isUsernameTaken = userSidebarService.isUsernameTaken(userSidebar.getUsername());
         if (isUsernameTaken) {
@@ -51,6 +56,7 @@ public class UserSidebarControllerImpl implements UserSidebarController {
         userSidebarService.saveUser(userSidebar);
         return ResponseEntity.ok("UserSidebar saved successfully!");
     }
+
     //THIS METHOD IS USE FOR GET USER BY USERNAME
     @Override
     public ResponseEntity<UserSidebar> getUserByUsername(@PathVariable String username) {
@@ -61,6 +67,7 @@ public class UserSidebarControllerImpl implements UserSidebarController {
             return ResponseEntity.notFound().build();
         }
     }
+
     // THIS METHOD IS USE FOR FETCH USERSIDEBAR BY STOREID
     @Override
     public ResponseEntity<List<UserSidebar>> getUsersByStoreId(@PathVariable String storeId) {
@@ -72,7 +79,7 @@ public class UserSidebarControllerImpl implements UserSidebarController {
         }
     }
 
-   //THIS METHOD IS USE FOR DELETE USER
+    //THIS METHOD IS USE FOR DELETE USER
     @Override
     public ResponseEntity<HttpStatus> deleteUser(String user_id) {
         try {

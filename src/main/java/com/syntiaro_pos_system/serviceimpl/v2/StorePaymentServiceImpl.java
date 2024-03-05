@@ -1,7 +1,7 @@
 package com.syntiaro_pos_system.serviceimpl.v2;
 
-import com.syntiaro_pos_system.entity.v2.ApiResponse;
 import com.syntiaro_pos_system.entity.v1.StorePayment;
+import com.syntiaro_pos_system.entity.v2.ApiResponse;
 import com.syntiaro_pos_system.repository.v2.StorePaymentV2Repository;
 import com.syntiaro_pos_system.service.v2.StorePaymentService;
 import net.glxn.qrgen.QRCode;
@@ -54,28 +54,25 @@ public class StorePaymentServiceImpl implements StorePaymentService {
     @Override
     public ResponseEntity<ApiResponse> getById(Long serialNo) {
         try {
-            Optional<StorePayment> sData = storePaymentV2Repository.findById(serialNo);
-            if (sData.isPresent()) {
-                return ResponseEntity.ok().body(new ApiResponse(sData, true, "Data Found", 200));
+            Optional<StorePayment> existingStorePayment = storePaymentV2Repository.findById(serialNo);
+            if (existingStorePayment.isPresent()) {
+                return ResponseEntity.ok().body(new ApiResponse(existingStorePayment, true, "Data Found", 200));
             }
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(sData, true, "Id Not Found", 404));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(null, false, "Id Not Found", 404));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "....", 500));
         }
-
     }
 
     @Override
     public ResponseEntity<ApiResponse> getByStoreId(Long storeId) {
         try {
-            List<StorePayment> sData = storePaymentV2Repository.findByStoreId(storeId);
-            if (sData.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(sData, true, "Id Not Found", 404));
-
+            List<StorePayment> existingStorePayment = storePaymentV2Repository.findByStoreId(storeId);
+            if (!existingStorePayment.isEmpty()) {
+                return ResponseEntity.ok().body(new ApiResponse(existingStorePayment, true, "Data Found", 200));
             }
-            return ResponseEntity.ok().body(new ApiResponse(sData, true, "Data Found", 200));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(null, false, "Id Not Found", 404));
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "....", 500));
         }
     }
@@ -103,17 +100,14 @@ public class StorePaymentServiceImpl implements StorePaymentService {
                 .orElseThrow(() -> new EntityNotFoundException("Store Payment not found"));
         try {
             if (!payment.getAccountNo().equals(storePayment.getAccountNo()) && storePaymentV2Repository.existsByAccountNo(payment.getAccountNo())) {
-                return ResponseEntity
-                        .badRequest()
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(new ApiResponse(null, false, "Error: Account number is already in use!", 400));
             }
 
             if (!payment.getUpiId().equals(storePayment.getUpiId()) && storePaymentV2Repository.existsByUpiId(payment.getUpiId())) {
-                return ResponseEntity
-                        .badRequest()
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(new ApiResponse(null, false, "Error: UPI ID is already in use!", 400));
             }
-
             // Update all fields from the updatedPayment object
             storePayment.setStoreName(payment.getStoreName());
             storePayment.setAccountNo(payment.getAccountNo());
@@ -137,8 +131,8 @@ public class StorePaymentServiceImpl implements StorePaymentService {
     @Override
     public ResponseEntity<ApiResponse> deleteById(Long SerialNo) {
         try {
-            Optional<StorePayment> store = storePaymentV2Repository.findById(SerialNo);
-            if (store.isPresent()) {
+            Optional<StorePayment> existingStorePayment = storePaymentV2Repository.findById(SerialNo);
+            if (existingStorePayment.isPresent()) {
                 storePaymentV2Repository.deleteById(SerialNo);
                 return ResponseEntity.ok().body(new ApiResponse(null, false, "deleted Successfully", 200));
             }
@@ -148,6 +142,4 @@ public class StorePaymentServiceImpl implements StorePaymentService {
                     .body(new ApiResponse(null, false, "..", 500));
         }
     }
-
-
 }

@@ -1,8 +1,5 @@
 package com.syntiaro_pos_system.entity.v1;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -74,15 +71,13 @@ public class Food {
     @Column(name = "status")
     private Boolean status;
 
-    public void setFoodId(Integer foodId) {
-        this.foodId = foodId;
-    }
-
-
     public Integer getFoodId() {
         return foodId;
     }
 
+    public void setFoodId(Integer foodId) {
+        this.foodId = foodId;
+    }
 
     public String getFoodName() {
         return foodName;
@@ -157,7 +152,10 @@ public class Food {
         this.description = description;
     }
 
-    public Integer getPrice() {return price;}
+    public Integer getPrice() {
+        return price;
+    }
+
     public void setPrice(Integer price) {
         this.price = price;
     }

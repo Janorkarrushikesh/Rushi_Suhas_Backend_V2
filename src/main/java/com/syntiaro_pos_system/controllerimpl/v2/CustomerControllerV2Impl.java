@@ -25,7 +25,8 @@ public class CustomerControllerV2Impl implements CustomerController {
     }
 
     @Override
-    public ResponseEntity<ApiResponse> getByStoreId(Integer storeId , Integer page , Integer size) {
-        return customerService.getByStoreId(storeId , page,size);
+    public ResponseEntity<ApiResponse> getByStoreId(Integer storeId, Integer page, Integer size, String startDate, String endDate) {
+        return customerService.getByStoreId(storeId, page, size, startDate, endDate);
+
     }
 }

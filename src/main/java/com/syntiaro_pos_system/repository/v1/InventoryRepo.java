@@ -9,14 +9,16 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+
 @EnableJpaRepositories
 @Repository
-public interface InventoryRepo extends JpaRepository <Inventory,Integer> {
+public interface InventoryRepo extends JpaRepository<Inventory, Integer> {
 
     // THIS METHOD IS USE FOR FETCH INVENTORY BY STOREID
     List<Inventory> findByStoreId(String storeId);
 
     Inventory findByName(String name);
+
     @Query("SELECT i FROM Inventory i WHERE i.storeId = ?1 AND i.name = ?2")
     Inventory findByStoreIdAndName(String storeId, String name);
 
@@ -30,6 +32,7 @@ public interface InventoryRepo extends JpaRepository <Inventory,Integer> {
             @Param("startDate") String startDate,
             @Param("endDate") String endDate
     );
+
     @Query("SELECT i FROM Inventory i WHERE i.storeId = :storeid AND i.createdDate BETWEEN :startDate AND :endDate")
     List<Inventory> findByStoreIdAndCreatedDateBetween(@Param("storeid") String storeid,
                                                        @Param("startDate") String startDate,

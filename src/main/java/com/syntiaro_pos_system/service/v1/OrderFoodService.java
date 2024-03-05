@@ -5,15 +5,16 @@ import com.syntiaro_pos_system.entity.v1.OrderFood;
 import java.util.List;
 
 public interface OrderFoodService {
-	String addFood(OrderFood orderFood);
-	List<OrderFood> getFood();
+    String addFood(OrderFood orderFood);
 
-	public OrderFood updateFood(OrderFood orderFood);
+    List<OrderFood> getFood();
 
-	public void deletefood(int parseInt);
+    OrderFood updateFood(OrderFood orderFood);
 
-	// THIS METHOD IS USE FOR FETCH ORDERFOOD BY STOREID
-	List<OrderFood> getOrderFoodByStoreId(String storeId);
+    void deletefood(int parseInt);
+
+    // THIS METHOD IS USE FOR FETCH ORDERFOOD BY STOREID
+    List<OrderFood> getOrderFoodByStoreId(String storeId);
 
 
 }

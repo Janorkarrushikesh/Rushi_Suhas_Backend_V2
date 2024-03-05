@@ -15,7 +15,7 @@ public class Ingredient {
     private String name;
     private Float quantity;
     private String unit;
-    private String storeid ;
+    private String storeid;
 
     public Long getId() {
         return id;
@@ -48,9 +48,11 @@ public class Ingredient {
     public void setStoreid(String storeid) {
         this.storeid = storeid;
     }
+
     public String getUnit() {
         return unit;
     }
+
     public void setUnit(String unit) {
         this.unit = unit;
     }

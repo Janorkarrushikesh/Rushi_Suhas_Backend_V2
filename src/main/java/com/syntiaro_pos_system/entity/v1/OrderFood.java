@@ -1,8 +1,6 @@
 package com.syntiaro_pos_system.entity.v1;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -14,7 +12,7 @@ import javax.persistence.*;
 //@DynamicInsert
 //@AllArgsConstructor
 //@NoArgsConstructor
-@Table(name="orderfood")
+@Table(name = "orderfood")
 
 public class OrderFood {
 
@@ -22,30 +20,33 @@ public class OrderFood {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer SerialNo;
 
-    @Column(name="food_id", length = 45)
+    @Column(name = "food_id", length = 45)
     private int foodId;
 
-    @Column(name="food_name", length = 255)
+    @Column(name = "food_name", length = 255)
     private String foodName;
 
-    @Column(name="category", length = 255)
+    @Column(name = "category", length = 255)
     private String category;
 
-    @Column(name="subcategory", length = 255)
+    @Column(name = "subcategory", length = 255)
     private String subCategory;
 
-    @Column(name="store_id", length = 255)
+    @Column(name = "store_id", length = 255)
     private String storeId;
 
-    @Column(name="quantity")
+    @Column(name = "quantity")
     private int quantity;
 
-    @Column(name="price")
+    @Column(name = "price")
     private int price;
 
     public OrderFood(String foodName, int quantity) {
-        this.foodName =foodName;
-        this.quantity=quantity;
+        this.foodName = foodName;
+        this.quantity = quantity;
+    }
+
+    public OrderFood() {
     }
 
     public int getFoodId() {
@@ -102,9 +103,6 @@ public class OrderFood {
 
     public void setPrice(int price) {
         this.price = price;
-    }
-
-    public OrderFood() {
     }
 }
 

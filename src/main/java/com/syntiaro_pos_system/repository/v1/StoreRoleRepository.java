@@ -10,5 +10,5 @@ import java.util.Optional;
 
 @Repository
 public interface StoreRoleRepository extends JpaRepository<StoreRole, Long> {
-  Optional<StoreRole> findByName(ERole name);
+    Optional<StoreRole> findByName(ERole name);
 }

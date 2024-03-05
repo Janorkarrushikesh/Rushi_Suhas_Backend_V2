@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
+
 //@NamedQuery(name="Inventory.getAllInventory" , query="select new com.SYNTIARO_POS_SYSTEM.Response.InventoryWrapper(i.id ,i.inventorydate ,i.quantity ,i.productname ,i.category,i.price ,i.expirydate) from  Inventory i")
 @Data
 @AllArgsConstructor
@@ -19,13 +20,13 @@ import java.util.Date;
 @DynamicUpdate
 @DynamicInsert
 @Table(name = "inventory")
-public class Inventory implements Serializable{
+public class Inventory implements Serializable {
 
 
-// ----ADDED NEW CODE-----BY RUSHIKESH
+    // ----ADDED NEW CODE-----BY RUSHIKESH
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer SerialNo ;
+    private Integer SerialNo;
 
     @Column(name = "id")
     private Integer id;
@@ -37,7 +38,7 @@ public class Inventory implements Serializable{
     @Column(name = "name")
     private String name;
 
-    @Column(name ="inventory_date")
+    @Column(name = "inventory_date")
     private Date inventorydate = new Date();
 
     @Column(name = "category")
@@ -77,10 +78,10 @@ public class Inventory implements Serializable{
     @Column(name = "total")
     private Float total;
 
-    @Column(name="gstno")
+    @Column(name = "gstno")
     private String gstNo;
 
-    @Column(name="inventory_code")
+    @Column(name = "inventory_code")
     private String inventoryCode;
 
 

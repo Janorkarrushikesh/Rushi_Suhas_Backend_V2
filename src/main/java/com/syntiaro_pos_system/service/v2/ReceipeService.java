@@ -5,9 +5,9 @@ import com.syntiaro_pos_system.entity.v2.ApiResponse;
 import org.springframework.http.ResponseEntity;
 
 public interface ReceipeService {
-    public ApiResponse savereceipe(Receipe receipe);
+    ResponseEntity<ApiResponse> savereceipe(Receipe receipe);
 
-    public ResponseEntity<ApiResponse> getById(Long SerialNo);
+    ResponseEntity<ApiResponse> getById(Long SerialNo);
 
     ResponseEntity<ApiResponse> getByStoreId(String storeId);
 

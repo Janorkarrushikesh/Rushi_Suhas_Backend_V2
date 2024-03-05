@@ -7,12 +7,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface StorePaymentV2Repository extends JpaRepository<StorePayment, Long> {
 
     boolean existsByAccountNoAndStoreId(String accountNo, Long storeId);
+
     boolean existsByUpiIdAndStoreId(String upiId, Long storeId);
 
     StorePayment findByStoreIdAndAccountNo(Long storeId, String updatedAccountNo);
@@ -22,9 +22,10 @@ public interface StorePaymentV2Repository extends JpaRepository<StorePayment, Lo
     boolean existsByAccountNo(String accountNo);
 
     boolean existsByUpiId(String upiId);
+
     @Query("SELECT MAX(sp.paymentId) FROM StorePayment sp WHERE sp.storeId = :storeId")
     Long findMaxPaymentIdByStoreId(@Param("storeId") Long storeId);
 
-
     List<StorePayment> findByStoreId(Long storeId);
+
 }

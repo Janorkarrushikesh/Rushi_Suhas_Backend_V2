@@ -1,8 +1,8 @@
 package com.syntiaro_pos_system.controllerimpl.v2;
 
 import com.syntiaro_pos_system.controller.v2.BalanceController;
-import com.syntiaro_pos_system.entity.v2.ApiResponse;
 import com.syntiaro_pos_system.entity.v1.Balance;
+import com.syntiaro_pos_system.entity.v2.ApiResponse;
 import com.syntiaro_pos_system.service.v2.BalanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

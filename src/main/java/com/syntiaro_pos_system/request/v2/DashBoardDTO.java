@@ -1,12 +1,5 @@
 package com.syntiaro_pos_system.request.v2;
 
-import com.syntiaro_pos_system.entity.v2.AppMenu;
-import com.syntiaro_pos_system.entity.v2.QuickAccess;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import java.util.List;
 
 public class DashBoardDTO {

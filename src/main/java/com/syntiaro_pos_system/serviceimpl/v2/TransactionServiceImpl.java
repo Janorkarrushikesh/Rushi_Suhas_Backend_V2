@@ -13,7 +13,10 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -32,11 +35,11 @@ public class TransactionServiceImpl implements TransactionService {
             List<Balance> balances = balanceRepository.findAllByStoreIdAndDate(transactionRecord.getStoreId(), LocalDate.now());
 
             if (balances.get(0).getFinalClosingBalance() != null) {
-                return ResponseEntity.badRequest()
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(new ApiResponse(null, false, "After Final Closing You Not Able To Do Process ", 400));
             }
             if (balances.isEmpty()) {
-                return ResponseEntity.badRequest()
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(new ApiResponse(null, false, "Balance not found for store ID: " + transactionRecord.getStoreId(), 400));
             }
 
@@ -46,7 +49,8 @@ public class TransactionServiceImpl implements TransactionService {
                 Double givenAmount = transactionRecord.getAmount();
 
                 if (currentClosingBalance < givenAmount) {
-                    return ResponseEntity.badRequest()
+
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                             .body(new ApiResponse(null, false, "Not sufficient balance for end-of-day close.", 400));
                 }
 
@@ -60,7 +64,7 @@ public class TransactionServiceImpl implements TransactionService {
             endOfDayTransaction.setExpense(transactionRecord.getExpense());
             endOfDayTransaction.setStoreId(transactionRecord.getStoreId());
             endOfDayTransaction.setStatus(("Debited"));
-            endOfDayTransaction.setAmount(Double.valueOf(transactionRecord.getAmount()));
+            endOfDayTransaction.setAmount(transactionRecord.getAmount());
             TransactionRecord transactionRecordList = transactionRepository.save(endOfDayTransaction);
             return ResponseEntity.ok()
                     .body(new ApiResponse(transactionRecordList, true, 200));
@@ -82,7 +86,7 @@ public class TransactionServiceImpl implements TransactionService {
                 transactionMap.put("amount", transactionRecord.getAmount());
                 transactionMap.put("cashier", transactionRecord.getCashier());
                 transactionMap.put("expense", transactionRecord.getExpense());
-                transactionMap.put("status",transactionRecord.getStatus());
+                transactionMap.put("status", transactionRecord.getStatus());
                 transactionData.add(transactionMap);
             }
             return ResponseEntity.ok()
@@ -96,7 +100,7 @@ public class TransactionServiceImpl implements TransactionService {
     public List<Map<String, Object>> transactionByStoreAndDate(Integer storeId, LocalDate date) {
         try {
             LocalDate utilDate = Date.valueOf(date).toLocalDate();
-            List<TransactionRecord> transactionRecordList = transactionRepository.findByStoreIdAndDate(storeId,utilDate);
+            List<TransactionRecord> transactionRecordList = transactionRepository.findByStoreIdAndDate(storeId, utilDate);
             List<Map<String, Object>> transactionData = new ArrayList<>();
             for (TransactionRecord transactionRecord : transactionRecordList) {
                 Map<String, Object> transactionMap = new LinkedHashMap<>();
@@ -105,7 +109,7 @@ public class TransactionServiceImpl implements TransactionService {
                 transactionMap.put("amount", transactionRecord.getAmount());
                 transactionMap.put("cashier", transactionRecord.getCashier());
                 transactionMap.put("expense", transactionRecord.getExpense());
-                transactionMap.put("status",transactionRecord.getStatus());
+                transactionMap.put("status", transactionRecord.getStatus());
                 transactionData.add(transactionMap);
             }
             return transactionData;

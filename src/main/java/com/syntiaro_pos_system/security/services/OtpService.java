@@ -7,13 +7,12 @@ public class OtpService {
     private final EmailSenderService emailService; // or SMSService
 
 
-
     public OtpService(EmailSenderService emailService) {
         this.emailService = emailService;
     }
 
     public void sendOtp(String email, String otp) {
         // Send the OTP via email or SMS
-        emailService.sendEmail(email ,"Your OTP: " + otp,"done");
+        emailService.sendEmail(email, "Your OTP: " + otp, "done");
     }
 }

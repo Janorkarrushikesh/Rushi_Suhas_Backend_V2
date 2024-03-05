@@ -1,7 +1,6 @@
 package com.syntiaro_pos_system.repository.v1;
 
 import com.syntiaro_pos_system.entity.v1.Vendor;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -25,7 +24,6 @@ public interface VendorRepo extends JpaRepository<Vendor, Long> {
                                          @Param("vendor_name") String vendor_name);
 
 
-
     @Query("SELECT MAX(vendor.vendorId) FROM Vendor vendor WHERE vendor.storeId = :storeId")
     Integer findMaxVendorIdByStoreId(@Param("storeId") Integer storeId);
 
@@ -36,10 +34,11 @@ public interface VendorRepo extends JpaRepository<Vendor, Long> {
             @Param("startDate") String startDate,
             @Param("endDate") String endDate
     );
+
     @Query("SELECT p FROM Vendor p WHERE p.storeId = :store_id AND p.createdDate BETWEEN :startDate AND :endDate")
     List<Vendor> findByStoreIdAndCreatedDateBetween(@Param("store_id") Integer store_id,
-                                                     @Param("startDate") String startDate,
-                                                     @Param("endDate") String endDate);
+                                                    @Param("startDate") String startDate,
+                                                    @Param("endDate") String endDate);
 
 
     // Find vendor by store ID and account number

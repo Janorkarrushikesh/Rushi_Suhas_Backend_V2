@@ -26,7 +26,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -37,47 +40,35 @@ import java.util.stream.Collectors;
 //@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 public class TechAuthControllerImpl implements TechAuthController {
+    private static final int MAX_SESSIONS_PER_USER = 250;
+    /// {----------------------MADE BY RUSHIKESH-----------------START HERE--------------------}
+    private final Map<String, Set<String>> userSessions = new ConcurrentHashMap<>();
+    private final Map<String, String> emailToOtpMap = new HashMap<>();
     @Autowired
     AuthenticationManager authenticationManager;
-
     @Autowired
     StoreRepository storeRepository;
-
     @Autowired
     UserRepository userRepository;
-
     @Autowired
     TechRepository techRepository;
-
     @Autowired
     SuperAdminRepository superAdminRepository;
-
     @Autowired
     TechRoleRepository techRoleRepository;
     @Autowired
     TechService techService;
-
     @Autowired
     PasswordEncoder encoder;
-
     @Autowired
     TechJwtUtils techJwtUtils;
-
     @Autowired
     EmailSenderService emailSenderService;
 
+    /// {----------------------MADE BY RUSHIKESH-----------------END HERE--------------------}
     @Autowired
     JavaMailSender javaMailSender;
-
-    /// {----------------------MADE BY RUSHIKESH-----------------START HERE--------------------}
-    private final Map<String, Set<String>> userSessions = new ConcurrentHashMap<>();
-    private static final int MAX_SESSIONS_PER_USER = 250;
-
-    /// {----------------------MADE BY RUSHIKESH-----------------END HERE--------------------}
-
-    private String otp = OTPUtil.generateOTP(6);
-
-    private final Map<String, String> emailToOtpMap = new HashMap<>();
+    private final String otp = OTPUtil.generateOTP(6);
 
     // THIS METHOD IS USE FOR STORE SIGNIN
     @Override
@@ -347,7 +338,7 @@ public class TechAuthControllerImpl implements TechAuthController {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
         message.setSubject("OTP Verification for Password Reset");
-        message.setText("Your OTP for password reset is: " + otp +"(Valid for 5 Mins.)"+"\n"+"Your Reset Technician Password:-"+"https://prod.ubsbill.com/techresetpassword");
+        message.setText("Your OTP for password reset is: " + otp + "(Valid for 5 Mins.)" + "\n" + "Your Reset Technician Password:-" + "https://prod.ubsbill.com/techresetpassword");
         javaMailSender.send(message);
 
         return ResponseEntity.ok("OTP sent successfully to the provided email address");
@@ -440,7 +431,7 @@ public class TechAuthControllerImpl implements TechAuthController {
 
     @Override
     public ResponseEntity<?> updateStoreInfo(@PathVariable Long storeId,
-            @Valid @RequestBody TechSignupRequest updateRequest) {
+                                             @Valid @RequestBody TechSignupRequest updateRequest) {
         Optional<Tech> optionalStore = techRepository.findById(storeId);
 
         if (!optionalStore.isPresent()) {

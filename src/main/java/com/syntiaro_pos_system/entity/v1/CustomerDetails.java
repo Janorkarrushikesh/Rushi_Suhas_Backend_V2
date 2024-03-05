@@ -24,28 +24,28 @@ public class CustomerDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-     private Integer SerialNo;
+    private Integer SerialNo;
 
-    @Column(name="customer_id", length = 45)
+    @Column(name = "customer_id", length = 45)
     private Integer customerId;
 
-    @Column(name="customer_name")
-   private String customerName;
+    @Column(name = "customer_name")
+    private String customerName;
 
-    @Column(name="email")
+    @Column(name = "email")
     private String email;
 
-    @Column(name="date_of_birth")
+    @Column(name = "date_of_birth")
     private String dateOfBirth;
 
-    @Column(name="contact")
+    @Column(name = "contact")
     private String contact;
 
-    @Column(name="store_id")
+    @Column(name = "store_id")
     private Integer storeId;
 
 
-    @Column(name="created_date")
+    @Column(name = "created_date")
     private LocalDate createdDate = LocalDate.now();
 
     public Integer getSerialNo() {
@@ -111,6 +111,7 @@ public class CustomerDetails {
     public void setCreatedDate(LocalDate createdDate) {
         this.createdDate = createdDate;
     }
+
     @PostPersist
     public void generateStoreCode() {
         Date date = new Date();

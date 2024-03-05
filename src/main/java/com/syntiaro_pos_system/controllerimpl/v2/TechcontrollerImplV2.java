@@ -41,7 +41,7 @@ public class TechcontrollerImplV2 implements TechController {
 
     @Override
     public ResponseEntity<ApiResponse> updateTech(Long technicianId, Tech tech) {
-        return techService.updateTech(technicianId,tech);
+        return techService.updateTech(technicianId, tech);
     }
 
     @Override

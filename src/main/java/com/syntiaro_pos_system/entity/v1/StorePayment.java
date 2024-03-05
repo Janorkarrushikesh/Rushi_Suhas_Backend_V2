@@ -42,22 +42,21 @@ public class StorePayment {
 
     @Column(name = "ifsc_code")
     private String ifscCode;
-
-    @Column(name = "storeId")
+    @Column(name = "store_id")
     private Long storeId;
 
     @Column(name = "created_by")
     private String createdBy;
 
     @Column(name = "created_date")
-    private String createdDate ;
+    private String createdDate;
 
     @Column(name = "updated_by")
     private String updatedBy;
 
     @Column(name = "updated_date")
-    private String updatedDate ;
-
+    private String updatedDate;
+    private String storeidfk;
 
 
     public Long getPaymentId() {
@@ -95,7 +94,6 @@ public class StorePayment {
     public void setUpiId(String upiId) {
         this.upiId = upiId;
     }
-
 
 
     public String getBankName() {
@@ -147,9 +145,13 @@ public class StorePayment {
         this.updatedBy = updatedBy;
     }
 
+    public String getStoreidfk() {
+        return storeidfk;
+    }
 
-
-
+    public void setStoreidfk(String storeidfk) {
+        this.storeidfk = storeidfk;
+    }
 
     @PostPersist
     public void generateStoreCode() {

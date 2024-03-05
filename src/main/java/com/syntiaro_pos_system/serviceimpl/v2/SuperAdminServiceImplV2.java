@@ -1,18 +1,18 @@
 package com.syntiaro_pos_system.serviceimpl.v2;
 
-import com.syntiaro_pos_system.entity.v2.ApiResponse;
 import com.syntiaro_pos_system.entity.v1.ERole;
 import com.syntiaro_pos_system.entity.v1.SuperAdmin;
 import com.syntiaro_pos_system.entity.v1.SuperAdminRole;
+import com.syntiaro_pos_system.entity.v2.ApiResponse;
 import com.syntiaro_pos_system.repository.v2.*;
 import com.syntiaro_pos_system.request.v1.SuperAdminLoginRequest;
 import com.syntiaro_pos_system.request.v1.SuperAdminSignupRequest;
 import com.syntiaro_pos_system.response.SuperAdminJwtResponse;
-import com.syntiaro_pos_system.security.jwt.JwtUtils;
 import com.syntiaro_pos_system.security.jwt.SuperAdminJwtUtils;
 import com.syntiaro_pos_system.security.services.EmailSenderService;
 import com.syntiaro_pos_system.security.services.SuperAdminDetailsImpl;
 import com.syntiaro_pos_system.service.v2.SuperAdminService;
+import com.syntiaro_pos_system.utils.EmailUsernameValidation;
 import com.syntiaro_pos_system.utils.OTPUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,34 +33,29 @@ import java.util.stream.Collectors;
 
 @Service
 public class SuperAdminServiceImplV2 implements SuperAdminService {
+    private static final int MAX_SESSIONS_PER_USER = 500;
+    private final Map<String, Set<String>> userSessions = new ConcurrentHashMap<>();
+    private final Map<String, String> emailToOtpMap = new HashMap<>();
     @Autowired
     UserRepositoryV2 userRepository;
-
     @Autowired
     StoreRepositry storeRepositry;
-
     @Autowired
     TechRepositoryV2 techRepository;
     @Autowired
     SuperAdminRepositoryV2 superAdminRepository;
-
     @Autowired
     SuperAdminRoleRepositoryV2 superAdminRoleRepository;
-
     @Autowired
     EmailSenderService emailSenderService;
-
     @Autowired
     AuthenticationManager authenticationManager;
-
     @Autowired
     SuperAdminJwtUtils superAdminJwtUtils;
     @Autowired
     PasswordEncoder encoder;
-
-    private final Map<String, Set<String>> userSessions = new ConcurrentHashMap<>();
-    private static final int MAX_SESSIONS_PER_USER = 500;
-    private final Map<String, String> emailToOtpMap = new HashMap<>();
+    @Autowired
+    EmailUsernameValidation validation;
     @Autowired
     JavaMailSender javaMailSender;
 
@@ -70,24 +65,17 @@ public class SuperAdminServiceImplV2 implements SuperAdminService {
 
             String username = superAdminLoginRequest.getUsername();
             if (hasExceededSessionLimit(username)) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse(null, false, "Too many active sessions for this user.",401));
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse(null, false, "Too many active sessions for this user.", 401));
             }
 
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(superAdminLoginRequest.getUsername(),
-                            superAdminLoginRequest.getPassword()));
-
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(superAdminLoginRequest.getUsername(), superAdminLoginRequest.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String jwt = superAdminJwtUtils.generateJwtToken(authentication);
 
             // // Add the new session token to the active sessions map
             addUserSession(username, jwt); // ADDED BY RUSHIKEH
-
             SuperAdminDetailsImpl userDetails = (SuperAdminDetailsImpl) authentication.getPrincipal();
-            List<String> roles = userDetails.getAuthorities().stream()
-                    .map(item -> item.getAuthority())
-                    .collect(Collectors.toList());
-
+            List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority()).collect(Collectors.toList());
             // Assuming you have a logo URL field in the userDetails
             Optional<SuperAdmin> techOptional = superAdminRepository.findByUsername(superAdminLoginRequest.getUsername());
 
@@ -96,19 +84,12 @@ public class SuperAdminServiceImplV2 implements SuperAdminService {
 
             if (techOptional.isPresent()) {
                 SuperAdmin superAdmin = techOptional.get();
-
             }
-            return ResponseEntity.ok().body(new ApiResponse(new SuperAdminJwtResponse(jwt,
-                    userDetails.getId(),
-                    userDetails.getUsername(),
-                    userDetails.getEmail(),
-                    userDetails.getGstno(),
-                    roles),true,200));
+            return ResponseEntity.ok().body(new ApiResponse(new SuperAdminJwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), userDetails.getGstno(), roles), true, 200));
 //            return null;
 
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "...",500));
-
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "...", 500));
         }
     }
 
@@ -125,152 +106,62 @@ public class SuperAdminServiceImplV2 implements SuperAdminService {
     @Override
     public ResponseEntity<ApiResponse> registerSuperAdmin(SuperAdminSignupRequest superAdminSignupRequest) {
         try {
-
-            if (storeRepositry.existsByUsername(superAdminSignupRequest.getUsername())) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(null, false, "Error: Username is already taken!",400));
-            }
-
-            if (userRepository.existsByUsername(superAdminSignupRequest.getUsername())) {
-
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new ApiResponse(null, false,  "Error: Username is already taken!",400));
-
-            }
-
-            if (techRepository.existsByUsername(superAdminSignupRequest.getUsername())) {
-
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new ApiResponse(null, false,  "Error: Username is already taken!" ,400));
-            }
-
-            if (superAdminRepository.existsByUsername(superAdminSignupRequest.getUsername())) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new ApiResponse(null, false,  "Error: Username is already taken!" ,500));
-
-            }
-
-            if (superAdminRepository.existsByEmail(superAdminSignupRequest.getEmail())) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new ApiResponse(null, false, "Error: Email is already in Use!",400));
-
-            }
-
-            if (storeRepositry.existsByEmail(superAdminSignupRequest.getEmail())) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new ApiResponse(null, false, "Error: Email is already in Use!",400));
-            }
-
-            if (techRepository.existsByEmail(superAdminSignupRequest.getEmail())) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new ApiResponse(null, false, "Error: Email is already in Use!",400));
-            }
-
-            if (userRepository.existsByEmail(superAdminSignupRequest.getEmail())) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new ApiResponse(null, false, "Error: Email is already in Use!",400));
+            if (validation.isDuplicateUsername(superAdminSignupRequest.getUsername()) || validation.isDuplicateEmail(superAdminSignupRequest.getEmail())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(null, false, "Error: Username or email is already taken!", 400));
             }
             String hashedPassword = encoder.encode(superAdminSignupRequest.getPassword());
             if (superAdminSignupRequest.getPassword().equals(superAdminSignupRequest.getComfirmpassword())) {
                 // Create new user's account
-                SuperAdmin user = new SuperAdmin(superAdminSignupRequest.getUsername(),
-                        superAdminSignupRequest.getSaddress(),
-                        superAdminSignupRequest.getEmail(),
-                        superAdminSignupRequest.getContact(),
-                        superAdminSignupRequest.getDate(),
-                        superAdminSignupRequest.getCountry(),
-                        superAdminSignupRequest.getState(),
-                        encoder.encode(superAdminSignupRequest.getPassword()),
-                        superAdminSignupRequest.getComfirmpassword());
+                SuperAdmin user = new SuperAdmin(superAdminSignupRequest.getUsername(), superAdminSignupRequest.getSaddress(), superAdminSignupRequest.getEmail(), superAdminSignupRequest.getContact(), superAdminSignupRequest.getDate(), superAdminSignupRequest.getCountry(), superAdminSignupRequest.getState(), encoder.encode(superAdminSignupRequest.getPassword()), superAdminSignupRequest.getComfirmpassword());
 
-                Set<String> strRoles = superAdminSignupRequest.getRole();
                 Set<SuperAdminRole> superAdminRoles = new HashSet<>();
+                SuperAdminRole superADSuperAdminRole = superAdminRoleRepository.findByName(ERole.ROLE_SUPER_ADMIN).orElseThrow(() -> new RuntimeException("Error: SuperAdminRole is not found."));
+                superAdminRoles.add(superADSuperAdminRole);
 
-                if (strRoles == null) {
-                    SuperAdminRole superADSuperAdminRole = superAdminRoleRepository.findByName(ERole.ROLE_SUPER_ADMIN)
-                            .orElseThrow(() -> new RuntimeException("Error: SuperAdminRole is not found."));
-                    superAdminRoles.add(superADSuperAdminRole);
-                } else {
-                    strRoles.forEach(role -> {
-                        switch (role) {
-                            case "user":
-                                SuperAdminRole userSuperAdminRole = superAdminRoleRepository.findByName(ERole.ROLE_USER)
-                                        .orElseThrow(() -> new RuntimeException("Error: SuperAdminRole is not found."));
-                                superAdminRoles.add(userSuperAdminRole);
-                                break;
-
-                            case "mod":
-                                SuperAdminRole modSuperAdminRole = superAdminRoleRepository.findByName(ERole.ROLE_MODERATOR)
-                                        .orElseThrow(() -> new RuntimeException("Error: SuperAdminRole is not found."));
-                                superAdminRoles.add(modSuperAdminRole);
-                                break;
-
-                            case "admin":
-                                SuperAdminRole adminSuperAdminRole = superAdminRoleRepository.findByName(ERole.ROLE_ADMIN)
-                                        .orElseThrow(() -> new RuntimeException("Error: SuperAdminRole is not found."));
-                                superAdminRoles.add(adminSuperAdminRole);
-                                break;
-
-                            case "support":
-                                SuperAdminRole supportSuperAdminRole = superAdminRoleRepository.findByName(ERole.ROLE_SUPPORT)
-                                        .orElseThrow(() -> new RuntimeException("Error: SuperAdminRole is not found."));
-                                superAdminRoles.add(supportSuperAdminRole);
-                                break;
-
-                            default:
-                                SuperAdminRole superADSuperAdminRole = superAdminRoleRepository.findByName(ERole.ROLE_SUPER_ADMIN)
-                                        .orElseThrow(() -> new RuntimeException("Error: SuperAdminRole is not found."));
-                                superAdminRoles.add(superADSuperAdminRole);
-                        }
-                    });
-                }
 
                 user.setSuperAdminRoles(superAdminRoles);
                 user.setComfirmPassword(superAdminSignupRequest.getComfirmpassword());
-               SuperAdmin superAdmin= superAdminRepository.save(user);
+                SuperAdmin superAdmin = superAdminRepository.save(user);
 
-                emailSenderService.sendRegistrationSuccessfulEmailadmin(user.getEmail(), user.getUsername(),
-                        superAdminSignupRequest.getPassword());
+                emailSenderService.sendRegistrationSuccessfulEmailadmin(user.getEmail(), user.getUsername(), superAdminSignupRequest.getPassword());
 
-                return ResponseEntity.ok()
-                        .body(new ApiResponse(superAdmin,true,"SuperAdmin registered successfully!",200));
+                return ResponseEntity.ok().body(new ApiResponse(superAdmin, true, "SuperAdmin registered successfully!", 200));
             } else {
 
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new ApiResponse(null,false,"PASSWORD DOES NOT MATCH!!!!!!",400));
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(null, false, "PASSWORD DOES NOT MATCH!!!!!!", 400));
 
             }
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "...",500));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "...", 500));
         }
     }
 
     @Override
     public ResponseEntity<ApiResponse> forgotPassword(SuperAdminSignupRequest superAdminSignupRequest) {
-        try{
-            String email= superAdminSignupRequest.getEmail();
-            Optional<SuperAdmin> optional = superAdminRepository.findByEmail(email);
-            if (optional.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new ApiResponse(null,false,"SuperAdmin account not found for the given email",400));
+        try {
+            String email = superAdminSignupRequest.getEmail();
+            Optional<SuperAdmin> existingSuperAdmin = superAdminRepository.findByEmail(email);
+            if (existingSuperAdmin.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(null, false, "SuperAdmin account not found for the given email", 400));
             }
             String otp = OTPUtil.generateOTP(6);
             //put in emailToOtpMap
-            emailToOtpMap.put(email,otp);
-            SimpleMailMessage message= new SimpleMailMessage();
+            emailToOtpMap.put(email, otp);
+            SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(email);
             message.setSubject("OTP Verification for Password Reset");
-            message.setText("Your OTP for password reset is: " + otp +"(Valid for 5 Mins.)"+"\n"+"Your Reset Super Admin Password:-"+"https://prod.ubsbill.com/superresetpassword");
+            message.setText("Your OTP for password reset is: " + otp + "(Valid for 5 Mins.)" + "\n" + "Your Reset Super Admin Password:-" + "https://prod.ubsbill.com/superresetpassword");
             javaMailSender.send(message);
-            return ResponseEntity.ok().body(new ApiResponse(null,true,"OTP sent successfully to the provided email address",200));
-        }catch(Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(null,false,"..",500));
+            return ResponseEntity.ok().body(new ApiResponse(null, true, "OTP sent successfully to the provided email address", 200));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "..", 500));
         }
     }
 
     @Override
     public ResponseEntity<ApiResponse> resetPassword(Map<String, String> resetRequest) {
-        try{
+
+        try {
             String email = resetRequest.get("emailID");
             String otp = resetRequest.get("oneTimePassword");
             String password = resetRequest.get("password");
@@ -278,22 +169,21 @@ public class SuperAdminServiceImplV2 implements SuperAdminService {
 
             // Check if the provided email exists in the emailToOtpMap and the OTP matches
             if (!emailToOtpMap.containsKey(email) || !emailToOtpMap.get(email).equals(otp)) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(null,false,"Invalid OTP or Email",400));
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(null, false, "Invalid OTP or Email", 400));
             }
             // Check if the new password and confirmation match
             if (!password.equals(confirmPassword)) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(null,false,"New password and confirmation do not match",400));
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(null, false, "New password and confirmation do not match", 400));
             }
             // Check if the newPassword is not null and not empty
             if (StringUtils.isEmpty(password)) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new ApiResponse(null,false,"New password cannot be empty",400));
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(null, false, "New password cannot be empty", 400));
             }
 
             //update Password
-            Optional<SuperAdmin> optionalStore = superAdminRepository.findByEmail(email);
-            if (optionalStore.isPresent()) {
-                SuperAdmin superAdmin = optionalStore.get();
+            Optional<SuperAdmin> existingSuperAdmin = superAdminRepository.findByEmail(email);
+            if (existingSuperAdmin.isPresent()) {
+                SuperAdmin superAdmin = existingSuperAdmin.get();
                 superAdmin.setPassword(encoder.encode(password));
                 superAdmin.setComfirmPassword(password);
                 superAdminRepository.save(superAdmin);
@@ -301,43 +191,40 @@ public class SuperAdminServiceImplV2 implements SuperAdminService {
                 emailSenderService.sendPasswordChangedEmail(email, password);
 
             } else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body(new ApiResponse(null,false,"Failed to update password",400));
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "Failed to update password", 400));
             }
             emailToOtpMap.remove(email);
-            return ResponseEntity.ok().body(new ApiResponse(null,true,"Password updated successfully",200));
-        }catch(Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(null,false,"..",500));
+            return ResponseEntity.ok().body(new ApiResponse(null, true, "Password updated successfully", 200));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "..", 500));
         }
     }
 
     @Override
     public ResponseEntity<ApiResponse> updateSuperAdmin(Long superid, SuperAdmin updateSuperAdmin) {
-        try{
-            Optional  <SuperAdmin> existing = superAdminRepository.findById(superid);
-            if (existing.isEmpty()){
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(null,false,"Given Id Not Found FOr SuperAdmin !",404));
+        try {
+            Optional<SuperAdmin> existingSuperAdmin = superAdminRepository.findById(superid);
+            if (existingSuperAdmin.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(null, false, "Given Id Not Found FOr SuperAdmin !", 404));
             }
-            SuperAdmin superAdmin = existing.get();
-            if ((!superAdmin.getUsername().equals(updateSuperAdmin.getUsername())&& superAdminRepository.existsByUsername(updateSuperAdmin.getUsername()))){
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(null,false,"Error : Username is already taken ",400));
+            SuperAdmin superAdmin = existingSuperAdmin.get();
+            if ((!superAdmin.getUsername().equals(updateSuperAdmin.getUsername()) && superAdminRepository.existsByUsername(updateSuperAdmin.getUsername()))) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(null, false, "Error : Username is already taken ", 400));
             }
-            if ((!superAdmin.getEmail().equals(updateSuperAdmin.getEmail())&& superAdminRepository.existsByEmail(updateSuperAdmin.getEmail()))){
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(null,false,"Error : Email is already taken ",400));
+            if ((!superAdmin.getEmail().equals(updateSuperAdmin.getEmail()) && superAdminRepository.existsByEmail(updateSuperAdmin.getEmail()))) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(null, false, "Error : Email is already taken ", 400));
             }
-            superAdmin.setUsername(updateSuperAdmin.getUsername()!=null? updateSuperAdmin.getUsername() : superAdmin.getUsername());
-            superAdmin.setEmail(updateSuperAdmin.getEmail()!=null? updateSuperAdmin.getEmail() : superAdmin.getEmail());
-            superAdmin.setAddress(updateSuperAdmin.getAddress()!=null ? updateSuperAdmin.getAddress() : superAdmin.getAddress());
-            superAdmin.setContact(updateSuperAdmin.getContact()!=null ? updateSuperAdmin.getContact(): superAdmin.getContact());
-            superAdmin.setGstNo(updateSuperAdmin.getGstNo()!=null ? updateSuperAdmin.getGstNo() : superAdmin.getGstNo());
-            superAdmin.setCountry(updateSuperAdmin.getCountry()!=null? updateSuperAdmin.getCountry() : superAdmin.getCountry());
-            superAdmin.setState(updateSuperAdmin.getState()!=null ? updateSuperAdmin.getState() : superAdmin.getState());
-            return ResponseEntity.ok().body(new ApiResponse(superAdminRepository.save(superAdmin),true,"Super Admin Updated SuccessFully !",200));
-        }catch(Exception e){
+            superAdmin.setUsername(updateSuperAdmin.getUsername() != null ? updateSuperAdmin.getUsername() : superAdmin.getUsername());
+            superAdmin.setEmail(updateSuperAdmin.getEmail() != null ? updateSuperAdmin.getEmail() : superAdmin.getEmail());
+            superAdmin.setAddress(updateSuperAdmin.getAddress() != null ? updateSuperAdmin.getAddress() : superAdmin.getAddress());
+            superAdmin.setContact(updateSuperAdmin.getContact() != null ? updateSuperAdmin.getContact() : superAdmin.getContact());
+            superAdmin.setGstNo(updateSuperAdmin.getGstNo() != null ? updateSuperAdmin.getGstNo() : superAdmin.getGstNo());
+            superAdmin.setCountry(updateSuperAdmin.getCountry() != null ? updateSuperAdmin.getCountry() : superAdmin.getCountry());
+            superAdmin.setState(updateSuperAdmin.getState() != null ? updateSuperAdmin.getState() : superAdmin.getState());
+            return ResponseEntity.ok().body(new ApiResponse(superAdminRepository.save(superAdmin), true, "Super Admin Updated SuccessFully !", 200));
+        } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(null,false,"..",500));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "..", 500));
         }
     }
 
@@ -368,6 +255,4 @@ public class SuperAdminServiceImplV2 implements SuperAdminService {
         }
         return null;
     }
-
-
 }

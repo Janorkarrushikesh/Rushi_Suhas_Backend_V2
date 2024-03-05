@@ -13,7 +13,7 @@ import java.util.List;
 
 @Repository
 @EnableJpaRepositories
-public interface PaymentRepo extends JpaRepository<Payment, Integer>{
+public interface PaymentRepo extends JpaRepository<Payment, Integer> {
 
     // THIS METHOD IS USE FOR FETCH PAYMENT BY STOREID
     @Query("SELECT p FROM Payment p WHERE p.storeId = :storeId")
@@ -43,9 +43,9 @@ public interface PaymentRepo extends JpaRepository<Payment, Integer>{
 
 
     @Query("SELECT p FROM Payment p WHERE p.storeId = :store_id AND p.paymentDate BETWEEN :startDate AND :endDate")
-    List<Payment> findByStoreIdAndCreatedDateBetween( @Param("store_id") Integer store_id,
-                                                      @Param("startDate") String startDate,
-                                                      @Param("endDate") String endDate);
+    List<Payment> findByStoreIdAndCreatedDateBetween(@Param("store_id") Integer store_id,
+                                                     @Param("startDate") String startDate,
+                                                     @Param("endDate") String endDate);
 
     @Query("SELECT p FROM Payment p WHERE p.storeId = :store_id AND p.accountNo = :account_no")
     Payment findByStoreIdAndAccountNo(@Param("store_id") Integer store_id, @Param("account_no") String account_no);

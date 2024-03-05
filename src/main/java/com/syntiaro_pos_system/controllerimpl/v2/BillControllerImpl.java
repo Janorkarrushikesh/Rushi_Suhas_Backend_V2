@@ -7,7 +7,6 @@ import com.syntiaro_pos_system.request.v1.BillRequest;
 import com.syntiaro_pos_system.service.v2.Billservice;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,20 +16,19 @@ import java.util.List;
 @RestController
 public class BillControllerImpl implements BillController {
 
+    public static final Logger logger = Logger.getLogger(BillControllerImpl.class);
     @Autowired
     Billservice billservice;
 
-    public static final Logger logger = Logger.getLogger(BillControllerImpl.class);
-
     @Override
     public ResponseEntity<ApiResponse> saveBillAndOrder(BillRequest billRequest) {
-       logger.debug("loading ......");
+        logger.debug("loading ......");
         return billservice.saveBillAndOrder(billRequest);
     }
 
     @Override
     public ResponseEntity<ApiResponse> getBillBySerialNo(Integer SerialNo) {
-       // logger.debug("loading ......");
+        // logger.debug("loading ......");
         return billservice.getBillBySerialNo(SerialNo);
     }
 
@@ -40,14 +38,14 @@ public class BillControllerImpl implements BillController {
     }
 
     @Override
-    public ResponseEntity<ApiResponse> updateBillBySerialNo(Integer SerialNo , Bill bill) {
-        return billservice.updateBillBySerialNo(SerialNo , bill);
+    public ResponseEntity<ApiResponse> updateBillBySerialNo(Integer SerialNo, Bill bill) {
+        return billservice.updateBillBySerialNo(SerialNo, bill);
     }
 
     @Override
-    public ResponseEntity<ApiResponse> getStoreID(Integer storeId , Integer page , Integer size  ,LocalDate startDate,LocalDate endDate ) {
+    public ResponseEntity<ApiResponse> getStoreID(Integer storeId, Integer page, Integer size, LocalDate startDate, LocalDate endDate) {
         logger.debug("loading ......");
-        return billservice.fetchBillByStoreId(storeId , page , size  , startDate , endDate);
+        return billservice.fetchBillByStoreId(storeId, page, size, startDate, endDate);
     }
 
     @Override
@@ -56,8 +54,9 @@ public class BillControllerImpl implements BillController {
     }
 
     @Override
-    public ResponseEntity<ApiResponse> billStatusReport(Integer storeId, List<String> orderStatus ) {
-        return billservice.billStatusReport(storeId,orderStatus);
+
+    public ResponseEntity<ApiResponse> billStatusReport(Integer storeId, List<String> orderStatus) {
+        return billservice.billStatusReport(storeId, orderStatus);
     }
 
     @Override

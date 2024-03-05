@@ -1,4 +1,5 @@
 package com.syntiaro_pos_system.response;
+
 import com.syntiaro_pos_system.request.v1.PaymentSummary;
 import lombok.AllArgsConstructor;
 import lombok.Data;

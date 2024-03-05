@@ -24,7 +24,11 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public ResponseEntity<ApiResponse> saveNotification(NotificationMessage notificationMessage) {
-        return ResponseEntity.ok().body(new ApiResponse(notificationRepository.save(notificationMessage),true,200));
+        try {
+            return ResponseEntity.ok().body(new ApiResponse(notificationRepository.save(notificationMessage), true, 200));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(null, false, "...", 500));
+        }
     }
 
     @Override
@@ -40,15 +44,16 @@ public class NotificationServiceImpl implements NotificationService {
             for (NotificationMessage message : notificationMessages) {
                 String messageDateTimeStr = message.getEndDateTime().trim();
                 LocalDateTime messageDateTime = LocalDateTime.parse(messageDateTimeStr, formatter);
-                if (messageDateTime.isAfter(currentDateTime)) { validNotificationMessages.add(message); }
+                if (messageDateTime.isAfter(currentDateTime)) {
+                    validNotificationMessages.add(message);
+                }
             }
             return ResponseEntity.ok().body(new ApiResponse(validNotificationMessages, true, 200));
         } catch (Exception e) {
-            return ResponseEntity.ok().body(new ApiResponse(null, true,e.getMessage(), 200));
+            e.printStackTrace();
+            return ResponseEntity.ok().body(new ApiResponse(null, false, "...", 500));
         }
     }
-
-
 
     @Override
     public ResponseEntity<ApiResponse> updatebyId(Long id, NotificationMessage notificationMessage) {

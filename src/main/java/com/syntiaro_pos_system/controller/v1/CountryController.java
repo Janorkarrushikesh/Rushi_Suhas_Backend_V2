@@ -4,6 +4,7 @@ import com.syntiaro_pos_system.entity.v1.Country;
 import com.syntiaro_pos_system.response.CountryResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -13,17 +14,17 @@ public interface CountryController {
 
 
     @GetMapping("/countries")
-    public List<Country> getAllCountries() ;
+    List<Country> getAllCountries();
 
     @GetMapping("/country-names")
-    public List<Object> getAllCountryNames() ;
+    List<Object> getAllCountryNames();
 
     // THIS METHOD IS USE FOR GET COUNTRY BY ID
     @GetMapping("/{id}")
-    public ResponseEntity<Country> getCountryById(@PathVariable Long id) ;
+    ResponseEntity<Country> getCountryById(@PathVariable Long id);
 
     // THIS METHOD IS USE FOR GIVE INFO COUNTRY WISE
     @GetMapping("/info/{countryName}")
-    public ResponseEntity<CountryResponse> getCountryInfo(@PathVariable String countryName) ;
+    ResponseEntity<CountryResponse> getCountryInfo(@PathVariable String countryName);
 
 }

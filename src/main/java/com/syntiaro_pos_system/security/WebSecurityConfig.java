@@ -1,7 +1,8 @@
 package com.syntiaro_pos_system.security;
 
 
-import com.syntiaro_pos_system.security.jwt.*;
+import com.syntiaro_pos_system.security.jwt.AuthEntryPointJwt;
+import com.syntiaro_pos_system.security.jwt.AuthTokenFilter;
 import com.syntiaro_pos_system.security.services.StoreDetailsServiceImpl;
 import com.syntiaro_pos_system.security.services.SuperAdminDetailsServiceImpl;
 import com.syntiaro_pos_system.security.services.TechDetailsServiceImpl;
@@ -19,7 +20,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
 //@EnableWebMvc
@@ -50,17 +50,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter { // extends
 
     @Autowired
     private AuthEntryPointJwt authEntryPointJwt;
+    @Autowired
+    private TechDetailsServiceImpl techDetailsService;
+    @Autowired
+    private SuperAdminDetailsServiceImpl superAdminDetailsService;
 
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
         return new AuthTokenFilter();
     }
-
-    @Autowired
-    private TechDetailsServiceImpl techDetailsService;
-
-    @Autowired
-    private SuperAdminDetailsServiceImpl superAdminDetailsService;
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {

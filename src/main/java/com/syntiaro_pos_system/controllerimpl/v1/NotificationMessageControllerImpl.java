@@ -43,8 +43,6 @@ public class NotificationMessageControllerImpl implements NotificationMessageCon
     }
 
 
-
-
     @GetMapping("/last24")
     public List<NotificationMessage> getNotificationMessagesLast24Hours() {
         List<NotificationMessage> notificationMessages = notificationMessageRepository.findAll();
@@ -60,7 +58,9 @@ public class NotificationMessageControllerImpl implements NotificationMessageCon
             System.out.println(messageDateTimeStr);
             // Parse the datetime string from the message and compare
             LocalDateTime messageDateTime = LocalDateTime.parse(messageDateTimeStr, formatter);
-            if (messageDateTime.isAfter(currentDateTime)) { validNotificationMessages.add(message); }
+            if (messageDateTime.isAfter(currentDateTime)) {
+                validNotificationMessages.add(message);
+            }
         }
         return validNotificationMessages;
     }

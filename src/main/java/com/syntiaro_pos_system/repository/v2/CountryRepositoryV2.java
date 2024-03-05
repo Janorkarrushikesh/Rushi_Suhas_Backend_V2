@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CountryRepositoryV2 extends JpaRepository<Country,Long> {
+public interface CountryRepositoryV2 extends JpaRepository<Country, Long> {
 
 
     List<Country> findByCountryCodeIn(List<String> countryCodes);

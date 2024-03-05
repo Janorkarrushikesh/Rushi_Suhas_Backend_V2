@@ -17,6 +17,7 @@ public class CountryServiceImpl implements CountryService {
 
     @Autowired
     CountryRepositoryV2 countryRepositoryV2;
+
     @Override
     public ResponseEntity<ApiResponse> saveCountryAndState(List<Country> countries) {
         try {
@@ -24,7 +25,7 @@ public class CountryServiceImpl implements CountryService {
             List<Country> existingCountries = countryRepositoryV2.findByCountryCodeIn(countryCodes);
             if (existingCountries.isEmpty()) {
                 countryRepositoryV2.saveAll(countries);
-                return ResponseEntity.ok().body( new ApiResponse(countries, true, 200));
+                return ResponseEntity.ok().body(new ApiResponse(countries, true, 200));
             } else {
                 return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body(new ApiResponse(null, false, "Countries already exist", 208));
             }

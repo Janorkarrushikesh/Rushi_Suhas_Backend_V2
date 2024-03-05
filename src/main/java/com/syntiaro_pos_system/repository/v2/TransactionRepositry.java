@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface TransactionRepositry extends JpaRepository<TransactionRecord,Long> {
+public interface TransactionRepositry extends JpaRepository<TransactionRecord, Long> {
 }

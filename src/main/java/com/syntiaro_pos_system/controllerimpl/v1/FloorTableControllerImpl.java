@@ -7,7 +7,9 @@ import com.syntiaro_pos_system.repository.v1.TableRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +18,7 @@ import java.util.Optional;
 public class FloorTableControllerImpl implements FloorTableController {
 
     @Autowired
-   private FloorTableRepo floorTableRepo;
+    private FloorTableRepo floorTableRepo;
 
     @Autowired
     private TableRepo tableRepo;
@@ -60,12 +62,12 @@ public class FloorTableControllerImpl implements FloorTableController {
     }
 
     @Override
-    public Optional<FloorTable>gettablebyserial_no(@PathVariable Long serial_no){
-       return floorTableRepo.findById(serial_no);
+    public Optional<FloorTable> gettablebyserial_no(@PathVariable Long serial_no) {
+        return floorTableRepo.findById(serial_no);
     }
 
     @Override
-    public List<FloorTable>gettablebystoreid(@PathVariable Long storeid){
+    public List<FloorTable> gettablebystoreid(@PathVariable Long storeid) {
         return floorTableRepo.findbyStoreid(storeid);
     }
 
@@ -81,7 +83,6 @@ public class FloorTableControllerImpl implements FloorTableController {
             return ResponseEntity.status(404).body("Table not found");
         }
     }
-
 
 
     @Override

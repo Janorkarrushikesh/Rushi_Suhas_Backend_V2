@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 @RequestMapping(path = "/v2/sys/logger/")
 @RestController
@@ -19,6 +18,7 @@ public class LogFileDownloadController {
 
     @GetMapping("/downloadLogFile")
     public ResponseEntity<Resource> downloadLogFile() throws IOException {
+
 
         Resource logFileResource = new ClassPathResource("Syntiaro.log");
         HttpHeaders headers = new HttpHeaders();

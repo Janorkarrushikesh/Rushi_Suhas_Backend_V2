@@ -12,12 +12,12 @@ import java.util.List;
 public interface NotificationMessageController {
 
     @PostMapping("/create")
-    public ResponseEntity<String> createNotificationMessage(@RequestBody NotificationMessage notificationMessage) ;
+    ResponseEntity<String> createNotificationMessage(@RequestBody NotificationMessage notificationMessage);
 
     @GetMapping("/last24")
-    public List<NotificationMessage> getNotificationMessagesLast24Hours() ;
+    List<NotificationMessage> getNotificationMessagesLast24Hours();
 
     @PatchMapping("/update/{id}")
-    public ResponseEntity<String> updateNotificationMessage(@PathVariable Long id, @RequestBody NotificationMessage updatedMessage) ;
+    ResponseEntity<String> updateNotificationMessage(@PathVariable Long id, @RequestBody NotificationMessage updatedMessage);
 
 }

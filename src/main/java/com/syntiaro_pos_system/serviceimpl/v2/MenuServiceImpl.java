@@ -5,6 +5,8 @@ import com.syntiaro_pos_system.entity.v2.ApiResponse;
 import com.syntiaro_pos_system.repository.v2.MenuRepository;
 import com.syntiaro_pos_system.service.v2.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -13,12 +15,13 @@ import java.util.Optional;
 public class MenuServiceImpl implements MenuService {
     @Autowired
     MenuRepository menuRepository;
+
     @Override
-    public ApiResponse getMenuById(int menuId) {
-      Optional<Menu> menudata= menuRepository.findById(menuId);
-      if(menudata.isPresent()){
-          return new ApiResponse(menudata,true,200);
-      }
-      return new ApiResponse(null,false,"Id Not Found",400);
+    public ResponseEntity<ApiResponse> getMenuById(int menuId) {
+        Optional<Menu> menudata = menuRepository.findById(menuId);
+        if (menudata.isPresent()) {
+            return ResponseEntity.ok().body(new ApiResponse(menudata, true, 200));
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(null, false, "Id Not Found", 400));
     }
 }

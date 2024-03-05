@@ -20,54 +20,54 @@ import java.util.List;
 @RequestMapping("/api/test/store")
 public class StoreTestController {
 
-  @Autowired
-  StoreRepository userRepo;
+    @Autowired
+    StoreRepository userRepo;
 
-  @Autowired
-  StoreRoleRepository storeRoleRepository;
+    @Autowired
+    StoreRoleRepository storeRoleRepository;
 
-  @Autowired
-  PasswordEncoder encoder;
+    @Autowired
+    PasswordEncoder encoder;
 
-  @Autowired
-  StoreJwtUtils storeJwtUtils;
+    @Autowired
+    StoreJwtUtils storeJwtUtils;
 
-  @Autowired
-  StoreService storeService;
+    @Autowired
+    StoreService storeService;
 
-  // THIS METHOD IS USE FOR GET ALL STORE DETAILS
-  @GetMapping("/allStore")
-  public String allAccess() {
-    return "Public Content.";
-  }
+    // THIS METHOD IS USE FOR GET ALL STORE DETAILS
+    @GetMapping("/allStore")
+    public String allAccess() {
+        return "Public Content.";
+    }
 
-  // THIS METHOD IS USE FOR GET USER
-  @GetMapping("/user")
-  @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-  public String userAccess() {
-    return "Store Content.";
-  }
+    // THIS METHOD IS USE FOR GET USER
+    @GetMapping("/user")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public String userAccess() {
+        return "Store Content.";
+    }
 
-  // THIS METHOD IS USE FOR GET MODERATOR
-  @GetMapping("/mod")
-  @PreAuthorize("hasRole('MODERATOR')")
-  public String moderatorAccess() {
-    return "Moderator Board.";
-  }
+    // THIS METHOD IS USE FOR GET MODERATOR
+    @GetMapping("/mod")
+    @PreAuthorize("hasRole('MODERATOR')")
+    public String moderatorAccess() {
+        return "Moderator Board.";
+    }
 
-  // THIS METHOD IS USE FOR GET ADMIN
-  @GetMapping("/admin")
-  @PreAuthorize("hasRole('ADMIN')")
-  public String adminAccess() {
-    return "Admin Board.";
-  }
+    // THIS METHOD IS USE FOR GET ADMIN
+    @GetMapping("/admin")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String adminAccess() {
+        return "Admin Board.";
+    }
 
-  // THIS METHOD IS USE FOR GET ALL STORE DETAIL
-  @GetMapping("/getstore")
-  // @PreAuthorize("hasRole('ADMIN')")
-  public List<Store> getStore() {
-    System.out.println("/getstore");
-    return this.storeService.getStore();
-  }
+    // THIS METHOD IS USE FOR GET ALL STORE DETAIL
+    @GetMapping("/getstore")
+    // @PreAuthorize("hasRole('ADMIN')")
+    public List<Store> getStore() {
+        System.out.println("/getstore");
+        return this.storeService.getStore();
+    }
 
 }

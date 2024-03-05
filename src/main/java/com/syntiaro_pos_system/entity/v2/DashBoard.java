@@ -1,16 +1,13 @@
 package com.syntiaro_pos_system.entity.v2;
 
-import javax.persistence.*;
-import com.fasterxml.jackson.annotation.JsonView;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
 
+import javax.persistence.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.SimpleFormatter;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -49,8 +46,8 @@ public class DashBoard {
     private List<AppMenu> appMenu;
 
     public DashBoard(List<QuickAccess> quickAccessItems, List<AppMenu> appMenuItems) {
-        this.quickaccess=quickAccessItems;
-        this.appMenu=appMenuItems;
+        this.quickaccess = quickAccessItems;
+        this.appMenu = appMenuItems;
     }
 
     @PostPersist

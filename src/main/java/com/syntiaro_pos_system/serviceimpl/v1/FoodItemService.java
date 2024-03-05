@@ -13,10 +13,9 @@ import java.util.Optional;
 @Service
 public class FoodItemService {
 
-    private FoodItemRepository foodItemRepository;
-
     @Autowired
     InventoryRepo inventoryRepository;
+    private final FoodItemRepository foodItemRepository;
 
     @Autowired
     public FoodItemService(FoodItemRepository foodItemRepository) {
@@ -104,18 +103,12 @@ public class FoodItemService {
 
     private void reduceIngredientQuantity(Ingredient ingredient) {
         Float currentQuantity = ingredient.getQuantity();
-        Float reductionAmount = (float) calculateReductionAmount(ingredient);
+        Float reductionAmount = calculateReductionAmount(ingredient);
 
         if (currentQuantity >= reductionAmount) {
             ingredient.setQuantity(currentQuantity - reductionAmount);
         } else {
             throw new InsufficientIngredientException("Insufficient quantity of " + ingredient.getName());
-        }
-    }
-
-    public class InsufficientIngredientException extends RuntimeException {
-        public InsufficientIngredientException(String message) {
-            super(message);
         }
     }
 
@@ -125,6 +118,12 @@ public class FoodItemService {
         Float reductionAmount = (float) (currentQuantity * reductionPercentage);
 
         return reductionAmount;
+    }
+
+    public class InsufficientIngredientException extends RuntimeException {
+        public InsufficientIngredientException(String message) {
+            super(message);
+        }
     }
 
 }

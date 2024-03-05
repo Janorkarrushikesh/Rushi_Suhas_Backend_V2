@@ -1,14 +1,14 @@
 package com.syntiaro_pos_system.controllerimpl.v1;
 
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.syntiaro_pos_system.controller.v1.FoodController;
 import com.syntiaro_pos_system.entity.v1.Food;
 import com.syntiaro_pos_system.repository.v1.FoodRepo;
 import com.syntiaro_pos_system.service.v1.FoodService;
 import com.syntiaro_pos_system.serviceimpl.v1.BalanceService;
-import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -22,14 +22,18 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class FoodControllerIMPL implements FoodController {
@@ -42,7 +46,7 @@ public class FoodControllerIMPL implements FoodController {
 
     @Autowired
     private BalanceService balanceService;
-    private Logger logger = LoggerFactory.getLogger(FoodController.class);
+    private final Logger logger = LoggerFactory.getLogger(FoodController.class);
 
     // THIS METHOD IS USE FOR GET ALL LIST OF FOOD
     @Override
@@ -165,8 +169,6 @@ public class FoodControllerIMPL implements FoodController {
 //    }
 
 
-
-
     // THIS METHOD IS USE FOR NOT INSERT SAME FOOD NAME
     @Override
     public ResponseEntity<String> addfoods(
@@ -229,7 +231,7 @@ public class FoodControllerIMPL implements FoodController {
         }
         Food food = optionalFood.get();
         // Update fields if provided in the request
-        if(food_id != null){
+        if (food_id != null) {
             food.setFoodId(Integer.valueOf(food_id));
         }
         if (food_name != null) {
@@ -269,16 +271,16 @@ public class FoodControllerIMPL implements FoodController {
     }
 
     @Override
-    public ResponseEntity<byte[]> generateExcelByStoreId(String store_id ) { // Accept storeId as a parameter
+    public ResponseEntity<byte[]> generateExcelByStoreId(String store_id) { // Accept storeId as a parameter
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Food Data");
             Row headerRow = sheet.createRow(0);
-            String[] headerss = { "Food Name", "Description", "Food Code", "Category", "Subcategory", "Store ID", "Price" };
+            String[] headerss = {"Food Name", "Description", "Food Code", "Category", "Subcategory", "Store ID", "Price"};
             for (int i = 0; i < headerss.length; i++) {
                 Cell cell = headerRow.createCell(i);
                 cell.setCellValue(headerss[i]);
             }
-            List<Food> foodList = foodRepo.findByStoreId(store_id ); // Assuming you have a method to fetch food data by
+            List<Food> foodList = foodRepo.findByStoreId(store_id); // Assuming you have a method to fetch food data by
             // storeId
             int rowNum = 1;
             for (Food food : foodList) {
@@ -307,7 +309,7 @@ public class FoodControllerIMPL implements FoodController {
 
     @Override
     public ResponseEntity<String> uploadFoodList(@RequestParam("store_id") String storeId,
-            @RequestParam("file") MultipartFile file) {
+                                                 @RequestParam("file") MultipartFile file) {
         try {
             List<Food> foodList = foodService.processExcelFile(storeId, file);
             return new ResponseEntity<>("Food list uploaded successfully for store ID: " + storeId, HttpStatus.OK);
@@ -323,7 +325,7 @@ public class FoodControllerIMPL implements FoodController {
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Addon Data");
             Row headerRow = sheet.createRow(0);
-            String[] headers = { "Addon Name", "Addon Code", "Category", "Price" };
+            String[] headers = {"Addon Name", "Addon Code", "Category", "Price"};
             for (int i = 0; i < headers.length; i++) {
                 Cell cell = headerRow.createCell(i);
                 cell.setCellValue(headers[i]);
@@ -357,7 +359,7 @@ public class FoodControllerIMPL implements FoodController {
 
 
     @Override
-    public ResponseEntity<?> generatePDFByStoreid (
+    public ResponseEntity<?> generatePDFByStoreid(
             @PathVariable String store_id) throws DocumentException {
         List<Food> foodlist;
         Date startDates = null;
@@ -382,7 +384,7 @@ public class FoodControllerIMPL implements FoodController {
 
         document.open();
 
-        Paragraph title = new Paragraph("FOOD DETAILS" , new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD));
+        Paragraph title = new Paragraph("FOOD DETAILS", new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD));
         title.setAlignment(Element.ALIGN_CENTER);
         document.add(title);// Add spacing between title and table
 
@@ -390,7 +392,6 @@ public class FoodControllerIMPL implements FoodController {
         Paragraph spacing = new Paragraph(" "); // Empty paragraph
         spacing.setSpacingAfter(10f); // Adjust the spacing as needed
         document.add(spacing);
-
 
 
         PdfPTable table = new PdfPTable(6); // Number of columns
@@ -407,7 +408,7 @@ public class FoodControllerIMPL implements FoodController {
         cell = new PdfPCell(new Phrase("Subcategory", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
         table.addCell(cell);
         cell = new PdfPCell(new Phrase("Price", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
-        table.addCell(cell);        ;
+        table.addCell(cell);
         int serialNumber = 1;
         for (Food food : foodlist) {
             table.addCell(String.valueOf(serialNumber++));
@@ -416,7 +417,7 @@ public class FoodControllerIMPL implements FoodController {
             table.addCell(food.getCategory());
             table.addCell(food.getSubCategory());
             table.addCell(String.valueOf(food.getPrice()));
-         }
+        }
 
         document.add(table);
         document.close();
@@ -433,8 +434,6 @@ public class FoodControllerIMPL implements FoodController {
     }
 
 
-
-
     @Override
     public ResponseEntity<?> generatePDFByStoreidandCategory(
             @PathVariable String store_id) throws DocumentException {
@@ -444,7 +443,7 @@ public class FoodControllerIMPL implements FoodController {
 
         if (store_id != null) {
             // Fetch payments for a specific store ID
-            foodlist = foodRepo.findByStoreIdAndCategory(store_id,"Addon");
+            foodlist = foodRepo.findByStoreIdAndCategory(store_id, "Addon");
 
         } else {
             // If no date range is specified, retrieve all stores
@@ -461,7 +460,7 @@ public class FoodControllerIMPL implements FoodController {
 
         document.open();
 
-        Paragraph title = new Paragraph("ADDON DETAILS" , new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD));
+        Paragraph title = new Paragraph("ADDON DETAILS", new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD));
         title.setAlignment(Element.ALIGN_CENTER);
         document.add(title);// Add spacing between title and table
 
@@ -469,7 +468,6 @@ public class FoodControllerIMPL implements FoodController {
         Paragraph spacing = new Paragraph(" "); // Empty paragraph
         spacing.setSpacingAfter(10f); // Adjust the spacing as needed
         document.add(spacing);
-
 
 
         PdfPTable table = new PdfPTable(6); // Number of columns
@@ -486,7 +484,7 @@ public class FoodControllerIMPL implements FoodController {
         cell = new PdfPCell(new Phrase("Subcategory", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
         table.addCell(cell);
         cell = new PdfPCell(new Phrase("Price", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
-        table.addCell(cell);        ;
+        table.addCell(cell);
         int serialNumber = 1;
         for (Food food : foodlist) {
             table.addCell(String.valueOf(serialNumber++));
@@ -510,9 +508,6 @@ public class FoodControllerIMPL implements FoodController {
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(new InputStreamResource(byteArrayInputStream));
     }
-
-
-
 
 
 }

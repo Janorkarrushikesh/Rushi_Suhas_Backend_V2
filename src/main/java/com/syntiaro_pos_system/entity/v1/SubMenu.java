@@ -27,10 +27,18 @@ public class SubMenu {
     @Column(name = "Path")
     private String Path;
 
+    private boolean status;
 
     @Column(name = "icon")
     private String icon;
 
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
 
     public Integer getId() {
         return id;

@@ -13,22 +13,22 @@ import java.util.Map;
 @RequestMapping("/v2/api/auth/superadmin")
 public interface SuperAdminController {
     @PostMapping("/signin")
-    public ResponseEntity<ApiResponse> authenticateSuperAdmin(@Valid @RequestBody SuperAdminLoginRequest superAdminLoginRequest);
+    ResponseEntity<ApiResponse> authenticateSuperAdmin(@Valid @RequestBody SuperAdminLoginRequest superAdminLoginRequest);
 
     @PostMapping("/superSignup")
-    public ResponseEntity<ApiResponse> registerSuperAdmin(@Valid @RequestBody SuperAdminSignupRequest superAdminSignupRequest);
+    ResponseEntity<ApiResponse> registerSuperAdmin(@Valid @RequestBody SuperAdminSignupRequest superAdminSignupRequest);
 
     @PostMapping("/forgotPassword")
-    public ResponseEntity<ApiResponse> forgotPassword(@RequestBody SuperAdminSignupRequest superAdminSignupRequest);
+    ResponseEntity<ApiResponse> forgotPassword(@RequestBody SuperAdminSignupRequest superAdminSignupRequest);
 
     @PostMapping("/resetPassword")
-    public ResponseEntity<ApiResponse> resetPassword(@RequestBody Map<String, String> resetRequest);
+    ResponseEntity<ApiResponse> resetPassword(@RequestBody Map<String, String> resetRequest);
 
     @PatchMapping("/{superid}")
-    public ResponseEntity<ApiResponse> updateSuperAdmin(@PathVariable Long superid, @RequestBody SuperAdmin updateSuperAdmin);
+    ResponseEntity<ApiResponse> updateSuperAdmin(@PathVariable Long superid, @RequestBody SuperAdmin updateSuperAdmin);
 
     @PostMapping("/logout")
-    public ResponseEntity<ApiResponse> logoutSuperAdmin(@RequestParam String sessionToken);
+    ResponseEntity<ApiResponse> logoutSuperAdmin(@RequestParam String sessionToken);
 }
 
 

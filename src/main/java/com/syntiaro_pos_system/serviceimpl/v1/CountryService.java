@@ -11,7 +11,7 @@ public class CountryService {
     private final CountryRepository countryRepository;
 
     @Autowired
-    public CountryService (CountryRepository countryRepository) {
+    public CountryService(CountryRepository countryRepository) {
         this.countryRepository = countryRepository;
     }
 

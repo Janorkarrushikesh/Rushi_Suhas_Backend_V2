@@ -32,7 +32,7 @@ public class Tech {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long technicianId;
 
-    @Column(name="TechNumber")
+    @Column(name = "TechNumber")
     private String techncianNo;
 // ALL DATABASE FILED
 
@@ -40,7 +40,7 @@ public class Tech {
     @Size(max = 20)
     private String username;
 
-    @Column(name="Store_Address")
+    @Column(name = "Store_Address")
     private String address;
 
     @NotBlank
@@ -86,22 +86,13 @@ public class Tech {
 
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable( name = "Tech_roles",
+    @JoinTable(name = "Tech_roles",
             joinColumns = @JoinColumn(name = "techid"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<TechRole> techRoles = new HashSet<>();
 
 
-
-    @PostPersist
-    public void generateStoreCode() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        String formattedDate = dateFormat.format(date);
-        this.techncianNo = "SSPL-TECH-" +formattedDate+"-"+ technicianId;
-    }
-
-
-    public Tech(String username, String address, String email, String contact, Date date, String country, String state,String updatedby , String createdBy, String comfirmpassword, String password) {
+    public Tech(String username, String address, String email, String contact, Date date, String country, String state, String updatedby, String createdBy, String comfirmpassword, String password) {
         this.username = username;
         this.address = address;
         this.email = email;
@@ -111,10 +102,16 @@ public class Tech {
         this.state = state;
         this.updatedBy = updatedby;
         this.createdBy = createdBy;
-        this.comfirmPassword =comfirmpassword;
+        this.comfirmPassword = comfirmpassword;
         this.password = password;
     }
 
+    @PostPersist
+    public void generateStoreCode() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        String formattedDate = dateFormat.format(date);
+        this.techncianNo = "SSPL-TECH-" + formattedDate + "-" + technicianId;
+    }
 
     public Long getTechnicianId() {
         return technicianId;
@@ -123,7 +120,6 @@ public class Tech {
     public void setTechnicianId(Long technicianId) {
         this.technicianId = technicianId;
     }
-
 
 
     public String getUsername() {
@@ -157,7 +153,6 @@ public class Tech {
     public void setContact(String contact) {
         this.contact = contact;
     }
-
 
 
     public Date getDate() {

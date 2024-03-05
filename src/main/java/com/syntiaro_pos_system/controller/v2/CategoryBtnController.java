@@ -11,18 +11,18 @@ import org.springframework.web.bind.annotation.*;
 public interface CategoryBtnController {
 
     @PostMapping("/")
-    public ResponseEntity<ApiResponse> saveButton(@RequestBody CategoryButton button);
+    ResponseEntity<ApiResponse> saveButton(@RequestBody CategoryButton button);
 
     @GetMapping("/store/{storeId}")
-    public ResponseEntity<ApiResponse> getButtonByStoreId(@PathVariable String storeId);
+    ResponseEntity<ApiResponse> getButtonByStoreId(@PathVariable String storeId);
 
     @GetMapping("/id/{id}")
-    public ResponseEntity<ApiResponse> getButtonById(@PathVariable Long id);
+    ResponseEntity<ApiResponse> getButtonById(@PathVariable Long id);
 
     @PatchMapping("/id/{id}")
-    public ResponseEntity<ApiResponse> updatecategoryById(@PathVariable Long id, @RequestBody CategoryButton categoryButton);
+    ResponseEntity<ApiResponse> updatecategoryById(@PathVariable Long id, @RequestBody CategoryButton categoryButton);
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse> deleteById(@PathVariable Long id);
+    ResponseEntity<ApiResponse> deleteById(@PathVariable Long id);
 
 }

@@ -11,11 +11,11 @@ public interface NotificationController {
 
 
     @PostMapping("/")
-    public ResponseEntity<ApiResponse> saveNotification(@RequestBody NotificationMessage notificationMessage);
+    ResponseEntity<ApiResponse> saveNotification(@RequestBody NotificationMessage notificationMessage);
 
     @GetMapping("/getall")
-    public ResponseEntity<ApiResponse> allNotification();
+    ResponseEntity<ApiResponse> allNotification();
 
     @PatchMapping("/id/{id}")
-    public ResponseEntity<ApiResponse> updateById(@PathVariable Long id,@RequestBody NotificationMessage notificationMessage);
+    ResponseEntity<ApiResponse> updateById(@PathVariable Long id, @RequestBody NotificationMessage notificationMessage);
 }

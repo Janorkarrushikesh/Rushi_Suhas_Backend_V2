@@ -9,19 +9,19 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface Billservice {
-    public ResponseEntity<ApiResponse> saveBillAndOrder(BillRequest billRequest);
+    ResponseEntity<ApiResponse> saveBillAndOrder(BillRequest billRequest);
 
     ResponseEntity<ApiResponse> getBillBySerialNo(Integer serialNo);
 
     ResponseEntity<ApiResponse> getBillByStoreId(Integer storeId);
 
-    ResponseEntity<ApiResponse> updateBillBySerialNo(Integer serialNo , Bill bill);
+    ResponseEntity<ApiResponse> updateBillBySerialNo(Integer serialNo, Bill bill);
 
-    ResponseEntity<ApiResponse> fetchBillByStoreId(Integer storeId , Integer page , Integer size , LocalDate startDate , LocalDate endDate);
+    ResponseEntity<ApiResponse> fetchBillByStoreId(Integer storeId, Integer page, Integer size, LocalDate startDate, LocalDate endDate);
 
     ResponseEntity<ApiResponse> quickBill(BillRequest bill);
 
-    ResponseEntity<ApiResponse> billStatusReport(Integer storeId, List<String> orderStatus );
+    ResponseEntity<ApiResponse> billStatusReport(Integer storeId, List<String> orderStatus);
 
     ResponseEntity<ApiResponse> calculateTotalByPaymnetMode(Integer storeId);
 

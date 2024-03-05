@@ -5,7 +5,6 @@ import com.syntiaro_pos_system.entity.v1.Payment;
 import com.syntiaro_pos_system.entity.v2.ApiResponse;
 import com.syntiaro_pos_system.service.v2.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,8 +17,8 @@ public class PaymentControllerImplV2 implements PaymentController {
     PaymentService paymentService;
 
     @Override
-    public ResponseEntity<ApiResponse> getPaymentByStoreId(Integer storeId , Integer page,Integer size) {
-        return paymentService.getPaymentByStoreId(storeId , page ,size);
+    public ResponseEntity<ApiResponse> getPaymentByStoreId(Integer storeId, Integer page, Integer size, String startDate, String endDate) {
+        return paymentService.getPaymentByStoreId(storeId, page, size, startDate, endDate);
     }
 
     @Override
@@ -28,14 +27,15 @@ public class PaymentControllerImplV2 implements PaymentController {
     }
 
     @Override
-    public ResponseEntity<byte[]> QrCodeFor(Integer SerialNo ,  HttpServletResponse response) {
-        return paymentService.qrCodeForPayment(SerialNo,response);
+    public ResponseEntity<byte[]> QrCodeFor(Integer SerialNo, HttpServletResponse response) {
+        return paymentService.qrCodeForPayment(SerialNo, response);
+
     }
 
     @Override
     public ResponseEntity<ApiResponse> savePayment(Payment payment) {
+        return paymentService.savePayment(payment);
 
-        return new ResponseEntity<>(paymentService.savePayment(payment), HttpStatus.OK);
     }
 
     @Override
@@ -45,6 +45,8 @@ public class PaymentControllerImplV2 implements PaymentController {
 
     @Override
     public ResponseEntity<ApiResponse> updatePayment(Integer SerialNo, Payment payment) {
-        return paymentService.updatePayment(SerialNo,payment);
+        return paymentService.updatePayment(SerialNo, payment);
     }
 }
+
+

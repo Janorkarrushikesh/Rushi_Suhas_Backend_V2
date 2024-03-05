@@ -14,27 +14,29 @@ import java.util.List;
 public interface StorePaymentController {
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<StorePayment>> getAllStorePayments() ;
+    ResponseEntity<List<StorePayment>> getAllStorePayments();
+
     @GetMapping("/getupi/{storeId}")
-    public ResponseEntity<String> getUpiByStoreId(@PathVariable Long storeId) ;
+    ResponseEntity<String> getUpiByStoreId(@PathVariable Long storeId);
+
     @GetMapping("/{paymentId}")
-    public ResponseEntity<StorePayment> getStorePaymentById(@PathVariable Long paymentId) ;
+    ResponseEntity<StorePayment> getStorePaymentById(@PathVariable Long paymentId);
 
     @DeleteMapping("/deletestorepayment/{paymentId}")
-    public ResponseEntity<String> deleteStorePayment(@PathVariable Long paymentId) ;
+    ResponseEntity<String> deleteStorePayment(@PathVariable Long paymentId);
 
     @GetMapping("/storepayment/{storeId}")
-    public ResponseEntity<List<StorePayment>> getStorePaymentsByStoreId(@PathVariable Long storeId) ;
+    ResponseEntity<List<StorePayment>> getStorePaymentsByStoreId(@PathVariable Long storeId);
 
     @GetMapping("/generateQRCode")
-    public void generateQRCode(@RequestParam String text, HttpServletResponse response) throws IOException ;
+    void generateQRCode(@RequestParam String text, HttpServletResponse response) throws IOException;
 
     @PostMapping("/save")
-    public ResponseEntity<?> createStorePayment(@RequestBody StorePayment storePayment) ;
+    ResponseEntity<?> createStorePayment(@RequestBody StorePayment storePayment);
 
 
     @PatchMapping("/updatestorepayment/{paymentId}")
-    public ResponseEntity<String> updateStorePayment(@PathVariable Long paymentId,
-                                                     @RequestBody StorePayment updatedPayment) ;
+    ResponseEntity<String> updateStorePayment(@PathVariable Long paymentId,
+                                              @RequestBody StorePayment updatedPayment);
 
 }

@@ -19,6 +19,6 @@ public class StoreRequest {
 
     private Store store;
     private List<Tax> taxes;
-    private List <StorePayment> storePayment;
+    private List<StorePayment> storePayment;
 
 }

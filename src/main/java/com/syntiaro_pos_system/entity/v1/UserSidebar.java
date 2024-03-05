@@ -29,8 +29,8 @@ public class UserSidebar {
     @Column(name = "StoreId")
     private String storeId;
 
-    @OneToMany (targetEntity = Menu.class, cascade = CascadeType.ALL )
-    @JoinColumn(name = "user_id_fk" , referencedColumnName = "user_id")
+    @OneToMany(targetEntity = Menu.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id_fk", referencedColumnName = "user_id")
     private List<Menu> menu;
 
     public String orElse(Object o) {

@@ -4,6 +4,7 @@ import com.syntiaro_pos_system.entity.v1.UserOtpEntity;
 import com.syntiaro_pos_system.request.v1.UserOtpVerificationRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.Optional;
 
 @RestController
@@ -12,18 +13,18 @@ import java.util.Optional;
 public interface UserOtpController {
 
     @PostMapping(path = "/sends")
-    public ResponseEntity<String> sendOtp(@RequestBody UserOtpVerificationRequest request) ;
+    ResponseEntity<String> sendOtp(@RequestBody UserOtpVerificationRequest request);
 
     //THIS METHOD IS USE FOR OTP VERIFICATION....USE....
     @PostMapping("/verify")
-    public ResponseEntity<String> verifyOtp(@RequestBody UserOtpEntity request) ;
+    ResponseEntity<String> verifyOtp(@RequestBody UserOtpEntity request);
 
     //THIS METHOD IS USE FOR FIND THE DETAILS BY ID
     @GetMapping(path = "/mail/{id}")
-    public Optional<UserOtpEntity> getbillbyid(@PathVariable Long id) ;
+    Optional<UserOtpEntity> getbillbyid(@PathVariable Long id);
 
     //THIS METHOD IS USE FOR FIND THE LAST EMAIL DETAILS
     @GetMapping("/get/{email}")
-    public ResponseEntity<UserOtpEntity> getLatestOtpByEmail(@PathVariable String email) ;
+    ResponseEntity<UserOtpEntity> getLatestOtpByEmail(@PathVariable String email);
 
 }

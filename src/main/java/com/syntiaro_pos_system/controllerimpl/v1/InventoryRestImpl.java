@@ -1,15 +1,15 @@
 package com.syntiaro_pos_system.controllerimpl.v1;
 
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.syntiaro_pos_system.controller.v1.InventoryRest;
 import com.syntiaro_pos_system.entity.v1.Inventory;
 import com.syntiaro_pos_system.entity.v1.Store;
 import com.syntiaro_pos_system.repository.v1.InventoryRepo;
 import com.syntiaro_pos_system.service.v1.InventoryService;
 import com.syntiaro_pos_system.serviceimpl.v1.InventoryServiceIMPL;
-import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -24,7 +24,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -134,7 +137,7 @@ public class InventoryRestImpl implements InventoryRest {
                 Cell cell = headerRow.createCell(i);
                 cell.setCellValue(headerss[i]);
             }
-            List<Inventory> Lists = inventoryRepo.findByStoreId(String.valueOf(store_id) );
+            List<Inventory> Lists = inventoryRepo.findByStoreId(String.valueOf(store_id));
             int rowNum = 1;
             for (Inventory List : Lists) {
                 Row row = sheet.createRow(rowNum++);
@@ -165,17 +168,17 @@ public class InventoryRestImpl implements InventoryRest {
 
     @Override
     public ResponseEntity<List<String>> getMinileve(@PathVariable String storeId) {
-       // List<Store> stores = storeRepository.findAll();
+        // List<Store> stores = storeRepository.findAll();
         List<String> productsBelowMinLevel = new ArrayList<>();
 
 
-            List<Inventory> productsInStore = inventoryRepo.findByStoreId(storeId);
-            System.out.println(productsInStore);
-            for (Inventory product : productsInStore) {
-                if (product.getQuantity() < product.getMinLevel()) {
-                    productsBelowMinLevel.add("* You Have Crossed Minimum level of " + product.getName() +" current Product Level is " +""+ product.getQuantity() + " "+product.getUnit()+"  ."+" Please Update Your Inventory "+" ");
-                }
+        List<Inventory> productsInStore = inventoryRepo.findByStoreId(storeId);
+        System.out.println(productsInStore);
+        for (Inventory product : productsInStore) {
+            if (product.getQuantity() < product.getMinLevel()) {
+                productsBelowMinLevel.add("* You Have Crossed Minimum level of " + product.getName() + " current Product Level is " + product.getQuantity() + " " + product.getUnit() + "  ." + " Please Update Your Inventory " + " ");
             }
+        }
 
 
         if (productsBelowMinLevel.isEmpty()) {
@@ -196,7 +199,6 @@ public class InventoryRestImpl implements InventoryRest {
 
         javaMailSender.send(message);
     }
-
 
 
     @Override
@@ -264,14 +266,14 @@ public class InventoryRestImpl implements InventoryRest {
 
         if (storeid != null && !storeid.isEmpty()) {
             // Fetch payments for a specific store ID
-            inventoryList = inventoryRepo.findByStoreIdAndCreatedDateBetween(storeid , startDate , endDate);
+            inventoryList = inventoryRepo.findByStoreIdAndCreatedDateBetween(storeid, startDate, endDate);
 
         } else if (startDate != null && endDate != null) {
             try {
                 // Parse date strings into java.util.Date
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                startDates = dateFormat.parse(String.valueOf(startDate));
-                endDates = dateFormat.parse(String.valueOf(endDate));
+                startDates = dateFormat.parse(startDate);
+                endDates = dateFormat.parse(endDate);
             } catch (ParseException ex) {
                 // Handle the parsing error here, e.g., return an error response
                 return ResponseEntity.badRequest().body("Invalid date format");
@@ -294,7 +296,7 @@ public class InventoryRestImpl implements InventoryRest {
 
         document.open();
 
-        Paragraph title = new Paragraph("INVENTORY DETAILS" , new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD));
+        Paragraph title = new Paragraph("INVENTORY DETAILS", new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD));
         title.setAlignment(Element.ALIGN_CENTER);
         document.add(title);// Add spacing between title and table
 
@@ -302,7 +304,6 @@ public class InventoryRestImpl implements InventoryRest {
         Paragraph spacing = new Paragraph(" "); // Empty paragraph
         spacing.setSpacingAfter(10f); // Adjust the spacing as needed
         document.add(spacing);
-
 
 
         PdfPTable table = new PdfPTable(9); // Number of columns
@@ -326,7 +327,6 @@ public class InventoryRestImpl implements InventoryRest {
         table.addCell(cell);
         cell = new PdfPCell(new Phrase("Expiry Date", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
         table.addCell(cell);
-        ;
         int serialNumber = 1;
         for (Inventory inventory : inventoryList) {
             table.addCell(String.valueOf(serialNumber++));
@@ -353,7 +353,6 @@ public class InventoryRestImpl implements InventoryRest {
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(new InputStreamResource(byteArrayInputStream));
     }
-
 
 
     @Override
@@ -384,7 +383,7 @@ public class InventoryRestImpl implements InventoryRest {
 
         document.open();
 
-        Paragraph title = new Paragraph("INVENTORY DETAILS" , new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD));
+        Paragraph title = new Paragraph("INVENTORY DETAILS", new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD));
         title.setAlignment(Element.ALIGN_CENTER);
         document.add(title);// Add spacing between title and table
 
@@ -392,7 +391,6 @@ public class InventoryRestImpl implements InventoryRest {
         Paragraph spacing = new Paragraph(" "); // Empty paragraph
         spacing.setSpacingAfter(10f); // Adjust the spacing as needed
         document.add(spacing);
-
 
 
         PdfPTable table = new PdfPTable(9); // Number of columns
@@ -416,7 +414,6 @@ public class InventoryRestImpl implements InventoryRest {
         table.addCell(cell);
         cell = new PdfPCell(new Phrase("Expiry Date", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
         table.addCell(cell);
-        ;
         int serialNumber = 1;
 
         for (Inventory inventory : inventoryList) {
